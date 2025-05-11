@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package proyecto_reservarestaurante;
+package vista;
 
 /**
  *
@@ -53,7 +53,6 @@ public class Inicio extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1080, 720));
 
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
 
@@ -131,7 +130,7 @@ public class Inicio extends javax.swing.JFrame {
 
         jPanel10.setLayout(new javax.swing.BoxLayout(jPanel10, javax.swing.BoxLayout.Y_AXIS));
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/proyecto_reservarestaurante/rice-dish-menu_23-2147681081.png"))); // NOI18N
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/vista/rice-dish-menu_23-2147681081.png"))); // NOI18N
         jLabel5.setPreferredSize(new java.awt.Dimension(200, 417));
         jPanel10.add(jLabel5);
 
@@ -151,7 +150,7 @@ public class Inicio extends javax.swing.JFrame {
 
         jPanel9.setLayout(new javax.swing.BoxLayout(jPanel9, javax.swing.BoxLayout.Y_AXIS));
 
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/proyecto_reservarestaurante/friends-table-with-food_23-2147680659.jpg"))); // NOI18N
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/vista/friends-table-with-food_23-2147680659.jpg"))); // NOI18N
         jLabel7.setPreferredSize(new java.awt.Dimension(200, 740));
         jPanel9.add(jLabel7);
 
