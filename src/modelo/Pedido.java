@@ -4,6 +4,8 @@
  */
 package modelo;
 
+import java.util.Date;
+
 /**
  *
  * @author Gian Marrufo
@@ -11,14 +13,14 @@ package modelo;
 public class Pedido {
     private int idPedido;
     private int idReserva;
-    private double total;
+    private Date fechaPedido;
 
     public Pedido() {}
 
-    public Pedido(int idPedido, int idReserva, double total) {
+    public Pedido(int idPedido, int idReserva, Date fechaPedido) {
         this.idPedido = idPedido;
         this.idReserva = idReserva;
-        this.total = total;
+        this.fechaPedido = fechaPedido;
     }
 
     public int getIdPedido() {
@@ -29,8 +31,8 @@ public class Pedido {
         return idReserva;
     }
 
-    public double getTotal() {
-        return total;
+    public Date getFechaPedido() {
+        return fechaPedido;
     }
 
     public void setIdPedido(int idPedido) {
@@ -41,10 +43,9 @@ public class Pedido {
         this.idReserva = idReserva;
     }
 
-    public void setTotal(double total) {
-        this.total = total;
+    public void setFechaPedido(Date fechaPedido) {
+        this.fechaPedido = fechaPedido;
     }
-    
     
     
     
