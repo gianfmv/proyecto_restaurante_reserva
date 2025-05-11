@@ -4,8 +4,11 @@
  */
 package modelo;
 
+//import java.awt.List;
 import java.util.Date;
 import java.sql.Time;  
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -13,33 +16,37 @@ import java.sql.Time;
  */
 public class Reserva {
     private int idReserva;
-    private int idCliente;
+    private Usuario usuario; //Relación asoc con usuario
     private Date fechaReserva;
     private Time horaReserva;
     private int cantPersonas;
     private String estado;
-    private int idMesa;
-
+    private Mesa mesa; //Relación asoc con mesa
+    private List<Pedido> pedidos; // Relación de comp con pedido
+    
     public Reserva() {}
 
-    public Reserva(int idReserva, int idCliente, Date fechaReserva, Time horaReserva,
-                   int cantPersonas, String estado, int idMesa) {
+    public Reserva(int idReserva, Usuario usuario, Date fechaReserva, Time horaReserva,
+                   int cantPersonas, String estado, Mesa mesa) {
         this.idReserva = idReserva;
-        this.idCliente = idCliente;
+        this.usuario = usuario;
         this.fechaReserva = fechaReserva;
         this.horaReserva = horaReserva;
         this.cantPersonas = cantPersonas;
         this.estado = estado;
-        this.idMesa = idMesa;
+        this.mesa = mesa;
+        this.pedidos= new LinkedList<>();
     }
 
     public int getIdReserva() {
         return idReserva;
     }
 
-    public int getIdCliente() {
-        return idCliente;
+    public Usuario getUsuario() {
+        return usuario;
     }
+
+
 
     public Date getFechaReserva() {
         return fechaReserva;
@@ -57,16 +64,21 @@ public class Reserva {
         return estado;
     }
 
-    public int getIdMesa() {
-        return idMesa;
+    public Mesa getMesa() {
+        return mesa;
     }
+
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
+       
 
     public void setIdReserva(int idReserva) {
         this.idReserva = idReserva;
     }
 
-    public void setIdCliente(int idCliente) {
-        this.idCliente = idCliente;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public void setFechaReserva(Date fechaReserva) {
@@ -85,8 +97,12 @@ public class Reserva {
         this.estado = estado;
     }
 
-    public void setIdMesa(int idMesa) {
-        this.idMesa = idMesa;
+    public void setMesa(Mesa mesa) {
+        this.mesa = mesa;
+    }
+
+    public void setPedidos(List<Pedido> pedidos) {
+        this.pedidos = pedidos;
     }
     
     

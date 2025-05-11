@@ -17,11 +17,13 @@ public class Usuario {
     private String telefono;
     private String dni;
     private String direccion;
+    
+     private TipoUsuario tipoUsuario;  // Relación de asociación
 
     public Usuario() {}
 
     public Usuario(int idUsuario, String nombreCompleto, String email, String contraseña,
-                   int idTipo, String telefono, String dni, String direccion) {
+                   int idTipo, String telefono, String dni, String direccion, TipoUsuario tipoUsuario) {
         this.idUsuario = idUsuario;
         this.nombreCompleto = nombreCompleto;
         this.email = email;
@@ -30,6 +32,7 @@ public class Usuario {
         this.telefono = telefono;
         this.dni = dni;
         this.direccion = direccion;
+        this.tipoUsuario=tipoUsuario;
     }
 
     public int getIdUsuario() {
@@ -64,6 +67,12 @@ public class Usuario {
         return direccion;
     }
 
+    public TipoUsuario getTipoUsuario() {
+        return tipoUsuario;
+    }
+    
+    
+
     public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
     }
@@ -94,6 +103,10 @@ public class Usuario {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
+    }
+
+    public void setTipoUsuario(TipoUsuario tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
     }
 
  

@@ -4,6 +4,9 @@
  */
 package modelo;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  *
  * @author Gian Marrufo
@@ -13,7 +16,8 @@ public class Menu {
     private String nombre;
     private String descripcion;
     private double precio;
-
+    private List<Ingrediente> ingredientes; //Relación de comp con ingredientes
+    
     public Menu() {}
 
     public Menu(int idMenu, String nombre, String descripcion, double precio) {
@@ -21,6 +25,7 @@ public class Menu {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
+        this.ingredientes=new LinkedList<>();
     }
 
     public int getIdMenu() {
@@ -39,6 +44,12 @@ public class Menu {
         return precio;
     }
 
+    public List<Ingrediente> getIngredientes() {
+        return ingredientes;
+    }
+    
+    
+
     public void setIdMenu(int idMenu) {
         this.idMenu = idMenu;
     }
@@ -53,6 +64,17 @@ public class Menu {
 
     public void setPrecio(double precio) {
         this.precio = precio;
+    }
+
+    public void setIngredientes(List<Ingrediente> ingredientes) {
+        this.ingredientes = ingredientes;
+    }
+
+    
+    
+    @Override
+    public String toString() {
+        return "Menu{" + "idMenu=" + idMenu + ", nombre=" + nombre + ", descripcion=" + descripcion + ", precio=" + precio + '}';
     }
     
     
