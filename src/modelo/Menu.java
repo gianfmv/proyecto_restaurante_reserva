@@ -18,6 +18,7 @@ public class Menu {
     private double precio;
     private List<Ingrediente> ingredientes; //Relación de comp con ingredientes
     
+    
     public Menu() {}
 
     public Menu(int idMenu, String nombre, String descripcion, double precio) {

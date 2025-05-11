@@ -4,6 +4,9 @@
  */
 package modelo;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  *
  * @author Gian Marrufo
@@ -12,27 +15,27 @@ public class Usuario {
     private int idUsuario;
     private String nombreCompleto;
     private String email;
-    private String contraseña;
-    private int idTipo;
+    private String contraseña;   
     private String telefono;
     private String dni;
     private String direccion;
     
      private TipoUsuario tipoUsuario;  // Relación de asociación
-
+     private List<Ingrediente> ingredientesAlergicos; //asociación
+     
     public Usuario() {}
 
     public Usuario(int idUsuario, String nombreCompleto, String email, String contraseña,
-                   int idTipo, String telefono, String dni, String direccion, TipoUsuario tipoUsuario) {
+                   String telefono, String dni, String direccion, TipoUsuario tipoUsuario) {
         this.idUsuario = idUsuario;
         this.nombreCompleto = nombreCompleto;
         this.email = email;
-        this.contraseña = contraseña;
-        this.idTipo = idTipo;
+        this.contraseña = contraseña;       
         this.telefono = telefono;
         this.dni = dni;
         this.direccion = direccion;
         this.tipoUsuario=tipoUsuario;
+        this.ingredientesAlergicos= new LinkedList<>();
     }
 
     public int getIdUsuario() {
@@ -51,10 +54,6 @@ public class Usuario {
         return contraseña;
     }
 
-    public int getIdTipo() {
-        return idTipo;
-    }
-
     public String getTelefono() {
         return telefono;
     }
@@ -69,6 +68,10 @@ public class Usuario {
 
     public TipoUsuario getTipoUsuario() {
         return tipoUsuario;
+    }
+
+    public List<Ingrediente> getIngredientesAlergicos() {
+        return ingredientesAlergicos;
     }
     
     
@@ -89,10 +92,6 @@ public class Usuario {
         this.contraseña = contraseña;
     }
 
-    public void setIdTipo(int idTipo) {
-        this.idTipo = idTipo;
-    }
-
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
@@ -107,6 +106,10 @@ public class Usuario {
 
     public void setTipoUsuario(TipoUsuario tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
+    }
+
+    public void setIngredientesAlergicos(List<Ingrediente> ingredientesAlergicos) {
+        this.ingredientesAlergicos = ingredientesAlergicos;
     }
 
  
