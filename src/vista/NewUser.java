@@ -68,52 +68,64 @@ public class NewUser extends javax.swing.JFrame {
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
         getContentPane().add(jPanel1);
 
+        jPanel2.setBackground(new java.awt.Color(89, 63, 40));
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.X_AXIS));
         jPanel2.add(filler5);
 
+        jPanel5.setBackground(null);
         jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.Y_AXIS));
 
+        jPanel3.setBackground(null);
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
         jPanel3.add(filler1);
 
-        jLabel1.setFont(new java.awt.Font("Noto Sans", 1, 36)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Noto Serif", 1, 36)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(230, 208, 165));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Nuevo Usuario");
         jLabel1.setAlignmentX(0.5F);
         jPanel3.add(jLabel1);
 
+        jScrollPane1.setBackground(new java.awt.Color(89, 63, 40));
         jScrollPane1.setBorder(null);
 
+        jPanel4.setBackground(new java.awt.Color(89, 63, 40));
         jPanel4.setPreferredSize(new java.awt.Dimension(200, 50));
         jPanel4.setLayout(new java.awt.GridLayout(12, 0));
 
         jLabel2.setFont(new java.awt.Font("Noto Sans", 1, 15)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(230, 208, 165));
         jLabel2.setLabelFor(jTextField1);
         jLabel2.setText("Nombres");
         jPanel4.add(jLabel2);
         jPanel4.add(jTextField1);
 
         jLabel3.setFont(new java.awt.Font("Noto Sans", 1, 15)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(230, 208, 165));
         jLabel3.setText("Correo Electronico");
         jPanel4.add(jLabel3);
         jPanel4.add(jTextField2);
 
         jLabel5.setFont(new java.awt.Font("Noto Sans", 1, 15)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(230, 208, 165));
         jLabel5.setText("Telefono");
         jPanel4.add(jLabel5);
         jPanel4.add(jTextField3);
 
         jLabel6.setFont(new java.awt.Font("Noto Sans", 1, 15)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(230, 208, 165));
         jLabel6.setText("DNI");
         jPanel4.add(jLabel6);
         jPanel4.add(jTextField4);
 
         jLabel7.setFont(new java.awt.Font("Noto Sans", 1, 15)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(230, 208, 165));
         jLabel7.setText("Direccion");
         jPanel4.add(jLabel7);
         jPanel4.add(jTextField5);
 
         jLabel8.setFont(new java.awt.Font("Noto Sans", 1, 15)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(230, 208, 165));
         jLabel8.setText("Contraseña");
         jPanel4.add(jLabel8);
         jPanel4.add(jTextField6);
@@ -123,15 +135,27 @@ public class NewUser extends javax.swing.JFrame {
         jPanel3.add(jScrollPane1);
         jPanel3.add(filler3);
 
+        jPanel6.setBackground(null);
         jPanel6.setLayout(new javax.swing.BoxLayout(jPanel6, javax.swing.BoxLayout.X_AXIS));
 
+        jButton1.setBackground(null);
+        jButton1.setFont(new java.awt.Font("Noto Serif", 0, 15)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(230, 208, 165));
         jButton1.setText("Continuar");
         jButton1.setAlignmentX(0.5F);
         jButton1.setMargin(new java.awt.Insets(8, 14, 8, 14));
         jPanel6.add(jButton1);
 
-        jButton2.setText("CrearCuenta");
+        jButton2.setBackground(null);
+        jButton2.setFont(new java.awt.Font("Noto Serif", 0, 15)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(230, 208, 165));
+        jButton2.setText("Crear Cuenta");
         jButton2.setMargin(new java.awt.Insets(8, 14, 8, 14));
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         jPanel6.add(jButton2);
 
         jPanel3.add(jPanel6);
@@ -147,6 +171,10 @@ public class NewUser extends javax.swing.JFrame {
         setSize(new java.awt.Dimension(1400, 837));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
