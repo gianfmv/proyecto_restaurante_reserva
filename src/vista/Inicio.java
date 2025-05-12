@@ -26,154 +26,106 @@ public class Inicio extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jPanel1 = new javax.swing.JPanel();
-        jSeparator3 = new javax.swing.JSeparator();
+        jPanel5 = new javax.swing.JPanel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 12), new java.awt.Dimension(0, 12), new java.awt.Dimension(32767, 12));
+        jPanel4 = new javax.swing.JPanel();
+        filler4 = new javax.swing.Box.Filler(null, null, new java.awt.Dimension(16, 0));
+        jButton4 = new javax.swing.JButton();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(16, 0), new java.awt.Dimension(16, 0), new java.awt.Dimension(16, 0));
+        jLabel3 = new javax.swing.JLabel();
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 12), new java.awt.Dimension(0, 12), new java.awt.Dimension(32767, 12));
         jPanel2 = new javax.swing.JPanel();
+        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         jButton1 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         jButton2 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
         jButton3 = new javax.swing.JButton();
-        jSeparator4 = new javax.swing.JSeparator();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel7 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jSeparator5 = new javax.swing.JSeparator();
-        jPanel4 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jPanel10 = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jPanel6 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        jPanel9 = new javax.swing.JPanel();
-        jLabel7 = new javax.swing.JLabel();
+        filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 12), new java.awt.Dimension(0, 12), new java.awt.Dimension(32767, 12));
+        jTabbedPane1 = new javax.swing.JTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 102, 102));
+        setForeground(java.awt.Color.white);
+        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
 
-        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
+        jPanel5.setBackground(new java.awt.Color(89, 63, 40));
+        jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.Y_AXIS));
+        jPanel5.add(filler1);
 
-        jSeparator3.setMaximumSize(new java.awt.Dimension(32767, 8));
-        jSeparator3.setPreferredSize(new java.awt.Dimension(0, 8));
-        jPanel1.add(jSeparator3);
+        jPanel4.setBackground(null);
+        jPanel4.setForeground(new java.awt.Color(230, 208, 165));
+        jPanel4.setAlignmentX(0.0F);
+        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.LINE_AXIS));
+        jPanel4.add(filler4);
 
+        jButton4.setBackground(null);
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/close_24dp_E6D0A5_FILL0_wght400_GRAD0_opsz24.png"))); // NOI18N
+        jPanel4.add(jButton4);
+        jPanel4.add(filler2);
+
+        jLabel3.setFont(new java.awt.Font("Noto Serif", 1, 24)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(230, 208, 165));
+        jLabel3.setText("RESTAURANT LA BUENA SARTEN");
+        jLabel3.setMaximumSize(null);
+        jLabel3.setMinimumSize(null);
+        jLabel3.setPreferredSize(null);
+        jPanel4.add(jLabel3);
+
+        jPanel5.add(jPanel4);
+        jPanel5.add(filler3);
+
+        jPanel2.setBackground(null);
+        jPanel2.setAlignmentX(0.0F);
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.LINE_AXIS));
+        jPanel2.add(filler5);
 
+        jButton1.setBackground(null);
+        jButton1.setFont(new java.awt.Font("Noto Serif", 0, 18)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(230, 208, 165));
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/restaurant_24dp_E6D0A5_FILL0_wght400_GRAD0_opsz24.png"))); // NOI18N
         jButton1.setText("Inicio");
+        jButton1.setMargin(new java.awt.Insets(10, 14, 10, 14));
         jPanel2.add(jButton1);
 
         jSeparator1.setMaximumSize(new java.awt.Dimension(3, 3));
         jSeparator1.setPreferredSize(new java.awt.Dimension(3, 3));
         jPanel2.add(jSeparator1);
 
+        jButton2.setBackground(null);
+        jButton2.setFont(new java.awt.Font("Noto Serif", 0, 18)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(230, 208, 165));
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/menu_book_24dp_E6D0A5_FILL0_wght400_GRAD0_opsz24.png"))); // NOI18N
         jButton2.setText("Menu");
+        jButton2.setMargin(new java.awt.Insets(10, 14, 10, 14));
         jPanel2.add(jButton2);
 
         jSeparator2.setMaximumSize(new java.awt.Dimension(3, 3));
         jPanel2.add(jSeparator2);
 
+        jButton3.setBackground(null);
+        jButton3.setFont(new java.awt.Font("Noto Serif", 0, 18)); // NOI18N
+        jButton3.setForeground(new java.awt.Color(230, 208, 165));
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/local_dining_24dp_E6D0A5_FILL0_wght400_GRAD0_opsz24.png"))); // NOI18N
         jButton3.setText("Reservaciones");
+        jButton3.setMargin(new java.awt.Insets(10, 14, 10, 14));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
         });
         jPanel2.add(jButton3);
+        jPanel2.add(filler6);
 
-        jPanel1.add(jPanel2);
+        jPanel5.add(jPanel2);
+        jPanel5.add(filler7);
+        jPanel5.add(jTabbedPane1);
 
-        jSeparator4.setPreferredSize(new java.awt.Dimension(0, 8));
-        jPanel1.add(jSeparator4);
+        getContentPane().add(jPanel5);
 
-        jPanel3.setBackground(new java.awt.Color(102, 102, 255));
-        jPanel3.setMaximumSize(new java.awt.Dimension(32767, 0));
-        jPanel3.setMinimumSize(new java.awt.Dimension(48, 0));
-        jPanel3.setPreferredSize(new java.awt.Dimension(110, 100));
-        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 16);
-        flowLayout1.setAlignOnBaseline(true);
-        jPanel3.setLayout(flowLayout1);
-
-        jPanel7.setBackground(new java.awt.Color(102, 102, 255));
-        jPanel7.setLayout(new javax.swing.BoxLayout(jPanel7, javax.swing.BoxLayout.Y_AXIS));
-
-        jLabel1.setFont(new java.awt.Font("Serif", 1, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("El Punto del Sabor");
-        jLabel1.setAlignmentX(0.5F);
-        jPanel7.add(jLabel1);
-
-        jLabel2.setBackground(new java.awt.Color(153, 153, 255));
-        jLabel2.setFont(new java.awt.Font("Brush Script MT", 1, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Sabor que une, momentos que perduran");
-        jLabel2.setAlignmentX(0.5F);
-        jPanel7.add(jLabel2);
-
-        jPanel3.add(jPanel7);
-
-        jPanel1.add(jPanel3);
-
-        jSeparator5.setMaximumSize(new java.awt.Dimension(32767, 10));
-        jSeparator5.setPreferredSize(new java.awt.Dimension(50, 16));
-        jPanel1.add(jSeparator5);
-
-        jPanel4.setLayout(new java.awt.GridLayout(1, 2));
-
-        jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.Y_AXIS));
-
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel3.setText("Novedades");
-        jPanel5.add(jLabel3);
-
-        jPanel10.setLayout(new javax.swing.BoxLayout(jPanel10, javax.swing.BoxLayout.Y_AXIS));
-
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/vista/rice-dish-menu_23-2147681081.png"))); // NOI18N
-        jLabel5.setPreferredSize(new java.awt.Dimension(200, 417));
-        jPanel10.add(jLabel5);
-
-        jLabel6.setText("jLabel6");
-        jPanel10.add(jLabel6);
-
-        jPanel5.add(jPanel10);
-
-        jPanel4.add(jPanel5);
-
-        jPanel6.setAlignmentX(0.0F);
-        jPanel6.setLayout(new javax.swing.BoxLayout(jPanel6, javax.swing.BoxLayout.Y_AXIS));
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel4.setText("Promociones");
-        jPanel6.add(jLabel4);
-
-        jPanel9.setLayout(new javax.swing.BoxLayout(jPanel9, javax.swing.BoxLayout.Y_AXIS));
-
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/vista/friends-table-with-food_23-2147680659.jpg"))); // NOI18N
-        jLabel7.setPreferredSize(new java.awt.Dimension(200, 740));
-        jPanel9.add(jLabel7);
-
-        jPanel6.add(jPanel9);
-
-        jPanel4.add(jPanel6);
-
-        jPanel1.add(jPanel4);
-
-        jScrollPane1.setViewportView(jPanel1);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 749, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-        );
-
-        pack();
+        setSize(new java.awt.Dimension(1400, 837));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -217,30 +169,23 @@ public class Inicio extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
+    private javax.swing.Box.Filler filler3;
+    private javax.swing.Box.Filler filler4;
+    private javax.swing.Box.Filler filler5;
+    private javax.swing.Box.Filler filler6;
+    private javax.swing.Box.Filler filler7;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel9;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JSeparator jSeparator4;
-    private javax.swing.JSeparator jSeparator5;
+    private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }

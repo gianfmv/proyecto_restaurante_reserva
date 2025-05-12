@@ -1,0 +1,54 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package view;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.*;
+import javax.imageio.ImageIO;
+import java.io.IOException;
+
+public class CustomLabel extends JLabel {
+    private BufferedImage image;
+
+    public CustomLabel(String imagePath) {
+        try {
+          image = ImageIO.read(getClass().getResource(imagePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        setPreferredSize(new Dimension(300, 200));
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (image != null) {
+            int compWidth = getWidth();
+            int compHeight = getHeight();
+            float imgRatio = (float) image.getWidth() / image.getHeight();
+            float compRatio = (float) compWidth / compHeight;
+
+            int drawWidth, drawHeight;
+
+            if (compRatio > imgRatio) {
+
+                drawWidth = compWidth;
+                drawHeight = (int)(drawWidth / imgRatio);
+                
+                System.out.println("a");
+            } else {
+                drawWidth = compWidth;
+                drawHeight = (int) (compWidth / imgRatio);
+                System.out.println("b");
+            }
+
+            int x = (compWidth - drawWidth) / 2;
+            int y = (compHeight - drawHeight) / 2;
+
+            g.drawImage(image, x, y, drawWidth, drawHeight, this);
+        }
+    }
+}
