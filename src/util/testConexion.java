@@ -12,9 +12,9 @@ public class testConexion {
         public static void main(String[] args) {
         Connection conn = ConexionSQL.obtenerConexion();
         if (conn != null) {
-            System.out.println("✅ Conexión establecida correctamente.");
+            System.out.println("Conexión establecida correctamente.");
         } else {
-            System.out.println("❌ No se pudo establecer la conexión.");
+            System.out.println("No se pudo establecer la conexión.");
         }
     }
 }
