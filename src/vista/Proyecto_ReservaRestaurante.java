@@ -15,7 +15,7 @@ public class Proyecto_ReservaRestaurante {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        new Login().setVisible(true);
+        new Principal().setVisible(true);
     }
     
 }
