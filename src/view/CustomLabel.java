@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.image.*;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.net.URI;
 
 public class CustomLabel extends JLabel {
     private BufferedImage image;
@@ -20,6 +21,29 @@ public class CustomLabel extends JLabel {
             e.printStackTrace();
         }
         setPreferredSize(new Dimension(300, 200));
+    }
+    
+    public CustomLabel(String imageUrl, boolean fromUrl) {
+        SwingWorker<BufferedImage, Void> worker = new SwingWorker<>() {
+                @Override
+                protected BufferedImage doInBackground() throws Exception {
+                    URI uri = new URI(imageUrl);
+                    return ImageIO.read(uri.toURL());
+                }
+
+                @Override
+                protected void done() {
+                    try {
+                        image = get();
+                        
+                    
+                    } catch (Exception e) {
+                        setText("Error inesperado");
+                        e.printStackTrace();
+                    }
+                }
+            };
+            worker.execute();
     }
 
     @Override

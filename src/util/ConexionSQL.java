@@ -14,7 +14,7 @@ import java.sql.SQLException;
  */
 public class ConexionSQL {
  //   private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=Reserva;";
-   private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=Reserva;encrypt=true;trustServerCertificate=true";
+   private static final String URL = "jdbc:sqlserver://localhost:1434;databaseName=Reserva;encrypt=true;trustServerCertificate=true";
 //private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=Reserva;encrypt=true;trustServerCertificate=true;sslProtocol=TLSv1.2";
 //private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=Reserva;encrypt=true;trustServerCertificate=true;sslProtocol=TLSv1.2";
 //private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=Reserva;encrypt=false";
@@ -25,14 +25,8 @@ public class ConexionSQL {
     private static final String USUARIO = "sa";
     private static final String CLAVE = "sa";
 
-    public static Connection obtenerConexion() {
-        Connection conexion = null;
-        try {
-            conexion = DriverManager.getConnection(URL, USUARIO, CLAVE);
-            System.out.println("Conexión exitosa a la base de datos.");
-        } catch (SQLException e) {
-            System.err.println("Error al conectar: " + e.getMessage());
-        }
+    public static Connection obtenerConexion() throws SQLException {
+        Connection conexion = DriverManager.getConnection(URL, USUARIO, CLAVE);
         return conexion;
     }
 }

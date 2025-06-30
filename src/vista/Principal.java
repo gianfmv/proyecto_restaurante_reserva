@@ -7,12 +7,19 @@ package vista;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.util.List;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import util.BDLocal;
 import modelo.Plato;
+import util.FontLoader;
+import util.IconUtils;
+import javax.swing.SwingConstants;
+import util.UserUtil;
 
 
 
@@ -26,35 +33,36 @@ public class Principal extends javax.swing.JFrame {
     
     public Principal() {
         initComponents();
+        Color colorMenu = new Color(89,63,40);
+        Font botones = FontLoader.load("Poppins-SemiBold.ttf", 16);
+        jMenuInicio.setFont(botones);
+        jMenuMesas.setFont(botones);
+        jMenuDia.setFont(botones);
+        jMenuInicio.setIcon(IconUtils.tintIcon(jMenuInicio.getIcon(), colorMenu));
+        jMenuInicio.setForeground(colorMenu);
+        jMenuMesas.setIcon(IconUtils.tintIcon(jMenuMesas.getIcon(), colorMenu));
+        jMenuMesas.setForeground(colorMenu);
+        jMenuDia.setIcon(IconUtils.tintIcon(jMenuDia.getIcon(), colorMenu));
+        jMenu.setIcon(IconUtils.tintIcon(jMenu.getIcon(), colorMenu));
+        jMenuDia.setForeground(colorMenu);
         this.setSize(new Dimension(1200,700));
         this.setLocationRelativeTo(null);
         this.setTitle("Restaurante La Buena Sartén");
         //establecer el color de fondo
-        Color colorFondo = new java.awt.Color(255,255,0);
+        Color colorFondo = new java.awt.Color(210,210,0);
         this.getContentPane().setBackground(colorFondo);
         //this.jPanel1.setBackground(new Color(241,233,233));
         //jPanel1.setVisible(false);
         // Colores personalizados para el JMenuBar y los JMenu
-        Color colorMenu = new Color(239, 171, 106); // color naranja claro
+        Color colorMenu2 = new Color(240, 240, 240); // color naranja claro
         jMenuBar3.setOpaque(true);
-        jMenuBar3.setBackground(colorMenu);
-        jMenuV1.setOpaque(true);
-        jMenuV1.setBackground(colorMenu);
-        jMenuV2.setOpaque(true);
-        jMenuV2.setBackground(colorMenu);
-        jMenuV3.setOpaque(true);
-        jMenuV3.setBackground(colorMenu);
-        jMenuV4.setOpaque(true);
-        jMenuV4.setBackground(colorMenu);
-        jMenuV5.setOpaque(true);
-        jMenuV5.setBackground(colorMenu);
-        jMenuV6.setOpaque(true);
-        jMenuV6.setBackground(colorMenu);
-        jMenuInicio.setBackground(colorMenu);
+        jMenuBar3.setBackground(colorMenu2);
+
+        jMenuInicio.setBackground(colorMenu2);
         jMenuInicio.setOpaque(true);
-        jMenuDia.setBackground(colorMenu);
+        jMenuDia.setBackground(colorMenu2);
         jMenuDia.setOpaque(true);
-        jMenuMesas.setBackground(colorMenu);
+        jMenuMesas.setBackground(colorMenu2);
         jMenuMesas.setOpaque(true);
         //para inabilitar algunos jMenu
         
@@ -74,31 +82,20 @@ public class Principal extends javax.swing.JFrame {
         this.getLayeredPane().setBackground(colorFondo);
         this.getContentPane().setBackground(colorFondo);
         try {
-            Inicio inicio = new Inicio();
+            InicioCliente entradas = new InicioCliente();
             
-            // Asegurar que el JInternalFrame tenga el tamaño correcto
-            inicio.setSize(jDesktopPane_menu.getSize());
             
-            // Calcular la posición X para centrar horizontalmente
-            int x = 0;
-            
-            // Colocar el JInternalFrame pegado a la parte superior con un pequeño margen
-            int y = 0;
             
             // Agregar y mostrar el JInternalFrame
-            jDesktopPane_menu.add(inicio);
-            inicio.setLocation(x, y);
-            inicio.setMinimumSize(jDesktopPane_menu.getSize());
-            BasicInternalFrameUI ui = (BasicInternalFrameUI) inicio.getUI();
-            ui.setNorthPane(null);
-            inicio.setBorder(null); 
-            inicio.setVisible(true);
-            inicio.setClosable(false);
-            
+            jDesktopPane_menu.add(entradas);
+            entradas.setLocation(0,0);
+            entradas.setVisible(true);
+            entradas.setMaximum(true);
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error al abrir Entradas: " + e.getMessage());
         }
+       
     }
     
  
@@ -112,22 +109,16 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenuBar2 = new javax.swing.JMenuBar();
-        jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
         jDesktopPane_menu = new javax.swing.JDesktopPane();
         jMenuBar3 = new javax.swing.JMenuBar();
         jMenu = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuV1 = new javax.swing.JMenu();
-        jMenuV2 = new javax.swing.JMenu();
         jMenuInicio = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuV3 = new javax.swing.JMenu();
         jMenuDia = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
@@ -136,21 +127,12 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem7 = new javax.swing.JMenuItem();
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
         jMenuItem8 = new javax.swing.JMenuItem();
-        jMenuV4 = new javax.swing.JMenu();
         jMenuMesas = new javax.swing.JMenu();
         jMenuItem9 = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JPopupMenu.Separator();
         jMenuItem10 = new javax.swing.JMenuItem();
         jSeparator7 = new javax.swing.JPopupMenu.Separator();
         jMenuItem11 = new javax.swing.JMenuItem();
-        jMenuV5 = new javax.swing.JMenu();
-        jMenuV6 = new javax.swing.JMenu();
-
-        jMenu2.setText("File");
-        jMenuBar2.add(jMenu2);
-
-        jMenu3.setText("Edit");
-        jMenuBar2.add(jMenu3);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -165,21 +147,33 @@ public class Principal extends javax.swing.JFrame {
         );
         jDesktopPane_menuLayout.setVerticalGroup(
             jDesktopPane_menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 660, Short.MAX_VALUE)
+            .addGap(0, 645, Short.MAX_VALUE)
         );
 
         getContentPane().add(jDesktopPane_menu);
 
         jMenuBar3.setBackground(new java.awt.Color(239, 171, 106));
-        jMenuBar3.setPreferredSize(new java.awt.Dimension(70, 40));
+        jMenuBar3.setBorderPainted(false);
+        jMenuBar3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jMenuBar3.setPreferredSize(new java.awt.Dimension(70, 55));
 
         jMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-menú-30.png"))); // NOI18N
+        jMenu.setBorderPainted(false);
+        jMenu.setContentAreaFilled(false);
         jMenu.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jMenu.setPreferredSize(new java.awt.Dimension(50, 22));
+        jMenu.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        jMenu.setIconTextGap(12);
+        jMenu.setMargin(null);
+        jMenu.setMinimumSize(new java.awt.Dimension(20, 20));
 
         jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-close-sign-30.png"))); // NOI18N
         jMenuItem1.setText("Cerrar Sesion");
         jMenuItem1.setPreferredSize(new java.awt.Dimension(150, 40));
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
         jMenu.add(jMenuItem1);
         jMenu.add(jSeparator1);
 
@@ -190,23 +184,17 @@ public class Principal extends javax.swing.JFrame {
 
         jMenuBar3.add(jMenu);
 
-        jMenuV1.setBackground(new java.awt.Color(239, 171, 106));
-        jMenuV1.setEnabled(false);
-        jMenuV1.setPreferredSize(new java.awt.Dimension(160, 22));
-        jMenuBar3.add(jMenuV1);
-
-        jMenuV2.setBackground(new java.awt.Color(239, 171, 106));
-        jMenuV2.setEnabled(false);
-        jMenuV2.setPreferredSize(new java.awt.Dimension(150, 22));
-        jMenuBar3.add(jMenuV2);
-
         jMenuInicio.setBackground(new java.awt.Color(239, 171, 106));
-        jMenuInicio.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jMenuInicio.setBorder(null);
         jMenuInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-cucharaInicio-25.png"))); // NOI18N
         jMenuInicio.setText("Inicio");
+        jMenuInicio.setBorderPainted(false);
+        jMenuInicio.setContentAreaFilled(false);
+        jMenuInicio.setDebugGraphicsOptions(javax.swing.DebugGraphics.BUFFERED_OPTION);
         jMenuInicio.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jMenuInicio.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        jMenuInicio.setPreferredSize(new java.awt.Dimension(90, 22));
+        jMenuInicio.setIconTextGap(12);
+        jMenuInicio.setMargin(null);
+        jMenuInicio.setPreferredSize(new java.awt.Dimension(120, 55));
 
         jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-add-bookmark-30.png"))); // NOI18N
         jMenuItem3.setText("Novedades");
@@ -231,15 +219,16 @@ public class Principal extends javax.swing.JFrame {
 
         jMenuBar3.add(jMenuInicio);
 
-        jMenuV3.setBackground(new java.awt.Color(239, 171, 106));
-        jMenuV3.setEnabled(false);
-        jMenuV3.setPreferredSize(new java.awt.Dimension(140, 22));
-        jMenuBar3.add(jMenuV3);
-
         jMenuDia.setBackground(new java.awt.Color(239, 171, 106));
+        jMenuDia.setBorder(null);
         jMenuDia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-libro-de-cocina-24.png"))); // NOI18N
         jMenuDia.setText("Menú del día");
-        jMenuDia.setPreferredSize(new java.awt.Dimension(125, 22));
+        jMenuDia.setBorderPainted(false);
+        jMenuDia.setContentAreaFilled(false);
+        jMenuDia.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jMenuDia.setIconTextGap(12);
+        jMenuDia.setMargin(null);
+        jMenuDia.setPreferredSize(new java.awt.Dimension(180, 55));
 
         jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-dining-room-16.png"))); // NOI18N
         jMenuItem5.setText("Entradas");
@@ -286,15 +275,16 @@ public class Principal extends javax.swing.JFrame {
 
         jMenuBar3.add(jMenuDia);
 
-        jMenuV4.setBackground(new java.awt.Color(239, 171, 106));
-        jMenuV4.setEnabled(false);
-        jMenuV4.setPreferredSize(new java.awt.Dimension(140, 22));
-        jMenuBar3.add(jMenuV4);
-
         jMenuMesas.setBackground(new java.awt.Color(226, 139, 110));
+        jMenuMesas.setBorder(null);
         jMenuMesas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-mesa-de-restaurante-24.png"))); // NOI18N
         jMenuMesas.setText("Mesas disponibles");
-        jMenuMesas.setPreferredSize(new java.awt.Dimension(150, 22));
+        jMenuMesas.setBorderPainted(false);
+        jMenuMesas.setContentAreaFilled(false);
+        jMenuMesas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jMenuMesas.setIconTextGap(12);
+        jMenuMesas.setMargin(null);
+        jMenuMesas.setPreferredSize(new java.awt.Dimension(215, 55));
 
         jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-mesa-24.png"))); // NOI18N
         jMenuItem9.setText("Primer Piso");
@@ -314,14 +304,6 @@ public class Principal extends javax.swing.JFrame {
         jMenuMesas.add(jMenuItem11);
 
         jMenuBar3.add(jMenuMesas);
-
-        jMenuV5.setEnabled(false);
-        jMenuV5.setPreferredSize(new java.awt.Dimension(180, 22));
-        jMenuBar3.add(jMenuV5);
-
-        jMenuV6.setEnabled(false);
-        jMenuV6.setPreferredSize(new java.awt.Dimension(175, 22));
-        jMenuBar3.add(jMenuV6);
 
         setJMenuBar(jMenuBar3);
 
@@ -392,6 +374,11 @@ public class Principal extends javax.swing.JFrame {
         crearCarta("- BEBIDAS -", bdLocal.getBebidas());
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        UserUtil.borrarUsuarioLocal();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     private void crearCarta(String titulo, List<Plato> carta) {
         try {
             CartaVista entradas = new CartaVista(titulo, carta);
@@ -460,9 +447,6 @@ public class Principal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane jDesktopPane_menu;
     private javax.swing.JMenu jMenu;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JMenuBar jMenuBar3;
     private javax.swing.JMenu jMenuDia;
     private javax.swing.JMenu jMenuInicio;
@@ -478,12 +462,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JMenu jMenuMesas;
-    private javax.swing.JMenu jMenuV1;
-    private javax.swing.JMenu jMenuV2;
-    private javax.swing.JMenu jMenuV3;
-    private javax.swing.JMenu jMenuV4;
-    private javax.swing.JMenu jMenuV5;
-    private javax.swing.JMenu jMenuV6;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;

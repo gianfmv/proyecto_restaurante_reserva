@@ -6,7 +6,9 @@ package util;
 
 import java.util.*;
 import modelo.Ingrediente;
+import modelo.Novedad;
 import modelo.Plato;
+import modelo.Promocion;
 
 public class BDLocal {
 
@@ -14,12 +16,16 @@ public class BDLocal {
     private List<Plato> fondos;
     private List<Plato> postres;
     private List<Plato> bebidas;
+    private List<Promocion> promociones;
+    private List<Novedad> novedades;
 
     public BDLocal() {
         this.entradas = new ArrayList<>();
         this.fondos = new ArrayList<>();
         this.postres = new ArrayList<>();
         this.bebidas = new ArrayList<>();
+        this.promociones = new ArrayList<>();
+        this.novedades = new ArrayList<>();
         cargarDatos();
     }
     
@@ -104,11 +110,104 @@ public class BDLocal {
                 case 16 -> m.getIngredientes().addAll(Arrays.asList(mate)); // define variable leaves
             }
         }
+        
+                Calendar cal = Calendar.getInstance();
+
+        // Promoción 1: Ceviche Fest
+        cal.set(2025, Calendar.JULY, 1);
+        Date inicio1 = cal.getTime();
+        cal.set(2025, Calendar.JULY, 7);
+        Date fin1 = cal.getTime();
+        promociones.add(new Promocion(
+            1,
+            "Ceviche Fest",
+            "¡Disfruta de 20% de descuento en todos los ceviches!",
+            inicio1,
+            fin1,
+            20.0,
+            "https://example.com/images/ceviche.jpg"
+        ));
+
+        // Promoción 2: Semana Criolla
+        cal.set(2025, Calendar.JULY, 15);
+        Date inicio2 = cal.getTime();
+        cal.set(2025, Calendar.JULY, 21);
+        Date fin2 = cal.getTime();
+        promociones.add(new Promocion(
+            2,
+            "Semana Criolla",
+            "Platos criollos con hasta 25% de descuento toda la semana.",
+            inicio2,
+            fin2,
+            25.0,
+            "https://example.com/images/lomo-saltado.jpg"
+        ));
+
+        // Promoción 3: Día del Anticucho
+        cal.set(2025, Calendar.AUGUST, 1);
+        Date inicio3 = cal.getTime();
+        cal.set(2025, Calendar.AUGUST, 1);
+        Date fin3 = cal.getTime();
+        promociones.add(new Promocion(
+            3,
+            "Día del Anticucho",
+            "¡Solo por hoy! Compra un anticucho y llévate otro gratis.",
+            inicio3,
+            fin3,
+            50.0,
+            "https://example.com/images/anticucho.jpg"
+        ));
+
+        // Promoción 4: Bebida Gratis
+        cal.set(2025, Calendar.SEPTEMBER, 10);
+        Date inicio4 = cal.getTime();
+        cal.set(2025, Calendar.SEPTEMBER, 15);
+        Date fin4 = cal.getTime();
+        promociones.add(new Promocion(
+            4,
+            "Bebida Gratis",
+            "Por la compra de cualquier plato de fondo, llévate una bebida gratis.",
+            inicio4,
+            fin4,
+            15.0,
+            "https://example.com/images/chicha-morada.jpg"
+        ));
+        
+        novedades.add(new Novedad(
+            "¡Nuevo plato: Ají de Gallina Vegano!",
+            "Ahora puedes disfrutar del clásico Ají de Gallina en su versión 100% vegetal, con el mismo sabor criollo.",
+            "https://example.com/images/aji-vegano.jpg"
+        ));
+
+        novedades.add(new Novedad(
+            "Ampliamos nuestro horario",
+            "Desde este mes, abrimos una hora más por las noches. ¡Te esperamos hasta las 11:00 p.m. de lunes a sábado!",
+            "https://example.com/images/horario-nuevo.jpg"
+        ));
+
+        novedades.add(new Novedad(
+            "Reapertura de nuestro local en Miraflores",
+            "¡Ya abrimos! Ven a conocer el renovado ambiente del restaurante en Av. Larco con una vista increíble.",
+            "https://example.com/images/local-miraflores.jpg"
+        ));
+
+        novedades.add(new Novedad(
+            "Participamos en Mistura 2025",
+            "Estaremos presentes con nuestros platos estrella en la feria gastronómica más grande del país. ¡No faltes!",
+            "https://example.com/images/mistura.jpg"
+        ));
+
+        novedades.add(new Novedad(
+            "Nueva carta de postres peruanos",
+            "Descubre nuestra nueva selección de postres: suspiro a la limeña, mazamorra morada, arroz con leche y más.",
+            "https://example.com/images/postres.jpg"
+        ));
     }
 
     public List<Plato> getEntradas() { return entradas; }
     public List<Plato> getFondos() { return fondos; }
     public List<Plato> getPostres() { return postres; }
     public List<Plato> getBebidas() { return bebidas; }
+    public List<Promocion> getPromociones() { return promociones; }
 }
 

@@ -4,7 +4,21 @@
  */
 package vista;
 
+import data.UserRepository;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.SwingWorker;
+import modelo.Resultado;
+import modelo.Usuario;
+import util.FontLoader;
+import util.ViewUtil;
 import view.CustomLabel;
 
 /**
@@ -21,6 +35,14 @@ public class NewUser extends javax.swing.JFrame {
         CustomLabel coverLabel = new CustomLabel("/resources/bg.png");
         jPanel1.setLayout(new BorderLayout());
         jPanel1.add(coverLabel, BorderLayout.CENTER);
+        jProgressBar1.setVisible(false);
+        setTitle("Crear Nueva Cuenta de usuario");
+        ViewUtil.cambiarFuente(jPanel4,JLabel.class, "Poppins-SemiBold.ttf", 14, new Color(186,158,104));
+        ViewUtil.cambiarFuente(jPanel4,JTextField.class, "Poppins-SemiBold.ttf", 14, new Color(100,100,100));
+        jLabel1.setFont(FontLoader.load("Poppins-Black.ttf", Font.PLAIN, 32));
+        comboTipo.setFont(FontLoader.load("Poppins-SemiBold.ttf", Font.PLAIN, 14));
+        jButton2.setFont(FontLoader.load("Poppins-SemiBold.ttf", Font.PLAIN, 14));
+        jButton3.setFont(FontLoader.load("Poppins-SemiBold.ttf", Font.PLAIN, 14));
     }
 
     /**
@@ -34,101 +56,119 @@ public class NewUser extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(16, 0), new java.awt.Dimension(16, 0), new java.awt.Dimension(8, 32767));
         jPanel5 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 16), new java.awt.Dimension(0, 16), new java.awt.Dimension(32767, 16));
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        textNombre = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        textCorreo = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        textTelefono = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        textDni = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        textDireccion = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
+        textContrasena = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        comboTipo = new javax.swing.JComboBox<>();
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 8), new java.awt.Dimension(0, 0));
         jPanel6 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 16), new java.awt.Dimension(0, 16), new java.awt.Dimension(32767, 16));
-        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(8, 0), new java.awt.Dimension(16, 0), new java.awt.Dimension(8, 32767));
+        jLabel9 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
+        jProgressBar1 = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setPreferredSize(null);
         getContentPane().setLayout(new java.awt.GridLayout(1, 2));
 
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
         getContentPane().add(jPanel1);
 
-        jPanel2.setBackground(new java.awt.Color(89, 63, 40));
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.X_AXIS));
-        jPanel2.add(filler5);
 
-        jPanel5.setBackground(null);
         jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.Y_AXIS));
 
         jPanel3.setBackground(null);
+        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(16, 32, 16, 32));
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
-        jPanel3.add(filler1);
 
         jLabel1.setFont(new java.awt.Font("Noto Serif", 1, 36)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(230, 208, 165));
+        jLabel1.setForeground(new java.awt.Color(186, 158, 104));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Nuevo Usuario");
         jLabel1.setAlignmentX(0.5F);
         jPanel3.add(jLabel1);
 
-        jScrollPane1.setBackground(new java.awt.Color(89, 63, 40));
+        jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
         jScrollPane1.setBorder(null);
 
-        jPanel4.setBackground(new java.awt.Color(89, 63, 40));
         jPanel4.setPreferredSize(new java.awt.Dimension(200, 50));
-        jPanel4.setLayout(new java.awt.GridLayout(12, 0));
+        jPanel4.setLayout(new java.awt.GridLayout(14, 0));
 
         jLabel2.setFont(new java.awt.Font("Noto Sans", 1, 15)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(230, 208, 165));
-        jLabel2.setLabelFor(jTextField1);
+        jLabel2.setLabelFor(textNombre);
         jLabel2.setText("Nombres");
         jPanel4.add(jLabel2);
-        jPanel4.add(jTextField1);
+
+        textNombre.setBorder(null);
+        jPanel4.add(textNombre);
 
         jLabel3.setFont(new java.awt.Font("Noto Sans", 1, 15)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(230, 208, 165));
         jLabel3.setText("Correo Electronico");
         jPanel4.add(jLabel3);
-        jPanel4.add(jTextField2);
+
+        textCorreo.setBorder(null);
+        jPanel4.add(textCorreo);
 
         jLabel5.setFont(new java.awt.Font("Noto Sans", 1, 15)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(230, 208, 165));
         jLabel5.setText("Telefono");
         jPanel4.add(jLabel5);
-        jPanel4.add(jTextField3);
+
+        textTelefono.setBorder(null);
+        jPanel4.add(textTelefono);
 
         jLabel6.setFont(new java.awt.Font("Noto Sans", 1, 15)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(230, 208, 165));
         jLabel6.setText("DNI");
         jPanel4.add(jLabel6);
-        jPanel4.add(jTextField4);
+
+        textDni.setBorder(null);
+        jPanel4.add(textDni);
 
         jLabel7.setFont(new java.awt.Font("Noto Sans", 1, 15)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(230, 208, 165));
         jLabel7.setText("Direccion");
         jPanel4.add(jLabel7);
-        jPanel4.add(jTextField5);
+
+        textDireccion.setBorder(null);
+        jPanel4.add(textDireccion);
 
         jLabel8.setFont(new java.awt.Font("Noto Sans", 1, 15)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(230, 208, 165));
         jLabel8.setText("Contraseña");
         jPanel4.add(jLabel8);
-        jPanel4.add(jTextField6);
+
+        textContrasena.setBorder(null);
+        jPanel4.add(textContrasena);
+
+        jLabel4.setFont(new java.awt.Font("Noto Sans", 1, 15)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(230, 208, 165));
+        jLabel4.setLabelFor(textNombre);
+        jLabel4.setText("Tipo");
+        jPanel4.add(jLabel4);
+
+        comboTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrador", "Cliente" }));
+        comboTipo.setBorder(null);
+        jPanel4.add(comboTipo);
 
         jScrollPane1.setViewportView(jPanel4);
 
@@ -138,17 +178,9 @@ public class NewUser extends javax.swing.JFrame {
         jPanel6.setBackground(null);
         jPanel6.setLayout(new javax.swing.BoxLayout(jPanel6, javax.swing.BoxLayout.X_AXIS));
 
-        jButton1.setBackground(null);
-        jButton1.setFont(new java.awt.Font("Noto Serif", 0, 15)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(230, 208, 165));
-        jButton1.setText("Continuar");
-        jButton1.setAlignmentX(0.5F);
-        jButton1.setMargin(new java.awt.Insets(8, 14, 8, 14));
-        jPanel6.add(jButton1);
-
-        jButton2.setBackground(null);
+        jButton2.setBackground(new java.awt.Color(186, 158, 104));
         jButton2.setFont(new java.awt.Font("Noto Serif", 0, 15)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(230, 208, 165));
+        jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Crear Cuenta");
         jButton2.setMargin(new java.awt.Insets(8, 14, 8, 14));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -158,23 +190,83 @@ public class NewUser extends javax.swing.JFrame {
         });
         jPanel6.add(jButton2);
 
+        jLabel9.setText("ó");
+        jLabel9.setBorder(javax.swing.BorderFactory.createEmptyBorder(16, 16, 16, 16));
+        jPanel6.add(jLabel9);
+
+        jButton3.setBackground(new java.awt.Color(186, 158, 104));
+        jButton3.setFont(new java.awt.Font("Noto Serif", 0, 15)); // NOI18N
+        jButton3.setForeground(new java.awt.Color(255, 255, 255));
+        jButton3.setText("Iniciar Sesión");
+        jButton3.setMargin(new java.awt.Insets(8, 14, 8, 14));
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jPanel6.add(jButton3);
+
         jPanel3.add(jPanel6);
-        jPanel3.add(filler2);
+
+        jProgressBar1.setForeground(new java.awt.Color(186, 158, 104));
+        jProgressBar1.setIndeterminate(true);
+        jPanel3.add(jProgressBar1);
 
         jPanel5.add(jPanel3);
 
         jPanel2.add(jPanel5);
-        jPanel2.add(filler4);
 
         getContentPane().add(jPanel2);
 
-        setSize(new java.awt.Dimension(1400, 837));
+        setSize(new java.awt.Dimension(1395, 837));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        String nombre = ViewUtil.verificarMinimo(textNombre, 6, "El nombre debe tener al menos 6 caracteres.");
+        String correo = ViewUtil.verificarMinimo(textCorreo, 8, "Es necesario completar el correo electrónico.");
+        String contrasena = ViewUtil.verificarMinimo(textContrasena, 8, "La contraseña debe tener al menos 8 caracteres.");
+        
+        if(nombre == null || correo == null || contrasena == null) return;
+        
+        
+        ViewUtil.setComponentsEnabled(jPanel4, false);
+        jProgressBar1.setVisible(true);
+        new SwingWorker<Resultado<Boolean>, Void>() {
+             
+            @Override
+            protected Resultado<Boolean> doInBackground() throws Exception {
+                return  UserRepository.registrar(nombre, correo, contrasena,
+            textTelefono.getText(), textDni.getText(), textDireccion.getText(), comboTipo.getSelectedItem().toString());
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    super.done();
+                    Resultado<Boolean> resultado = get();
+                    ViewUtil.setComponentsEnabled(jPanel4, true);
+                    jProgressBar1.setVisible(false);
+                    ViewUtil.vaciarInputs(jPanel4);
+                    if(resultado.isOk()) {
+                        JOptionPane.showMessageDialog(null, "Usuario registrado con éxito.");
+                    } else {
+                        JOptionPane.showMessageDialog(null, resultado.getMessage());
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(NewUser.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ExecutionException ex) {
+                    Logger.getLogger(NewUser.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }.execute();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        dispose();
+        new LoginUser().setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -212,32 +304,32 @@ public class NewUser extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.Box.Filler filler1;
-    private javax.swing.Box.Filler filler2;
+    private javax.swing.JComboBox<String> comboTipo;
     private javax.swing.Box.Filler filler3;
-    private javax.swing.Box.Filler filler4;
-    private javax.swing.Box.Filler filler5;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField textContrasena;
+    private javax.swing.JTextField textCorreo;
+    private javax.swing.JTextField textDireccion;
+    private javax.swing.JTextField textDni;
+    private javax.swing.JTextField textNombre;
+    private javax.swing.JTextField textTelefono;
     // End of variables declaration//GEN-END:variables
 }

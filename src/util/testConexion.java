@@ -4,13 +4,21 @@
  */
 package util;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author Gian Marrufo
  */
 public class testConexion {
         public static void main(String[] args) {
-        Connection conn = ConexionSQL.obtenerConexion();
+        Connection conn = null;
+            try {
+                conn = ConexionSQL.obtenerConexion();
+            } catch (SQLException ex) {
+                Logger.getLogger(testConexion.class.getName()).log(Level.SEVERE, null, ex);
+            }
         if (conn != null) {
             System.out.println("Conexión establecida correctamente.");
         } else {

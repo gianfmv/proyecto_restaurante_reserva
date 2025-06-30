@@ -4,10 +4,25 @@
  */
 package vista;
 
+import data.UserRepository;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import modelo.Resultado;
+import modelo.Usuario;
+import util.FontLoader;
+import util.UserUtil;
+import util.ViewUtil;
 import view.CustomLabel;
 
 /**
@@ -20,12 +35,32 @@ public class LoginUser extends javax.swing.JFrame {
      * Creates new form LoginUser
      */
     public LoginUser() {
+        Usuario usuario = UserUtil.getUsuario();
+        
+        if(usuario == null) {
+            iniciar();
+        } else if(usuario.getTipoUsuario().getDescripcion().equals("Administrador")) {
+            
+        } else {
+            dispose();
+            new Principal().setVisible(true);
+        }
+        
+    }
+    
+    final void iniciar() {
         initComponents();
         CustomLabel coverLabel = new CustomLabel("/resources/bg.png");
         jPanel1.setLayout(new BorderLayout());
         jPanel1.add(coverLabel, BorderLayout.CENTER);
+        jProgressBar1.setVisible(false);
+        setTitle("Iniciar Sesión como usuario");
+        ViewUtil.cambiarFuente(jPanel4,JLabel.class, "Poppins-SemiBold.ttf", 14, new Color(186,158,104));
+        ViewUtil.cambiarFuente(jPanel4,JTextField.class, "Poppins-SemiBold.ttf", 14, new Color(100,100,100));
+        jLabel1.setFont(FontLoader.load("Poppins-Black.ttf", Font.PLAIN, 32));
+        jButton2.setFont(FontLoader.load("Poppins-SemiBold.ttf", Font.PLAIN, 14));
+        jButton1.setFont(FontLoader.load("Poppins-SemiBold.ttf", Font.PLAIN, 14));
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -37,22 +72,21 @@ public class LoginUser extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(16, 0), new java.awt.Dimension(16, 0), new java.awt.Dimension(8, 32767));
         jPanel5 = new javax.swing.JPanel();
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        textCorreo = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 8), new java.awt.Dimension(0, 0));
+        textContrasena = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+        jProgressBar1 = new javax.swing.JProgressBar();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(8, 0), new java.awt.Dimension(16, 0), new java.awt.Dimension(8, 32767));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBounds(new java.awt.Rectangle(0, 0, 1200, 900));
@@ -66,11 +100,10 @@ public class LoginUser extends javax.swing.JFrame {
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
         getContentPane().add(jPanel1);
 
-        jPanel2.setBackground(new java.awt.Color(89, 63, 40));
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.X_AXIS));
-        jPanel2.add(filler5);
 
         jPanel5.setBackground(null);
+        jPanel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 32, 1, 32));
         jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.Y_AXIS));
         jPanel5.add(filler1);
 
@@ -78,7 +111,7 @@ public class LoginUser extends javax.swing.JFrame {
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
 
         jLabel1.setFont(new java.awt.Font("Noto Serif", 1, 36)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(230, 208, 165));
+        jLabel1.setForeground(new java.awt.Color(186, 158, 104));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Iniciar Sesion");
         jLabel1.setAlignmentX(0.5F);
@@ -90,51 +123,121 @@ public class LoginUser extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Noto Sans", 1, 15)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(230, 208, 165));
-        jLabel2.setLabelFor(jTextField1);
+        jLabel2.setLabelFor(textCorreo);
         jLabel2.setText("Correo Electronico");
         jPanel4.add(jLabel2);
-        jPanel4.add(jTextField1);
+
+        textCorreo.setBorder(null);
+        jPanel4.add(textCorreo);
 
         jLabel3.setFont(new java.awt.Font("Noto Sans", 1, 15)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(230, 208, 165));
         jLabel3.setText("Contraseña");
         jPanel4.add(jLabel3);
-        jPanel4.add(jTextField2);
+
+        textContrasena.setBorder(null);
+        jPanel4.add(textContrasena);
 
         jPanel3.add(jPanel4);
-        jPanel3.add(filler3);
+
+        jPanel5.add(jPanel3);
 
         jPanel6.setBackground(null);
+        jPanel6.setBorder(javax.swing.BorderFactory.createEmptyBorder(16, 1, 1, 1));
         jPanel6.setLayout(new javax.swing.BoxLayout(jPanel6, javax.swing.BoxLayout.X_AXIS));
 
-        jButton1.setBackground(null);
+        jButton1.setBackground(new java.awt.Color(186, 158, 104));
         jButton1.setFont(new java.awt.Font("Noto Serif", 0, 15)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(230, 208, 165));
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Continuar");
         jButton1.setAlignmentX(0.5F);
         jButton1.setMargin(new java.awt.Insets(8, 14, 8, 14));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         jPanel6.add(jButton1);
 
-        jButton2.setBackground(null);
+        jLabel4.setText("ó");
+        jLabel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(16, 16, 16, 16));
+        jPanel6.add(jLabel4);
+
+        jButton2.setBackground(new java.awt.Color(186, 158, 104));
         jButton2.setFont(new java.awt.Font("Noto Serif", 0, 15)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(230, 208, 165));
+        jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("CrearCuenta");
         jButton2.setMargin(new java.awt.Insets(8, 14, 8, 14));
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         jPanel6.add(jButton2);
 
-        jPanel3.add(jPanel6);
+        jPanel5.add(jPanel6);
 
-        jPanel5.add(jPanel3);
+        jProgressBar1.setForeground(new java.awt.Color(186, 158, 104));
+        jProgressBar1.setIndeterminate(true);
+        jPanel5.add(jProgressBar1);
         jPanel5.add(filler2);
 
         jPanel2.add(jPanel5);
-        jPanel2.add(filler4);
 
         getContentPane().add(jPanel2);
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        new NewUser().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        String correo = ViewUtil.verificarMinimo(textCorreo, 1, "Es necesario completar el correo electrónico.");
+        String contrasena = ViewUtil.verificarMinimo(textContrasena, 1, "Es necesario completar la contraseña.");
+        
+        if(correo == null || contrasena == null) return;
+        
+        
+        ViewUtil.setComponentsEnabled(jPanel4, false);
+        jProgressBar1.setVisible(true);
+        new SwingWorker<Resultado<Usuario>, Void>() {
+             
+            @Override
+            protected Resultado<Usuario> doInBackground() throws Exception {
+                return  UserRepository.login(correo, contrasena);
+            }
+
+            @Override
+            protected void done() {
+                super.done();
+                try {
+                    Resultado<Usuario> resultado = get();
+                    ViewUtil.setComponentsEnabled(jPanel4, true);
+                    jProgressBar1.setVisible(false);
+                    ViewUtil.vaciarInputs(jPanel4);
+                    if(resultado.isOk()) {
+                        JOptionPane.showMessageDialog(null, "Bienvenido");
+                        UserUtil.guardarUsuario(resultado.getData());
+                    } else {
+                        JOptionPane.showMessageDialog(null, resultado.getMessage());
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(LoginUser.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ExecutionException ex) {
+                    Logger.getLogger(LoginUser.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+            
+            
+        }.execute();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -173,21 +276,20 @@ public class LoginUser extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
-    private javax.swing.Box.Filler filler3;
-    private javax.swing.Box.Filler filler4;
-    private javax.swing.Box.Filler filler5;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JTextField textContrasena;
+    private javax.swing.JTextField textCorreo;
     // End of variables declaration//GEN-END:variables
 }

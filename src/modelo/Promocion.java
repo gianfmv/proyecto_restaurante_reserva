@@ -14,6 +14,7 @@ public class Promocion {
     private int idPromocion;
     private String titulo;
     private String descripcion;
+    private String imageUrl;
     private Date fechaInicio;
     private Date fechaFin;
     private double descuentoPorcentaje;
@@ -21,13 +22,14 @@ public class Promocion {
     public Promocion() {}
 
     public Promocion(int idPromocion, String titulo, String descripcion,
-                     Date fechaInicio, Date fechaFin, double descuentoPorcentaje) {
+                     Date fechaInicio, Date fechaFin, double descuentoPorcentaje, String imageUrl) {
         this.idPromocion = idPromocion;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.descuentoPorcentaje = descuentoPorcentaje;
+        this.imageUrl = imageUrl;
     }
 
     public int getIdPromocion() {
@@ -77,7 +79,12 @@ public class Promocion {
     public void setDescuentoPorcentaje(double descuentoPorcentaje) {
         this.descuentoPorcentaje = descuentoPorcentaje;
     }
-    
-    
-    
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
 }
