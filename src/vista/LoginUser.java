@@ -36,11 +36,11 @@ public class LoginUser extends javax.swing.JFrame {
      */
     public LoginUser() {
         Usuario usuario = UserUtil.getUsuario();
-        
+        iniciar();
         if(usuario == null) {
-            iniciar();
+            //iniciar();
         } else if(usuario.getTipoUsuario().getDescripcion().equals("Administrador")) {
-            
+             //new Principal().setVisible(true);
         } else {
             dispose();
             new Principal().setVisible(true);
@@ -221,10 +221,21 @@ public class LoginUser extends javax.swing.JFrame {
                     ViewUtil.setComponentsEnabled(jPanel4, true);
                     jProgressBar1.setVisible(false);
                     ViewUtil.vaciarInputs(jPanel4);
-                    if(resultado.isOk()) {
+               if(resultado.isOk()) {
                         JOptionPane.showMessageDialog(null, "Bienvenido");
-                        UserUtil.guardarUsuario(resultado.getData());
-                    } else {
+                        Usuario usuario = resultado.getData();
+                        UserUtil.guardarUsuario(usuario);
+
+                        dispose(); // cerrar login
+
+                        if (usuario.getTipoUsuario().getDescripcion().equalsIgnoreCase("Administrador")) {
+                            new VistaAdmin().setVisible(true);
+                        } else {
+                            new Principal().setVisible(true);
+                        }
+                    }
+
+                    else {
                         JOptionPane.showMessageDialog(null, resultado.getMessage());
                     }
                 } catch (InterruptedException ex) {

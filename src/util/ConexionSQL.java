@@ -14,7 +14,7 @@ import java.sql.SQLException;
  */
 public class ConexionSQL {
  //   private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=Reserva;";
-   private static final String URL = "jdbc:sqlserver://localhost:1434;databaseName=Reserva;encrypt=true;trustServerCertificate=true";
+   private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=Reserva;encrypt=true;trustServerCertificate=true";
 //private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=Reserva;encrypt=true;trustServerCertificate=true;sslProtocol=TLSv1.2";
 //private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=Reserva;encrypt=true;trustServerCertificate=true;sslProtocol=TLSv1.2";
 //private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=Reserva;encrypt=false";
