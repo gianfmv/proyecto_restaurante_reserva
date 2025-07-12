@@ -151,11 +151,9 @@
                         <Property name="text" type="java.lang.String" value="Contrase&#xf1;a"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="textContrasena">
+                    <Component class="javax.swing.JPasswordField" name="textContrasena">
                       <Properties>
-                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                          <Border info="null"/>
-                        </Property>
+                        <Property name="echoChar" type="char" value="*"/>
                       </Properties>
                     </Component>
                   </SubComponents>

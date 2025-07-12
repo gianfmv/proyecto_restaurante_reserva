@@ -37,15 +37,16 @@ public class LoginUser extends javax.swing.JFrame {
     public LoginUser() {
         Usuario usuario = UserUtil.getUsuario();
         iniciar();
-        if(usuario == null) {
+        /*if(usuario == null) {
             //iniciar();
         } else if(usuario.getTipoUsuario().getDescripcion().equals("Administrador")) {
              //new Principal().setVisible(true);
         } else {
             dispose();
-            new Principal().setVisible(true);
-        }
+            new Principal(usuario).setVisible(true);
+        }*/
         
+       // new Principal(usuario).setVisible(true);
     }
     
     final void iniciar() {
@@ -80,7 +81,7 @@ public class LoginUser extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         textCorreo = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        textContrasena = new javax.swing.JTextField();
+        textContrasena = new javax.swing.JPasswordField();
         jPanel6 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
@@ -135,7 +136,7 @@ public class LoginUser extends javax.swing.JFrame {
         jLabel3.setText("Contraseña");
         jPanel4.add(jLabel3);
 
-        textContrasena.setBorder(null);
+        textContrasena.setEchoChar('*');
         jPanel4.add(textContrasena);
 
         jPanel3.add(jPanel4);
@@ -228,11 +229,11 @@ public class LoginUser extends javax.swing.JFrame {
 
                         dispose(); // cerrar login
 
-                        if (usuario.getTipoUsuario().getDescripcion().equalsIgnoreCase("Administrador")) {
-                            new VistaAdmin().setVisible(true);
-                        } else {
-                            new Principal().setVisible(true);
-                        }
+                       // if (usuario.getTipoUsuario().getDescripcion().equalsIgnoreCase("Administrador")) {
+                      //      new VistaAdmin().setVisible(true);
+                       // } else {
+                            new Principal(usuario).setVisible(true);
+                        //}
                     }
 
                     else {
@@ -300,7 +301,7 @@ public class LoginUser extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JTextField textContrasena;
+    private javax.swing.JPasswordField textContrasena;
     private javax.swing.JTextField textCorreo;
     // End of variables declaration//GEN-END:variables
 }

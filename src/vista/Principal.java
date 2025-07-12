@@ -13,12 +13,14 @@ import java.awt.event.WindowStateListener;
 import java.util.List;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import util.BDLocal;
 import modelo.Plato;
 import util.FontLoader;
 import util.IconUtils;
 import javax.swing.SwingConstants;
+import modelo.Usuario;
 import util.UserUtil;
 
 
@@ -29,9 +31,10 @@ import util.UserUtil;
  */
 public class Principal extends javax.swing.JFrame {
     private BDLocal bdLocal = new BDLocal();
-            
+    private Usuario usuario;            
     
-    public Principal() {
+    public Principal(Usuario usuario) {
+        this.usuario=usuario;
         initComponents();
         Color colorMenu = new Color(89,63,40);
         Font botones = FontLoader.load("Poppins-SemiBold.ttf", 16);
@@ -82,15 +85,15 @@ public class Principal extends javax.swing.JFrame {
         this.getLayeredPane().setBackground(colorFondo);
         this.getContentPane().setBackground(colorFondo);
         try {
-            InicioCliente entradas = new InicioCliente();
-            
+            //InicioCliente entradas = new InicioCliente();
+            cargarPanelPorRol();
             
             
             // Agregar y mostrar el JInternalFrame
-            jDesktopPane_menu.add(entradas);
-            entradas.setLocation(0,0);
-            entradas.setVisible(true);
-            entradas.setMaximum(true);
+            //jDesktopPane_menu.add(entradas);
+           //entradas.setLocation(0,0);
+            //entradas.setVisible(true);
+            //entradas.setMaximum(true);
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error al abrir Entradas: " + e.getMessage());
@@ -379,6 +382,28 @@ public class Principal extends javax.swing.JFrame {
         UserUtil.borrarUsuarioLocal();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void cargarPanelPorRol() {
+        try {
+            if (usuario.getTipoUsuario().getDescripcion().equalsIgnoreCase("Administrador")) {
+                InicioAdmin adminPanel = new InicioAdmin();
+                jDesktopPane_menu.add(adminPanel);
+                adminPanel.setLocation(0, 0);
+                adminPanel.setVisible(true);
+                adminPanel.setMaximum(true);
+            } else {
+                InicioCliente clientePanel = new InicioCliente();
+                jDesktopPane_menu.add(clientePanel);
+                clientePanel.setLocation(0, 0);
+                clientePanel.setVisible(true);
+                clientePanel.setMaximum(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al cargar el panel: " + e.getMessage());
+        }
+    }
+
+
     private void crearCarta(String titulo, List<Plato> carta) {
         try {
             CartaVista entradas = new CartaVista(titulo, carta);
@@ -439,7 +464,7 @@ public class Principal extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Principal().setVisible(true);
+               // new Principal().setVisible(true);
             }
         });
     }
