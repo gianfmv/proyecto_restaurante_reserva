@@ -24,10 +24,9 @@ import util.ConexionSQL;
 public class DataRepository {
 
     public static Resultado<List<Promocion>> obtenerPromociones() {
-        String sql = "SELECT IdPromocion, Titulo, Descripcion, Imagen, FechaInicio, FechaFin, DescuentoPorcentaje "
+        String sql = "SELECT Id, Titulo, Descripcion, Imagen, FechaInicio, FechaFin, DescuentoPorcentaje "
                 + "FROM Promociones "
                 + "WHERE FechaInicio <= GETDATE() AND FechaFin >= GETDATE()";
-
         Connection connection;
         try {
             connection = ConexionSQL.obtenerConexion();
@@ -43,7 +42,7 @@ public class DataRepository {
 
             while (rs.next()) {
                 Promocion promocion = new Promocion(
-                        rs.getInt("IdPromocion"),
+                        rs.getInt("Id"),
                         rs.getString("Titulo"),
                         rs.getString("Descripcion"),
                         rs.getDate("FechaInicio"),
