@@ -15,6 +15,7 @@ import modelo.Resultado;
 import java.io.File;
 
 import com.toedter.calendar.JDateChooser;
+import data.UserRepository;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -22,6 +23,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import modelo.Mesa;
+import modelo.TipoUsuario;
+import modelo.Usuario;
 
 
 /**
@@ -33,6 +36,9 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     /**
      * Creates new form InicioAdmin
      */
+    
+    private JPasswordField txtContrasena;
+
     // Novedades
     JDateChooser dateInicioNovedad = new JDateChooser();
     JDateChooser dateFinNovedad = new JDateChooser();
@@ -60,6 +66,17 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
 
     private JTextField txtCapacidad;
     private JCheckBox chkDisponible;
+    
+    
+    private JTable tablaUsuarios;
+    private JTextField txtNombre;
+    private JTextField txtEmail;
+    private JTextField txtTelefono;
+    private JTextField txtDNI;
+    private JTextField txtDireccion;
+    private JComboBox<TipoUsuario> cboTipoUsuario;
+
+    
     
     public InicioAdmin() {
         initComponents();
@@ -305,6 +322,92 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
 
     cargarMesas();
     
+
+    // === FORMULARIO DE USUARIOS ===
+    JLabel lblNombre = new JLabel("Nombre completo:");
+    txtNombre = new JTextField(25);
+
+    JLabel lblEmail = new JLabel("Email:");
+    txtEmail = new JTextField(25);
+
+    JLabel lblTelefono = new JLabel("Teléfono:");
+    txtTelefono = new JTextField(15);
+
+    JLabel lblDNI = new JLabel("DNI:");
+    txtDNI = new JTextField(15);
+
+    JLabel lblDireccion = new JLabel("Dirección:");
+    txtDireccion = new JTextField(25);
+
+    JLabel lblTipoUsuario = new JLabel("Tipo de Usuario:");
+    cboTipoUsuario = new JComboBox<>();
+    // Puedes llenar el combo luego con tipos de usuario desde la BD (no hardcodeado)
+
+    // Botones
+    JButton btnAgregarUsuario = new JButton("Agregar");
+    JButton btnEditarUsuario = new JButton("Editar");
+    JButton btnEliminarUsuario = new JButton("Eliminar");
+    JButton btnLimpiarUsuario = new JButton("Limpiar");
+
+    btnAgregarUsuario.setPreferredSize(new Dimension(100, 30));
+    btnEditarUsuario.setPreferredSize(new Dimension(100, 30));
+    btnEliminarUsuario.setPreferredSize(new Dimension(100, 30));
+    btnLimpiarUsuario.setPreferredSize(new Dimension(100, 30));
+
+    // Paneles
+    JPanel formUsuario = new JPanel();
+    formUsuario.setLayout(new BoxLayout(formUsuario, BoxLayout.Y_AXIS));
+    formUsuario.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+    formUsuario.add(lblNombre);
+    formUsuario.add(txtNombre);
+    formUsuario.add(lblEmail);
+    formUsuario.add(txtEmail);
+    JLabel lblContrasena = new JLabel("Contraseña:");
+    txtContrasena = new JPasswordField(20);
+
+    formUsuario.add(lblTelefono);
+    formUsuario.add(txtTelefono);
+    formUsuario.add(lblDNI);
+    formUsuario.add(txtDNI);
+    formUsuario.add(lblDireccion);
+    formUsuario.add(txtDireccion);
+    formUsuario.add(lblTipoUsuario);
+    formUsuario.add(cboTipoUsuario);
+    formUsuario.add(lblContrasena);
+    formUsuario.add(txtContrasena);
+
+
+    JPanel botonesUsuario = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+    botonesUsuario.add(btnAgregarUsuario);
+    botonesUsuario.add(btnEditarUsuario);
+    botonesUsuario.add(btnEliminarUsuario);
+    botonesUsuario.add(btnLimpiarUsuario);
+
+    tablaUsuarios = new JTable(new DefaultTableModel(new Object[]{"ID", "Nombre", "Email", "Teléfono", "DNI", "Dirección", "Tipo"}, 0));
+    JScrollPane scrollTablaUsuarios = new JScrollPane(tablaUsuarios);
+    scrollTablaUsuarios.setBorder(BorderFactory.createTitledBorder("Lista de Usuarios"));
+
+    JPanel panelIzquierdoUsuario = new JPanel(new BorderLayout());
+    panelIzquierdoUsuario.add(formUsuario, BorderLayout.CENTER);
+    panelIzquierdoUsuario.add(botonesUsuario, BorderLayout.SOUTH);
+
+    JSplitPane splitUsuario = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzquierdoUsuario, scrollTablaUsuarios);
+    splitUsuario.setResizeWeight(0.4);
+
+    jPanel4.removeAll();
+    jPanel4.setLayout(new BorderLayout());
+    jPanel4.add(splitUsuario, BorderLayout.CENTER);
+
+    // Eventos
+    btnAgregarUsuario.addActionListener(e -> agregarUsuario());
+    btnEditarUsuario.addActionListener(e -> editarUsuario());
+    btnEliminarUsuario.addActionListener(e -> eliminarUsuario());
+    btnLimpiarUsuario.addActionListener(e -> limpiarCamposUsuario());
+
+    tablaUsuarios.getSelectionModel().addListSelectionListener(e -> cargarUsuarioSeleccionado());
+
+    cargarUsuarios(); // Llenar tabla
 
     }
     
@@ -674,6 +777,159 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
          txtCapacidad.setText("");
          chkDisponible.setSelected(false);
      }
+     
+     
+        private void cargarUsuarios() {
+       Resultado<List<Usuario>> resultado = UserRepository.obtenerUsuarios();
+       if (!resultado.isOk()) {
+           JOptionPane.showMessageDialog(this, "Error al cargar usuarios: " + resultado.getMessage());
+           return;
+       }
+
+       DefaultTableModel model = new DefaultTableModel(new Object[]{"ID", "Nombre", "Email", "Teléfono", "DNI", "Dirección", "Tipo"}, 0);
+       for (Usuario u : resultado.getData()) {
+           model.addRow(new Object[]{
+               u.getIdUsuario(),
+               u.getNombreCompleto(),
+               u.getEmail(),
+               u.getTelefono(),
+               u.getDni(),
+               u.getDireccion(),
+               u.getTipoUsuario().getDescripcion()
+           });
+       }
+       tablaUsuarios.setModel(model);
+       tablaUsuarios.getColumnModel().getColumn(0).setMinWidth(0);  // Ocultar ID
+       tablaUsuarios.getColumnModel().getColumn(0).setMaxWidth(0);
+   }
+
+    private void agregarUsuario() {
+        String contrasena = new String(txtContrasena.getPassword());
+        if (contrasena.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Ingrese una contraseña.");
+            return;
+        }
+
+        Usuario u = obtenerUsuarioDesdeFormulario(0, contrasena);
+        if (u == null) return;
+
+        boolean ok = UserRepository.agregarUsuario(u, contrasena);
+        if (ok) {
+            cargarUsuarios();
+            limpiarCamposUsuario();
+            JOptionPane.showMessageDialog(this, "Usuario agregado.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al agregar usuario.");
+        }
+    }
+
+
+    private void editarUsuario() {
+        int fila = tablaUsuarios.getSelectedRow();
+        if (fila != -1) {
+            int id = Integer.parseInt(tablaUsuarios.getValueAt(fila, 0).toString());
+            String contrasena = new String(txtContrasena.getPassword());
+
+            Usuario u = obtenerUsuarioDesdeFormulario(id, contrasena);
+            if (u == null) return;
+
+            boolean ok;
+            if (contrasena.isBlank()) {
+                ok = UserRepository.editarUsuario(id, u); // sin cambiar contraseña
+            } else {
+                ok = UserRepository.editarUsuarioConContrasena(id, u, contrasena); // cambia contraseña
+            }
+
+            if (ok) {
+                cargarUsuarios();
+                limpiarCamposUsuario();
+                JOptionPane.showMessageDialog(this, "Usuario actualizado.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al editar usuario.");
+            }
+        }
+    }
+
+
+   private void eliminarUsuario() {
+       int fila = tablaUsuarios.getSelectedRow();
+       if (fila != -1) {
+           int id = Integer.parseInt(tablaUsuarios.getValueAt(fila, 0).toString());
+           int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar usuario?", "Confirmar", JOptionPane.YES_NO_OPTION);
+           if (confirm == JOptionPane.YES_OPTION) {
+               boolean ok = UserRepository.eliminarUsuario(id);
+               if (ok) {
+                   cargarUsuarios();
+                   limpiarCamposUsuario();
+                   JOptionPane.showMessageDialog(this, "Usuario eliminado.");
+               } else {
+                   JOptionPane.showMessageDialog(this, "Error al eliminar.");
+               }
+           }
+       }
+   }
+
+   private void cargarUsuarioSeleccionado() {
+       int fila = tablaUsuarios.getSelectedRow();
+       if (fila != -1) {
+           txtNombre.setText(tablaUsuarios.getValueAt(fila, 1).toString());
+           txtEmail.setText(tablaUsuarios.getValueAt(fila, 2).toString());
+           txtTelefono.setText(tablaUsuarios.getValueAt(fila, 3).toString());
+           txtDNI.setText(tablaUsuarios.getValueAt(fila, 4).toString());
+           txtDireccion.setText(tablaUsuarios.getValueAt(fila, 5).toString());
+           cboTipoUsuario.setSelectedItem(tablaUsuarios.getValueAt(fila, 6).toString());
+       }
+   }
+
+   private void limpiarCamposUsuario() {
+       txtNombre.setText("");
+       txtEmail.setText("");
+       txtTelefono.setText("");
+       txtDNI.setText("");
+       txtDireccion.setText("");
+       cboTipoUsuario.setSelectedIndex(0);
+   }
+
+   private Usuario obtenerUsuarioDesdeFormulario(int id) {
+       try {
+           String nombre = txtNombre.getText();
+           String email = txtEmail.getText();
+           String telefono = txtTelefono.getText();
+           String dni = txtDNI.getText();
+           String direccion = txtDireccion.getText();
+           String tipoStr = cboTipoUsuario.getSelectedItem().toString();
+           int idTipo = tipoStr.equals("Administrador") ? 1 : 2;
+           TipoUsuario tipo = new TipoUsuario(idTipo, tipoStr);
+
+           return new Usuario(id, nombre, email, telefono, dni, direccion, tipo);
+       } catch (Exception e) {
+           JOptionPane.showMessageDialog(this, "Datos inválidos.");
+           return null;
+       }
+   }
+
+   private Usuario obtenerUsuarioDesdeFormulario(int id, String contrasena) {
+    try {
+        String nombre = txtNombre.getText();
+        String email = txtEmail.getText();
+        String telefono = txtTelefono.getText();
+        String dni = txtDNI.getText();
+        String direccion = txtDireccion.getText();
+        String tipoStr = cboTipoUsuario.getSelectedItem().toString();
+        int idTipo = tipoStr.equals("Administrador") ? 1 : 2;
+        TipoUsuario tipo = new TipoUsuario(idTipo, tipoStr);
+
+        Usuario u = new Usuario(id, nombre, email, telefono, dni, direccion, tipo);
+        u.setEmail(email);
+        u.setDireccion(direccion);
+        // No se guarda la contraseña directamente en Usuario pero puedes pasarla por separado
+        return u;
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Datos inválidos.");
+        return null;
+    }
+}
+
 
     /**
      * This method is called from within the constructor to initialize the form.

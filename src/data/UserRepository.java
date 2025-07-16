@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelo.Resultado;
@@ -108,4 +110,130 @@ public class UserRepository {
             connection.close();
         }
     }
+    
+    
+    public static Resultado<List<Usuario>> obtenerUsuarios() {
+        String sql = "SELECT u.IdUsuario, u.NombreCompleto, u.Email, u.Telefono, u.DNI, u.Direccion, " +
+                     "u.IdTipo, t.Descripcion FROM Usuario u " +
+                     "JOIN TipoUsuario t ON u.IdTipo = t.IdTipo";
+
+        List<Usuario> lista = new ArrayList<>();
+
+        try (Connection conn = ConexionSQL.obtenerConexion();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                TipoUsuario tipo = new TipoUsuario(
+                        rs.getInt("IdTipo"),
+                        rs.getString("Descripcion")
+                );
+
+                Usuario u = new Usuario(
+                        rs.getInt("IdUsuario"),
+                        rs.getString("NombreCompleto"),
+                        rs.getString("Email"),
+                        rs.getString("Telefono"),
+                        rs.getString("DNI"),
+                        rs.getString("Direccion"),
+                        tipo
+                );
+                lista.add(u);
+            }
+
+            return new Resultado<>(lista, true, null);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new Resultado<>(null, false, "Error al obtener la lista de usuarios.");
+        }
+    }
+
+    public static boolean agregarUsuario(Usuario u, String contrasena) {
+        String sql = "INSERT INTO Usuario (NombreCompleto, Email, Contraseña, IdTipo, Telefono, DNI, Direccion) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = ConexionSQL.obtenerConexion();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, u.getNombreCompleto());
+            stmt.setString(2, u.getEmail());
+            stmt.setString(3, contrasena); // Contraseña
+            stmt.setInt(4, u.getTipoUsuario().getIdTipo());
+            stmt.setString(5, u.getTelefono());
+            stmt.setString(6, u.getDni());
+            stmt.setString(7, u.getDireccion());
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean editarUsuario(int id, Usuario u) {
+        String sql = "UPDATE Usuario SET NombreCompleto = ?, Email = ?, IdTipo = ?, Telefono = ?, DNI = ?, Direccion = ? " +
+                     "WHERE IdUsuario = ?";
+
+        try (Connection conn = ConexionSQL.obtenerConexion();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, u.getNombreCompleto());
+            stmt.setString(2, u.getEmail());
+            stmt.setInt(3, u.getTipoUsuario().getIdTipo());
+            stmt.setString(4, u.getTelefono());
+            stmt.setString(5, u.getDni());
+            stmt.setString(6, u.getDireccion());
+            stmt.setInt(7, id);
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean eliminarUsuario(int id) {
+        String sql = "DELETE FROM Usuario WHERE IdUsuario = ?";
+
+        try (Connection conn = ConexionSQL.obtenerConexion();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public static boolean editarUsuarioConContrasena(int id, Usuario u, String nuevaContrasena) {
+    String sql = "UPDATE Usuario SET " +
+                 "NombreCompleto = ?, " +
+                 "Email = ?, " +
+                 "Contraseña = ?, " +
+                 "IdTipo = ?, " +
+                 "Telefono = ?, " +
+                 "DNI = ?, " +
+                 "Direccion = ? " +
+                 "WHERE IdUsuario = ?";
+
+    try (Connection conn = ConexionSQL.obtenerConexion();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setString(1, u.getNombreCompleto());
+        stmt.setString(2, u.getEmail());
+        stmt.setString(3, nuevaContrasena);
+        stmt.setInt(4, u.getTipoUsuario().getIdTipo());
+        stmt.setString(5, u.getTelefono());
+        stmt.setString(6, u.getDni());
+        stmt.setString(7, u.getDireccion());
+        stmt.setInt(8, id);
+
+        return stmt.executeUpdate() > 0;
+    } catch (SQLException e) {
+        System.out.println("Error al editar usuario con contraseña: " + e.getMessage());
+        return false;
+    }
+}
+
 }
