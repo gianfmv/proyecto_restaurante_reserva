@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import modelo.Novedad;
+import modelo.Plato;
 import modelo.Promocion;
 import modelo.Resultado;
 import util.FontLoader;
@@ -29,8 +30,10 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
 
     private List<Promocion> promociones;
     private List<Novedad> novedades;
+    private List<Plato> fondos;
     final AtomicInteger indicePromociones = new AtomicInteger(0);
     final AtomicInteger indiceNovedades = new AtomicInteger(0);
+    final AtomicInteger indiceFondos = new AtomicInteger(0);
 
     /**
      * Creates new form InicioCliente
@@ -44,6 +47,9 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
         labelNovedades.setFont(FontLoader.load("Poppins-Black.ttf", Font.PLAIN, 20));
         textNovTitle.setFont(FontLoader.load("Poppins-SemiBold.ttf", Font.PLAIN, 18));
         textNovDesc.setFont(FontLoader.load("Poppins-Regular.ttf", Font.PLAIN, 14));
+        
+        labelCarta.setFont(FontLoader.load("Poppins-Black.ttf", Font.PLAIN, 20));
+        textCartaTitle.setFont(FontLoader.load("Poppins-SemiBold.ttf", Font.PLAIN, 18));
         obtenerNovedades();
     }
 
@@ -72,6 +78,8 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
                                     ex.printStackTrace();
 
                     Logger.getLogger(InicioCliente.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    obtenerFondos();
                 }
 
             }
@@ -101,6 +109,38 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
                     Logger.getLogger(InicioCliente.class.getName()).log(Level.SEVERE, null, ex);
                 } finally {
                     obtenerPromociones();
+                }
+
+            }
+
+        }.execute();
+    }
+    
+        void obtenerFondos() {
+        new SwingWorker<Resultado<List<Plato>>, Void>() {
+            @Override
+            protected Resultado<List<Plato>> doInBackground() throws Exception {
+                return DataRepository.getFondos();
+            }
+
+            @Override
+            protected void done() {
+                super.done();
+                System.err.println("obtenido");
+                Resultado<List<Plato>> resultado = null;
+                try {
+                    resultado = get();
+                    fondos = resultado.getData();
+                    if (fondos.isEmpty()) {
+                        System.err.println("vacio");
+                    } else {
+                        System.err.println("mostrando");
+                        mostrarFondos();
+                    }
+                } catch (InterruptedException | ExecutionException ex) {
+                                    ex.printStackTrace();
+
+                    Logger.getLogger(InicioCliente.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
@@ -168,6 +208,34 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
         panelNovedCard.add(imagen);
 
     }
+    
+    
+    void mostrarFondos() {
+        int delay = 5000;
+
+        mostrarFondo(fondos.get(indiceFondos.get()));
+        Timer timer = new Timer(delay, (ActionEvent e) -> {
+            if (indiceFondos.get() < fondos.size() - 1) {
+                indiceFondos.set(indiceFondos.get() + 1);
+            } else {
+                indiceFondos.set(0);
+            }
+            mostrarFondo(fondos.get(indiceFondos.get()));
+        });
+
+        timer.start();
+    }
+
+    void mostrarFondo(Plato plato) {
+        textCartaTitle.setText(plato.getNombre());
+        panelCartaCard.removeAll();
+        ImagePanel imagen = new ImagePanel(plato.getUrlImagen());
+        imagen.setAlignmentX(0.5f);
+        imagen.setAlignmentY(0.5f);
+
+        panelCartaCard.add(imagen);
+
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -197,6 +265,11 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
         textPromoDesc = new javax.swing.JLabel();
         filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         jPanel3 = new javax.swing.JPanel();
+        labelCarta = new javax.swing.JLabel();
+        filler9 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 8), new java.awt.Dimension(0, 8), new java.awt.Dimension(32767, 8));
+        panelCartaCard = new javax.swing.JPanel();
+        filler10 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 16), new java.awt.Dimension(0, 16), new java.awt.Dimension(32767, 16));
+        textCartaTitle = new javax.swing.JLabel();
 
         setBorder(null);
         getContentPane().setLayout(new java.awt.GridLayout(1, 3));
@@ -252,7 +325,23 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
 
         getContentPane().add(jPanel1);
 
+        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(16, 32, 16, 32));
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.Y_AXIS));
+
+        labelCarta.setForeground(new java.awt.Color(51, 51, 51));
+        labelCarta.setText("En la carta...");
+        jPanel3.add(labelCarta);
+        jPanel3.add(filler9);
+
+        panelCartaCard.setMaximumSize(new java.awt.Dimension(2147483647, 2147483647));
+        panelCartaCard.setLayout(new javax.swing.OverlayLayout(panelCartaCard));
+        jPanel3.add(panelCartaCard);
+        jPanel3.add(filler10);
+
+        textCartaTitle.setForeground(new java.awt.Color(102, 102, 102));
+        textCartaTitle.setText("Titulo");
+        jPanel3.add(textCartaTitle);
+
         getContentPane().add(jPanel3);
 
         pack();
@@ -261,6 +350,7 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler10;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler4;
@@ -268,13 +358,17 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
     private javax.swing.Box.Filler filler6;
     private javax.swing.Box.Filler filler7;
     private javax.swing.Box.Filler filler8;
+    private javax.swing.Box.Filler filler9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JLabel labelCarta;
     private javax.swing.JLabel labelNovedades;
     private javax.swing.JLabel labelPromo;
+    private javax.swing.JPanel panelCartaCard;
     private javax.swing.JPanel panelNovedCard;
     private javax.swing.JPanel panelPromoCard;
+    private javax.swing.JLabel textCartaTitle;
     private javax.swing.JLabel textNovDesc;
     private javax.swing.JLabel textNovTitle;
     private javax.swing.JLabel textPromoDesc;

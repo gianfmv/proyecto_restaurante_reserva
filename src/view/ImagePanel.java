@@ -42,18 +42,26 @@ public class ImagePanel extends JPanel {
         repaint();
     }
 
-    private void loadImageAsync(String url) {
+    private void loadImageAsync(String urlOrName) {
         SwingWorker<BufferedImage, Void> worker = new SwingWorker<>() {
             @Override
             protected BufferedImage doInBackground() throws Exception {
-                URI uri = new URI(url);
-                return ImageIO.read(uri.toURL());
+                try {
+                    URI uri = new URI(urlOrName);
+                    if(uri.isAbsolute()) return ImageIO.read(uri.toURL());
+                    return ImageIO.read(ImagePanel.class.getResourceAsStream("/resources/" + urlOrName));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+                
             }
 
             @Override
             protected void done() {
                 try {
-                    image = get();
+                    BufferedImage img = get();
+                    if(img != null) image = get();
                     repaint();
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -4,11 +4,18 @@
  */
 package vista;
 
+import data.DataRepository;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.SwingWorker;
 import util.BDLocal;
 import modelo.Plato;
+import modelo.Promocion;
+import modelo.Resultado;
 
 /**
  *
@@ -16,28 +23,61 @@ import modelo.Plato;
  */
 public class CartaVista extends javax.swing.JInternalFrame {
 
-
     private List<Plato> carta;
-    
+
     /**
      * Creates new form Entradas
+     * @param title
+     * @param tipo
      */
-    public CartaVista(String title, List<Plato> carta) {
+    public CartaVista(String title, String tipo) {
         initComponents();
-        this.setSize(new Dimension(600,660));
+        this.setSize(new Dimension(600, 660));
         this.setTitle(title);
         jLabel1.setText(title);
-        this.carta = carta;
-        // Inicializar el panel de MenuDetalles
+        obtenerPromociones(tipo);
 
-        jPanel5.setLayout(new GridLayout(0, 2, 10, 10));
+    }
 
-        for(Plato menu : carta){
-            PlatoVista item = new PlatoVista(menu);
-            item.setSize(new Dimension(254, 266));
-            jPanel5.add(item);
-        }
-        jPanel5.revalidate();   // Re-calcula el layoutjPanel5.repaint();      // Redibuja el panel actualizado
+    private void obtenerPromociones(String tipo) {
+        new SwingWorker<Resultado<List<Plato>>, Void>() {
+            @Override
+            protected Resultado<List<Plato>> doInBackground() throws Exception {
+                return DataRepository.obtenerPlatosPorTipo(tipo);
+            }
+
+            @Override
+            protected void done() {
+                super.done();
+                System.err.println("obtenido");
+                Resultado<List<Plato>> resultado = null;
+                try {
+                    resultado = get();
+                    carta = resultado.getData();
+
+                    jPanel5.setLayout(new GridLayout(0, 2, 10, 10));
+
+                    for (Plato menu : carta) {
+                        PlatoVista item = new PlatoVista(menu);
+                        item.setSize(new Dimension(254, 266));
+                        jPanel5.add(item);
+                    }
+                    jPanel5.revalidate();
+                    if (carta.isEmpty()) {
+                        System.err.println("vacio");
+                    } else {
+                        System.err.println("mostrando");
+
+                    }
+                } catch (InterruptedException | ExecutionException ex) {
+                    ex.printStackTrace();
+
+                    Logger.getLogger(InicioCliente.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
+        }.execute();
     }
 
     /**
@@ -57,36 +97,18 @@ public class CartaVista extends javax.swing.JInternalFrame {
         setClosable(true);
         setIconifiable(true);
         setResizable(true);
+        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
         jLabel1.setFont(new java.awt.Font("Mongolian Baiti", 0, 20)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("- ENTRADAS -");
+        jLabel1.setAlignmentX(0.5F);
+        getContentPane().add(jLabel1);
 
         jPanel5.setLayout(new java.awt.GridLayout(4, 2));
         jScrollPane1.setViewportView(jPanel5);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(213, 213, 213)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(222, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 787, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        getContentPane().add(jScrollPane1);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

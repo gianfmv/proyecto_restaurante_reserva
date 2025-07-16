@@ -14,20 +14,25 @@ import java.util.List;
 public class Plato {
     private int idMenu;
     private String nombre;
+    private String tipo;
     private String descripcion;
     private double precio;
     private String urlImagen;            // NUEVO campo
-    private List<Ingrediente> ingredientes;
+    private String ingredientes;
+    private String alergenos;
 
     public Plato() {}
 
-    public Plato(int idMenu, String nombre, String descripcion, double precio, String urlImagen) {
+    public Plato(int idMenu, String nombre, String tipo, String descripcion, double precio, String urlImagen, String ingredientes,
+            String alergenos) {
         this.idMenu = idMenu;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
         this.urlImagen = urlImagen;
-        this.ingredientes = new LinkedList<>();
+        this.tipo = tipo;
+        this.ingredientes = ingredientes;
+        this.alergenos = alergenos;
     }
 
     // Getters
@@ -36,15 +41,21 @@ public class Plato {
     public String getDescripcion() { return descripcion; }
     public double getPrecio() { return precio; }
     public String getUrlImagen() { return urlImagen; }
-    public List<Ingrediente> getIngredientes() { return ingredientes; }
+
+    public String getAlergenos() {
+        return alergenos;
+    }
+
+    public String getIngredientes() {
+        return ingredientes;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+    
 
     // Setters
-    public void setIdMenu(int idMenu) { this.idMenu = idMenu; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-    public void setPrecio(double precio) { this.precio = precio; }
-    public void setUrlImagen(String urlImagen) { this.urlImagen = urlImagen; }
-    public void setIngredientes(List<Ingrediente> ingredientes) { this.ingredientes = ingredientes; }
 
     @Override
     public String toString() {
