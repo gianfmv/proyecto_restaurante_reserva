@@ -27,14 +27,18 @@ public class UserUtil {
     }
     
     public static Usuario getUsuario() {
+        //int id = prefs.getInt("id", -1);
+        //if(id == -1) return null;
         int id = prefs.getInt("id", -1);
-        if(id == -1) return null;
+        int idTipo = prefs.getInt("idTipo", -1);
+        if (id == -1 || idTipo == -1) return null;
+
         String nombre = prefs.get("nombre","");
         String email = prefs.get("email", "");
         String telefono = prefs.get("telefono", "");
         String dni = prefs.get("dni", "");
         String direccion = prefs.get("direccion", "");
-        int idTipo = prefs.getInt("idTipo", -1);
+
         String descTipo = prefs.get("descTipo", "");
         TipoUsuario tipo = new TipoUsuario(idTipo, descTipo);
         
@@ -42,9 +46,19 @@ public class UserUtil {
         return usuario;
     }
     
-    public static void borrarUsuarioLocal() {
+   /* public static void borrarUsuarioLocal() {
         prefs.remove("id");
         prefs.remove("email");
         prefs.remove("idTipo");
     }
+    
+    */
+    public static void borrarUsuarioLocal() {
+    try {
+        prefs.clear(); 
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+}
+
 }

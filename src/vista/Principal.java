@@ -273,7 +273,21 @@ public class Principal extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
-        UserUtil.borrarUsuarioLocal();
+ //       UserUtil.borrarUsuarioLocal();
+        int opcion = JOptionPane.showConfirmDialog(
+        null,
+        "¿Estás seguro de que deseas cerrar sesión?",
+        "Cerrar sesión",
+        JOptionPane.YES_NO_OPTION
+        );
+
+        if (opcion == JOptionPane.YES_OPTION) {
+            UserUtil.borrarUsuarioLocal();
+            dispose();
+            
+            LoginUser login = new LoginUser();
+            login.setVisible(true);
+        }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed

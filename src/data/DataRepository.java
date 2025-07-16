@@ -228,82 +228,75 @@ public class DataRepository {
     }
     
     
-        public static Resultado<List<Mesa>> obtenerMesas() {
-        String sql = "SELECT IdMesa, Capacidad, Disponible FROM Mesas";
+    public static Resultado<List<Mesa>> obtenerMesas() {
+        List<Mesa> lista = new ArrayList<>();
+        String sql = "SELECT IdMesa, NumeroMesa, Capacidad, Disponible FROM Mesas";
 
         try (Connection conn = ConexionSQL.obtenerConexion();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
-            List<Mesa> mesas = new ArrayList<>();
-
             while (rs.next()) {
-                Mesa mesa = new Mesa(
+                Mesa m = new Mesa(
                     rs.getInt("IdMesa"),
+                    rs.getInt("NumeroMesa"),
                     rs.getInt("Capacidad"),
                     rs.getBoolean("Disponible")
                 );
-                mesas.add(mesa);
+                lista.add(m);
             }
-
-            return new Resultado<>(mesas, true, null);
-
+            return new Resultado<>(lista, true, null);
         } catch (SQLException e) {
-            e.printStackTrace();
-            return new Resultado<>(null, false, "Error al obtener las mesas.");
+            return new Resultado<>(null, false, "Error al obtener mesas: " + e.getMessage());
         }
     }
+
 
     public static boolean agregarMesa(Mesa mesa) {
-        String sql = "INSERT INTO Mesas (Capacidad, Disponible) VALUES (?, ?)";
+        String sql = "INSERT INTO Mesas (NumeroMesa, Capacidad, Disponible) VALUES (?, ?, ?)";
 
         try (Connection conn = ConexionSQL.obtenerConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, mesa.getCapacidad());
-            stmt.setBoolean(2, mesa.isDisponible());
-
+            stmt.setInt(1, mesa.getNumeroMesa());
+            stmt.setInt(2, mesa.getCapacidad());
+            stmt.setBoolean(3, mesa.isDisponible());
             return stmt.executeUpdate() > 0;
-
         } catch (SQLException e) {
-            e.printStackTrace();
             return false;
         }
     }
+
 
     public static boolean editarMesa(int id, Mesa mesa) {
-        String sql = "UPDATE Mesas SET Capacidad = ?, Disponible = ? WHERE IdMesa = ?";
+        String sql = "UPDATE Mesas SET NumeroMesa = ?, Capacidad = ?, Disponible = ? WHERE IdMesa = ?";
 
         try (Connection conn = ConexionSQL.obtenerConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, mesa.getCapacidad());
-            stmt.setBoolean(2, mesa.isDisponible());
-            stmt.setInt(3, id);
-
+            stmt.setInt(1, mesa.getNumeroMesa());
+            stmt.setInt(2, mesa.getCapacidad());
+            stmt.setBoolean(3, mesa.isDisponible());
+            stmt.setInt(4, id);
             return stmt.executeUpdate() > 0;
-
         } catch (SQLException e) {
-            e.printStackTrace();
             return false;
         }
     }
+
 
     public static boolean eliminarMesa(int id) {
         String sql = "DELETE FROM Mesas WHERE IdMesa = ?";
 
         try (Connection conn = ConexionSQL.obtenerConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
-
         } catch (SQLException e) {
-            e.printStackTrace();
             return false;
         }
     }
 
+
+    
 
     public static Resultado<List<Plato>> obtenerPlatosPorTipo(String tipo) {
         String sql

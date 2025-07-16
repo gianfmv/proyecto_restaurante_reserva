@@ -65,6 +65,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     private JTextField txtDescuento;
 
     private JTextField txtCapacidad;
+    private JTextField txtNroMesa;
     private JCheckBox chkDisponible;
     
     
@@ -114,7 +115,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
         int result = fileChooser.showOpenDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            txtImgNovedad.setText(selectedFile.getPath());
+            txtImgNovedad.setText(selectedFile.getName());
         }
     });
 
@@ -187,7 +188,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
         int result = fileChooser.showOpenDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            txtImgPromo.setText(selectedFile.getPath());
+            txtImgPromo.setText(selectedFile.getName());
         }
     });
 
@@ -265,10 +266,13 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     
         // === FORMULARIO DE MESAS ===
     JLabel lblCapacidad = new JLabel("Capacidad:");
-    
+    JLabel lblnroMesa= new JLabel("Nro de Mesa:");
+     
+    txtTituloNovedad = new JTextField(25);
     txtCapacidad = new JTextField(10);
+    txtNroMesa = new JTextField(10);
     chkDisponible = new JCheckBox("Disponible");
-    txtCapacidad.setMaximumSize(new Dimension(150, 25)); // ancho y alto máximos
+    //txtCapacidad.setMaximumSize(new Dimension(150, 25)); // ancho y alto máximos
 
     JButton btnAgregarMesa = new JButton("Agregar");
     JButton btnEditarMesa = new JButton("Editar");
@@ -286,8 +290,10 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
 
     formMesa.add(lblCapacidad);
     formMesa.add(txtCapacidad);
+    formMesa.add(lblnroMesa);
+    formMesa.add(txtNroMesa);
     formMesa.add(chkDisponible);
-
+ 
     JPanel botonesMesa = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
     botonesMesa.add(btnAgregarMesa);
     botonesMesa.add(btnEditarMesa);
@@ -677,73 +683,72 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
         tablaPromociones.getColumnModel().getColumn(0).setWidth(0);
     }
    
-   
-        private void cargarMesas() {
-         Resultado<List<Mesa>> resultado = DataRepository.obtenerMesas();
-         if (!resultado.isOk()) {
-             JOptionPane.showMessageDialog(this, "Error al cargar mesas: " + resultado.getMessage());
-             return;
-         }
 
-         List<Mesa> lista = resultado.getData();
-         DefaultTableModel model = new DefaultTableModel(new Object[]{"ID", "Capacidad", "Disponible"}, 0);
+   private void cargarMesas() {
+    Resultado<List<Mesa>> resultado = DataRepository.obtenerMesas();
+    if (!resultado.isOk()) {
+        JOptionPane.showMessageDialog(this, "Error al cargar mesas: " + resultado.getMessage());
+        return;
+    }
 
-         for (Mesa m : lista) {
-             model.addRow(new Object[]{
-                 m.getIdMesa(),
-                 m.getCapacidad(),
-                 m.isDisponible() ? "Sí" : "No"
-             });
-         }
+    DefaultTableModel model = new DefaultTableModel(new Object[]{"ID", "N° Mesa", "Capacidad", "Disponible"}, 0);
+    for (Mesa m : resultado.getData()) {
+        model.addRow(new Object[]{
+            m.getIdMesa(),
+            m.getNumeroMesa(),
+            m.getCapacidad(),
+            m.isDisponible() ? "Sí" : "No"
+        });
+    }
+    tablaMesas.setModel(model);
+   // tablaMesas.getColumnModel().getColumn(0).setMinWidth(0); // Ocultar ID
+   // tablaMesas.getColumnModel().getColumn(0).setMaxWidth(0);
+}
 
-         tablaMesas.setModel(model);
-        // tablaMesas.getColumnModel().getColumn(0).setMinWidth(0);
-        // tablaMesas.getColumnModel().getColumn(0).setMaxWidth(0);
-     }
 
-     private void agregarMesa() {
-         try {
-             int capacidad = Integer.parseInt(txtCapacidad.getText());
-             boolean disponible = chkDisponible.isSelected();
+private void agregarMesa() {
+    try {
+        int numeroMesa = Integer.parseInt(txtNroMesa.getText());
+        int capacidad = Integer.parseInt(txtCapacidad.getText());
+        boolean disponible = chkDisponible.isSelected();
 
-             Mesa nueva = new Mesa(0, capacidad, disponible);
-             boolean ok = DataRepository.agregarMesa(nueva);
+        Mesa nueva = new Mesa(0, numeroMesa, capacidad, disponible);
+        if (DataRepository.agregarMesa(nueva)) {
+            cargarMesas();
+            limpiarCamposMesa();
+            JOptionPane.showMessageDialog(this, "Mesa agregada.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al agregar la mesa.");
+        }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Ingrese valores válidos.");
+    }
+}
 
-             if (ok) {
-                 cargarMesas();
-                 limpiarCamposMesa();
-                 JOptionPane.showMessageDialog(this, "Mesa agregada correctamente.");
-             } else {
-                 JOptionPane.showMessageDialog(this, "Error al agregar la mesa.");
-             }
-         } catch (NumberFormatException ex) {
-             JOptionPane.showMessageDialog(this, "Capacidad debe ser un número válido.");
-         }
-     }
 
-     private void editarMesa() {
-         int fila = tablaMesas.getSelectedRow();
-         if (fila != -1) {
-             try {
-                 int id = Integer.parseInt(tablaMesas.getValueAt(fila, 0).toString());
-                 int capacidad = Integer.parseInt(txtCapacidad.getText());
-                 boolean disponible = chkDisponible.isSelected();
+    private void editarMesa() {
+        int fila = tablaMesas.getSelectedRow();
+        if (fila != -1) {
+            try {
+                int id = Integer.parseInt(tablaMesas.getValueAt(fila, 0).toString());
+                int numeroMesa = Integer.parseInt(txtNroMesa.getText());
+                int capacidad = Integer.parseInt(txtCapacidad.getText());
+                boolean disponible = chkDisponible.isSelected();
 
-                 Mesa mesaEditada = new Mesa(id, capacidad, disponible);
-                 boolean ok = DataRepository.editarMesa(id, mesaEditada);
+                Mesa editada = new Mesa(id, numeroMesa, capacidad, disponible);
+                if (DataRepository.editarMesa(id, editada)) {
+                    cargarMesas();
+                    limpiarCamposMesa();
+                    JOptionPane.showMessageDialog(this, "Mesa actualizada.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error al editar.");
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Ingrese valores válidos.");
+            }
+        }
+    }
 
-                 if (ok) {
-                     cargarMesas();
-                     limpiarCamposMesa();
-                     JOptionPane.showMessageDialog(this, "Mesa actualizada.");
-                 } else {
-                     JOptionPane.showMessageDialog(this, "Error al editar la mesa.");
-                 }
-             } catch (NumberFormatException ex) {
-                 JOptionPane.showMessageDialog(this, "Capacidad debe ser un número válido.");
-             }
-         }
-     }
 
      private void eliminarMesa() {
          int fila = tablaMesas.getSelectedRow();
@@ -764,14 +769,15 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
          }
      }
 
-     private void cargarMesaSeleccionada() {
-         int fila = tablaMesas.getSelectedRow();
-         if (fila != -1) {
-             txtCapacidad.setText(tablaMesas.getValueAt(fila, 1).toString());
-             String disponibleStr = tablaMesas.getValueAt(fila, 2).toString();
-             chkDisponible.setSelected(disponibleStr.equalsIgnoreCase("Sí"));
-         }
-     }
+    private void cargarMesaSeleccionada() {
+        int fila = tablaMesas.getSelectedRow();
+        if (fila != -1) {
+            txtNroMesa.setText(tablaMesas.getValueAt(fila, 1).toString());
+            txtCapacidad.setText(tablaMesas.getValueAt(fila, 2).toString());
+            chkDisponible.setSelected(tablaMesas.getValueAt(fila, 3).equals("Sí"));
+        }
+    }
+
 
      private void limpiarCamposMesa() {
          txtCapacidad.setText("");

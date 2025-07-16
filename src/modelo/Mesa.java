@@ -10,19 +10,25 @@ package modelo;
  */
 public class Mesa {
     private int idMesa;
+    private int numeroMesa;
     private int capacidad;
     private boolean disponible;
 
     public Mesa() {}
 
-    public Mesa(int idMesa, int capacidad, boolean disponible) {
+    public Mesa(int idMesa, int numeroMesa, int capacidad, boolean disponible) {
         this.idMesa = idMesa;
+        this.numeroMesa = numeroMesa;
         this.capacidad = capacidad;
         this.disponible = disponible;
     }
 
     public int getIdMesa() {
         return idMesa;
+    }
+
+    public int getNumeroMesa() {
+        return numeroMesa;
     }
 
     public int getCapacidad() {
@@ -35,6 +41,10 @@ public class Mesa {
 
     public void setIdMesa(int idMesa) {
         this.idMesa = idMesa;
+    }
+
+    public void setNumeroMesa(int numeroMesa) {
+        this.numeroMesa = numeroMesa;
     }
 
     public void setCapacidad(int capacidad) {
