@@ -23,7 +23,7 @@ public class ConexionSQL {
 
 
     private static final String USUARIO = "sa";
-    private static final String CLAVE = "@Cristopher123";
+    private static final String CLAVE = "sa";
 
     public static Connection obtenerConexion() throws SQLException {
         Connection conexion = DriverManager.getConnection(URL, USUARIO, CLAVE);

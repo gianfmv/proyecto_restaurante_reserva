@@ -745,7 +745,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
             .addGap(0, 622, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("PEDIDOS", jPanel4);
+        jTabbedPane1.addTab("USUARIOS", jPanel4);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
