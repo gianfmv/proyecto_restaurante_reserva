@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingWorker;
 import modelo.Novedad;
+import modelo.Promocion;
 import modelo.Resultado;
 import util.FontLoader;
 
@@ -20,15 +21,15 @@ import util.FontLoader;
  *
  * @author OMAR
  */
-public class Novedades extends javax.swing.JInternalFrame {
+public class Promos extends javax.swing.JInternalFrame {
 
-    private List<Novedad> novedades;
+    private List<Promocion> novedades;
 
-    public Novedades() {
+    public Promos() {
         initComponents();
-        this.setTitle("Novedades de Inicio");
+        this.setTitle("Promociones");
         jLabel1.setFont(FontLoader.load("Poppins-Black.ttf", Font.PLAIN, 20));
-        obtenerNovedades();
+        obtenerPromociones();
     }
 
     /**
@@ -53,7 +54,7 @@ public class Novedades extends javax.swing.JInternalFrame {
 
         jLabel1.setFont(new java.awt.Font("Mongolian Baiti", 0, 20)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("- Novedades -");
+        jLabel1.setText("- Promos -");
         jLabel1.setAlignmentX(0.5F);
         getContentPane().add(jLabel1);
 
@@ -75,23 +76,23 @@ public class Novedades extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void obtenerNovedades() {
-        new SwingWorker<Resultado<List<Novedad>>, Void>() {
+    private void obtenerPromociones() {
+        new SwingWorker<Resultado<List<Promocion>>, Void>() {
             @Override
-            protected Resultado<List<Novedad>> doInBackground() throws Exception {
-                return DataRepository.obtenerNovedades();
+            protected Resultado<List<Promocion>> doInBackground() throws Exception {
+                return DataRepository.obtenerPromociones();
             }
 
             @Override
             protected void done() {
                 super.done();
-                Resultado<List<Novedad>> resultado = null;
+                Resultado<List<Promocion>> resultado = null;
                 try {
                     resultado = get();
                     novedades = resultado.getData();
                     if (novedades.isEmpty()) {
                     } else {
-                        mostrarNovedades();
+                        mostrarPromociones();
                     }
                 } catch (InterruptedException | ExecutionException ex) {
                     Logger.getLogger(InicioCliente.class.getName()).log(Level.SEVERE, null, ex);
@@ -102,14 +103,14 @@ public class Novedades extends javax.swing.JInternalFrame {
         }.execute();
     }
 
-    void mostrarNovedades() {
+    void mostrarPromociones() {
         int columnas = 2;
         int filas = (int) Math.ceil(novedades.size() / (double) columnas);
 
         panelLista.setLayout(new GridLayout(filas, columnas, 10, 10));
 
-        for (Novedad novedad : novedades) {
-            NovedadVista vista = new NovedadVista(novedad);
+        for (Promocion novedad : novedades) {
+            PromocionVista vista = new PromocionVista(novedad);
             panelLista.add(vista);
         }
         panelLista.revalidate();

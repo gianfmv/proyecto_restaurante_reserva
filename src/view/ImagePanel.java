@@ -21,6 +21,12 @@ public class ImagePanel extends JPanel {
         setOpaque(false);
         loadImageAsync(url);
     }
+    
+    public ImagePanel(String url, FitMode fitmode) {
+        this.fitMode = fitmode;
+        setOpaque(false);
+        loadImageAsync(url);
+    }
 
     public void setFitMode(FitMode mode) {
         this.fitMode = mode;
