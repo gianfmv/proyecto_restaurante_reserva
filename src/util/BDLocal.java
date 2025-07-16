@@ -174,33 +174,33 @@ public class BDLocal {
         ));
         
         novedades.add(new Novedad(
-            "¡Nuevo plato: Ají de Gallina Vegano!",
+            1,"¡Nuevo plato: Ají de Gallina Vegano!",
             "Ahora puedes disfrutar del clásico Ají de Gallina en su versión 100% vegetal, con el mismo sabor criollo.",
-            "https://example.com/images/aji-vegano.jpg"
+            "https://example.com/images/aji-vegano.jpg", new Date(),new Date()
         ));
 
         novedades.add(new Novedad(
-            "Ampliamos nuestro horario",
+            2,"Ampliamos nuestro horario",
             "Desde este mes, abrimos una hora más por las noches. ¡Te esperamos hasta las 11:00 p.m. de lunes a sábado!",
-            "https://example.com/images/horario-nuevo.jpg"
+            "https://example.com/images/horario-nuevo.jpg", new Date(),new Date()
         ));
 
         novedades.add(new Novedad(
-            "Reapertura de nuestro local en Miraflores",
+            3,"Reapertura de nuestro local en Miraflores",
             "¡Ya abrimos! Ven a conocer el renovado ambiente del restaurante en Av. Larco con una vista increíble.",
-            "https://example.com/images/local-miraflores.jpg"
+            "https://example.com/images/local-miraflores.jpg", new Date(),new Date()
         ));
 
         novedades.add(new Novedad(
-            "Participamos en Mistura 2025",
+            4,"Participamos en Mistura 2025",
             "Estaremos presentes con nuestros platos estrella en la feria gastronómica más grande del país. ¡No faltes!",
-            "https://example.com/images/mistura.jpg"
+            "https://example.com/images/mistura.jpg", new Date(),new Date()
         ));
 
         novedades.add(new Novedad(
-            "Nueva carta de postres peruanos",
+            5,"Nueva carta de postres peruanos",
             "Descubre nuestra nueva selección de postres: suspiro a la limeña, mazamorra morada, arroz con leche y más.",
-            "https://example.com/images/postres.jpg"
+            "https://example.com/images/postres.jpg", new Date(),new Date()
         ));
     }
 

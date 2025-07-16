@@ -31,6 +31,16 @@ public class Promocion {
         this.descuentoPorcentaje = descuentoPorcentaje;
         this.imageUrl = imageUrl;
     }
+    
+    public Promocion(String titulo, String descripcion,
+                     Date fechaInicio, Date fechaFin, double descuentoPorcentaje, String imageUrl) {        
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
+        this.descuentoPorcentaje = descuentoPorcentaje;
+        this.imageUrl = imageUrl;
+    }
 
     public int getIdPromocion() {
         return idPromocion;
