@@ -4,20 +4,20 @@
  */
 package vista;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.SwingWorker;
+import java.awt.BorderLayout;
+import java.awt.Font;
 import modelo.Plato;
+import util.FontLoader;
+import view.ImagePanel;
+
 /**
  *
  * @author salaz
  */
 public class PlatoVista extends javax.swing.JPanel {
+
     private Plato menu;
+
     /**
      * Creates new form MenuItem
      */
@@ -25,32 +25,15 @@ public class PlatoVista extends javax.swing.JPanel {
         initComponents();
         this.menu = menu;
         txt_entrada1.setText(menu.getNombre());
-        SwingWorker<BufferedImage, Void> worker = new SwingWorker<>() {
-                @Override
-                protected BufferedImage doInBackground() throws Exception {
-                    URI uri = new URI(menu.getUrlImagen());
-                    return ImageIO.read(uri.toURL());
-                }
+        txt_entrada1.setFont(FontLoader.load("Poppins-Black.ttf", Font.PLAIN, 20));
+        txtDescripcion.setFont(FontLoader.load("Poppins-Regular.ttf", Font.PLAIN, 14));
 
-                @Override
-                protected void done() {
-                    try {
-                        BufferedImage img = get();
-                        ImageIcon icon = new ImageIcon(img);
-                        jLabel2.setText(null);
-                        jLabel2.setIcon(icon);
-                        
-                        icon.setImage(icon.getImage().getScaledInstance(jLabel2.getWidth(),
-                                              jLabel2.getHeight(),
-                                              java.awt.Image.SCALE_SMOOTH));
-                    
-                    } catch (Exception e) {
-                        jLabel2.setText("Error inesperado");
-                        e.printStackTrace();
-                    }
-                }
-            };
-            worker.execute();
+        txtDescripcion.setText(menu.getDescripcion());
+        panelImagen.removeAll();
+        ImagePanel imagen = new ImagePanel(menu.getUrlImagen());
+        imagen.setAlignmentX(0.5f);
+        imagen.setAlignmentY(0.5f);
+        panelImagen.add(imagen, BorderLayout.CENTER);
     }
 
     /**
@@ -64,89 +47,42 @@ public class PlatoVista extends javax.swing.JPanel {
 
         txt_entrada1 = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        txtDescripcion = new javax.swing.JLabel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(8, 0), new java.awt.Dimension(32767, 0));
+        panelImagen = new javax.swing.JPanel();
+
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
         txt_entrada1.setFont(new java.awt.Font("Mongolian Baiti", 0, 17)); // NOI18N
         txt_entrada1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txt_entrada1.setText("Sopa de Moron");
+        txt_entrada1.setMaximumSize(new java.awt.Dimension(2147483647, 50));
+        add(txt_entrada1);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(16, 32, 16, 32));
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.X_AXIS));
 
-        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jLabel2MouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                jLabel2MouseExited(evt);
-            }
-        });
+        txtDescripcion.setText("jLabel1");
+        txtDescripcion.setMaximumSize(new java.awt.Dimension(200, 999999));
+        jPanel1.add(txtDescripcion);
+        jPanel1.add(filler1);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+        panelImagen.setBackground(new java.awt.Color(255, 255, 255));
+        panelImagen.setMinimumSize(new java.awt.Dimension(100, 100));
+        panelImagen.setPreferredSize(new java.awt.Dimension(100, 150));
+        panelImagen.setLayout(new javax.swing.BoxLayout(panelImagen, javax.swing.BoxLayout.LINE_AXIS));
+        jPanel1.add(panelImagen);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txt_entrada1)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(txt_entrada1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        add(jPanel1);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jLabel2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseEntered
-        //entrada 1 - entrada de mouse
-        PlatoVistaDetalles panel = new PlatoVistaDetalles(menu);
-        panel.setSize(jPanel1.getWidth(), jPanel1.getHeight());
-        panel.setLocation(0, 0); // Posicionamos el panel en (0,0) dentro del jPanel1
-        panel.setVisible(true);
-        jPanel1.add(panel);
-        jPanel1.setComponentZOrder(panel, 0); // Aseguramos que esté en la capa superior
-        panel.revalidate();
-        panel.repaint();
-    }//GEN-LAST:event_jLabel2MouseEntered
-
-    private void jLabel2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseExited
-        // entrada 1 - salida de mouse
-        for(java.awt.Component comp : jPanel1.getComponents()) {
-            if(comp instanceof PlatoVistaDetalles) {
-                jPanel1.remove(comp);
-            }
-        }
-        jPanel1.revalidate();
-        jPanel1.repaint();
-    }//GEN-LAST:event_jLabel2MouseExited
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.Box.Filler filler1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel panelImagen;
+    private javax.swing.JLabel txtDescripcion;
     private javax.swing.JTextField txt_entrada1;
     // End of variables declaration//GEN-END:variables
 }

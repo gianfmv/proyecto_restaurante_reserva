@@ -6,16 +6,16 @@ package vista;
 
 import data.DataRepository;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingWorker;
-import util.BDLocal;
 import modelo.Plato;
-import modelo.Promocion;
 import modelo.Resultado;
+import util.FontLoader;
 
 /**
  *
@@ -35,6 +35,7 @@ public class CartaVista extends javax.swing.JInternalFrame {
         this.setSize(new Dimension(600, 660));
         this.setTitle(title);
         jLabel1.setText(title);
+        jLabel1.setFont(FontLoader.load("Poppins-Black.ttf", Font.PLAIN, 20));
         obtenerPromociones(tipo);
 
     }
@@ -54,12 +55,14 @@ public class CartaVista extends javax.swing.JInternalFrame {
                 try {
                     resultado = get();
                     carta = resultado.getData();
-
-                    jPanel5.setLayout(new GridLayout(0, 2, 10, 10));
+                    jPanel5.removeAll();
+                    int columnas = 2;
+                    int filas = (int) Math.ceil(carta.size() / (double) columnas);
+                          
+                    jPanel5.setLayout(new GridLayout(filas, columnas, 10, 10));
 
                     for (Plato menu : carta) {
                         PlatoVista item = new PlatoVista(menu);
-                        item.setSize(new Dimension(254, 266));
                         jPanel5.add(item);
                     }
                     jPanel5.revalidate();

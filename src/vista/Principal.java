@@ -4,55 +4,42 @@
  */
 package vista;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
-import java.util.List;
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.plaf.basic.BasicInternalFrameUI;
 import util.BDLocal;
-import modelo.Plato;
 import util.FontLoader;
 import util.IconUtils;
-import javax.swing.SwingConstants;
 import modelo.Usuario;
 import util.UserUtil;
-
-
 
 /**
  *
  * @author OMAR
  */
 public class Principal extends javax.swing.JFrame {
+
     private BDLocal bdLocal = new BDLocal();
-    private Usuario usuario;            
-    
+    private Usuario usuario;
+
     public Principal(Usuario usuario) {
-        this.usuario=usuario;
+        this.usuario = usuario;
         initComponents();
-        Color colorMenu = new Color(89,63,40);
+        Color colorMenu = new Color(89, 63, 40);
         Font botones = FontLoader.load("Poppins-SemiBold.ttf", 16);
         jMenuInicio.setFont(botones);
-        jMenuMesas.setFont(botones);
         jMenuDia.setFont(botones);
         jMenuInicio.setIcon(IconUtils.tintIcon(jMenuInicio.getIcon(), colorMenu));
         jMenuInicio.setForeground(colorMenu);
-        jMenuMesas.setIcon(IconUtils.tintIcon(jMenuMesas.getIcon(), colorMenu));
-        jMenuMesas.setForeground(colorMenu);
         jMenuDia.setIcon(IconUtils.tintIcon(jMenuDia.getIcon(), colorMenu));
         jMenu.setIcon(IconUtils.tintIcon(jMenu.getIcon(), colorMenu));
         jMenuDia.setForeground(colorMenu);
-        this.setSize(new Dimension(1200,700));
+        this.setSize(new Dimension(1200, 700));
         this.setLocationRelativeTo(null);
         this.setTitle("Restaurante La Buena Sartén");
         //establecer el color de fondo
-        Color colorFondo = new java.awt.Color(210,210,0);
+        Color colorFondo = new java.awt.Color(210, 210, 0);
         this.getContentPane().setBackground(colorFondo);
         //this.jPanel1.setBackground(new Color(241,233,233));
         //jPanel1.setVisible(false);
@@ -65,21 +52,15 @@ public class Principal extends javax.swing.JFrame {
         jMenuInicio.setOpaque(true);
         jMenuDia.setBackground(colorMenu2);
         jMenuDia.setOpaque(true);
-        jMenuMesas.setBackground(colorMenu2);
-        jMenuMesas.setOpaque(true);
         //para inabilitar algunos jMenu
-        
-        // Configurar el JDesktopPane
 
+        // Configurar el JDesktopPane
         // Asegurar que el JDesktopPane ocupe todo el espacio disponible
         //this.setLayout(new BorderLayout());
         //jDesktopPane_menu.setPreferredSize(new Dimension(1200, 650));
         //this.add(jDesktopPane_menu, BorderLayout.CENTER);
-        
-        
         // Forzar el tamaño del JDesktopPane
         //jDesktopPane_menu.setSize(1200, 650);
-        
         // Asegurar que todos los contenedores tengan el mismo color de fondo
         this.getRootPane().setBackground(colorFondo);
         this.getLayeredPane().setBackground(colorFondo);
@@ -87,21 +68,18 @@ public class Principal extends javax.swing.JFrame {
         try {
             //InicioCliente entradas = new InicioCliente();
             cargarPanelPorRol();
-            
-            
+
             // Agregar y mostrar el JInternalFrame
             //jDesktopPane_menu.add(entradas);
-           //entradas.setLocation(0,0);
+            //entradas.setLocation(0,0);
             //entradas.setVisible(true);
             //entradas.setMaximum(true);
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error al abrir Entradas: " + e.getMessage());
         }
-       
+
     }
-    
- 
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -130,12 +108,6 @@ public class Principal extends javax.swing.JFrame {
         jMenuItem7 = new javax.swing.JMenuItem();
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
         jMenuItem8 = new javax.swing.JMenuItem();
-        jMenuMesas = new javax.swing.JMenu();
-        jMenuItem9 = new javax.swing.JMenuItem();
-        jSeparator6 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem10 = new javax.swing.JMenuItem();
-        jSeparator7 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem11 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -277,36 +249,6 @@ public class Principal extends javax.swing.JFrame {
 
         jMenuBar3.add(jMenuDia);
 
-        jMenuMesas.setBackground(new java.awt.Color(226, 139, 110));
-        jMenuMesas.setBorder(null);
-        jMenuMesas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-mesa-de-restaurante-24.png"))); // NOI18N
-        jMenuMesas.setText("Mesas disponibles");
-        jMenuMesas.setBorderPainted(false);
-        jMenuMesas.setContentAreaFilled(false);
-        jMenuMesas.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jMenuMesas.setIconTextGap(12);
-        jMenuMesas.setMargin(null);
-        jMenuMesas.setPreferredSize(new java.awt.Dimension(215, 55));
-
-        jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-mesa-24.png"))); // NOI18N
-        jMenuItem9.setText("Primer Piso");
-        jMenuItem9.setPreferredSize(new java.awt.Dimension(130, 30));
-        jMenuMesas.add(jMenuItem9);
-        jMenuMesas.add(jSeparator6);
-
-        jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-vista-de-mesa-24.png"))); // NOI18N
-        jMenuItem10.setText("Segundo Piso");
-        jMenuItem10.setPreferredSize(new java.awt.Dimension(130, 30));
-        jMenuMesas.add(jMenuItem10);
-        jMenuMesas.add(jSeparator7);
-
-        jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-mesa-de-restaurante-24 (1).png"))); // NOI18N
-        jMenuItem11.setText("Azotea");
-        jMenuItem11.setPreferredSize(new java.awt.Dimension(130, 30));
-        jMenuMesas.add(jMenuItem11);
-
-        jMenuBar3.add(jMenuMesas);
-
         setJMenuBar(jMenuBar3);
 
         setSize(new java.awt.Dimension(1200, 737));
@@ -336,7 +278,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         try {
-            Promociones promociones = new Promociones();
+            Promos promociones = new Promos();
 
             // Asegurar que el JInternalFrame tenga el tamaño correcto
             promociones.setSize(1200, 630);
@@ -403,19 +345,19 @@ public class Principal extends javax.swing.JFrame {
         }
     }
 
-
     private void crearCarta(String titulo, String tipo) {
         try {
             CartaVista entradas = new CartaVista(titulo, tipo);
             jDesktopPane_menu.add(entradas);
-            entradas.setLocation(0,0);
+            entradas.setLocation(0, 0);
             entradas.setMaximum(true);
-            entradas.setVisible(true);            
+            entradas.setVisible(true);
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error al abrir Entradas: " + e.getMessage());
         }
     }
+
     /**
      * @param args the command line arguments
      */
@@ -454,7 +396,7 @@ public class Principal extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-               // new Principal().setVisible(true);
+                // new Principal().setVisible(true);
             }
         });
     }
@@ -466,8 +408,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuDia;
     private javax.swing.JMenu jMenuInicio;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem10;
-    private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
@@ -475,15 +415,11 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
-    private javax.swing.JMenuItem jMenuItem9;
-    private javax.swing.JMenu jMenuMesas;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
-    private javax.swing.JPopupMenu.Separator jSeparator6;
-    private javax.swing.JPopupMenu.Separator jSeparator7;
     // End of variables declaration//GEN-END:variables
 
     // Eliminar este método ya que no es necesario y causa conflicto
