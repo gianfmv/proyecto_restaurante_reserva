@@ -36,7 +36,9 @@ public class LoginUser extends javax.swing.JFrame {
      */
     public LoginUser() {
         Usuario usuario = UserUtil.getUsuario();
-        iniciar();
+//        iniciar();
+        if(usuario == null) iniciar();
+        else new Principal(usuario).setVisible(true);
         /*if(usuario == null) {
             //iniciar();
         } else if(usuario.getTipoUsuario().getDescripcion().equals("Administrador")) {

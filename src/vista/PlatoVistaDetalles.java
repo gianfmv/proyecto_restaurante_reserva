@@ -24,9 +24,9 @@ public class PlatoVistaDetalles extends javax.swing.JPanel {
         txt_ing.setBorder(null);
         txt_des.setText(menu.getDescripcion());
         StringBuilder builder = new StringBuilder();
-        for(Ingrediente ingrediente : menu.getIngredientes()) {
-            builder.append(ingrediente.getNombre()).append("\n");
-        }
+//        for(Ingrediente ingrediente : menu.getIngredientes()) {
+//            builder.append(ingrediente.getNombre()).append("\n");
+//        }
         txt_ing.setText(builder.toString());
         this.menu = menu;
     }

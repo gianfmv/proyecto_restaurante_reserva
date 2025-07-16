@@ -193,11 +193,10 @@ public class Principal extends javax.swing.JFrame {
         jMenuInicio.setText("Inicio");
         jMenuInicio.setBorderPainted(false);
         jMenuInicio.setContentAreaFilled(false);
-        jMenuInicio.setDebugGraphicsOptions(javax.swing.DebugGraphics.BUFFERED_OPTION);
         jMenuInicio.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jMenuInicio.setIconTextGap(12);
         jMenuInicio.setMargin(null);
-        jMenuInicio.setPreferredSize(new java.awt.Dimension(120, 55));
+        jMenuInicio.setPreferredSize(new java.awt.Dimension(130, 55));
 
         jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-add-bookmark-30.png"))); // NOI18N
         jMenuItem3.setText("Novedades");
@@ -235,7 +234,7 @@ public class Principal extends javax.swing.JFrame {
 
         jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-dining-room-16.png"))); // NOI18N
         jMenuItem5.setText("Entradas");
-        jMenuItem5.setPreferredSize(new java.awt.Dimension(90, 30));
+        jMenuItem5.setPreferredSize(new java.awt.Dimension(130, 30));
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem5ActionPerformed(evt);
@@ -310,77 +309,78 @@ public class Principal extends javax.swing.JFrame {
 
         setJMenuBar(jMenuBar3);
 
-        pack();
+        setSize(new java.awt.Dimension(1200, 737));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        try {
-            Novedades novedades = new Novedades();
-            
-            // Asegurar que el JInternalFrame tenga el tamaño correcto
-            novedades.setSize(1200, 630);
-            
-            // Calcular la posición X para centrar horizontalmente
-            int x = (jDesktopPane_menu.getWidth() - novedades.getWidth()) / 2;
-            
-            // Colocar el JInternalFrame pegado a la parte superior con un pequeño margen
-            int y = 0;
-            
-            // Agregar y mostrar el JInternalFrame
-            jDesktopPane_menu.add(novedades);
-            novedades.setLocation(x, y);
-            novedades.setVisible(true);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error al abrir Novedades: " + e.getMessage());
-        }
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        crearCarta("BEBIDAS", "bebida");
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        crearCarta("POSTRES", "postre");
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        crearCarta("FONDOS", "fondo");
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        crearCarta("ENTRADAS", "entrada");
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        UserUtil.borrarUsuarioLocal();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         try {
             Promociones promociones = new Promociones();
-            
+
             // Asegurar que el JInternalFrame tenga el tamaño correcto
             promociones.setSize(1200, 630);
-            
+
             // Calcular la posición X para centrar horizontalmente
             int x = (jDesktopPane_menu.getWidth() - promociones.getWidth()) / 2;
-            
+
             // Colocar el JInternalFrame pegado a la parte superior con un pequeño margen
             int y = 0;
-            
+
             // Agregar y mostrar el JInternalFrame
             jDesktopPane_menu.add(promociones);
             promociones.setLocation(x, y);
             promociones.setVisible(true);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error al abrir Promociones: " + e.getMessage());
         }
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
-    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-        crearCarta("- ENTRADAS -", bdLocal.getEntradas());
-    }//GEN-LAST:event_jMenuItem5ActionPerformed
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        try {
+            Novedades novedades = new Novedades();
 
-    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        crearCarta("- FONDOS -", bdLocal.getFondos());
-    }//GEN-LAST:event_jMenuItem6ActionPerformed
+            // Asegurar que el JInternalFrame tenga el tamaño correcto
+            novedades.setSize(1200, 630);
 
-    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-        crearCarta("- POSTRES -", bdLocal.getPostres());
-    }//GEN-LAST:event_jMenuItem7ActionPerformed
+            // Calcular la posición X para centrar horizontalmente
+            int x = (jDesktopPane_menu.getWidth() - novedades.getWidth()) / 2;
 
-    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        crearCarta("- BEBIDAS -", bdLocal.getBebidas());
-    }//GEN-LAST:event_jMenuItem8ActionPerformed
+            // Colocar el JInternalFrame pegado a la parte superior con un pequeño margen
+            int y = 0;
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-        UserUtil.borrarUsuarioLocal();
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+            // Agregar y mostrar el JInternalFrame
+            jDesktopPane_menu.add(novedades);
+            novedades.setLocation(x, y);
+            novedades.setVisible(true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error al abrir Novedades: " + e.getMessage());
+        }
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void cargarPanelPorRol() {
         try {
@@ -404,22 +404,12 @@ public class Principal extends javax.swing.JFrame {
     }
 
 
-    private void crearCarta(String titulo, List<Plato> carta) {
+    private void crearCarta(String titulo, String tipo) {
         try {
-            CartaVista entradas = new CartaVista(titulo, carta);
-            
-            // Asegurar que el JInternalFrame tenga el tamaño correcto
-            entradas.setSize(600, jDesktopPane_menu.getHeight());
-            
-            // Calcular la posición X para centrar horizontalmente
-            int x = (jDesktopPane_menu.getWidth() - entradas.getWidth()) / 2;
-            
-            // Colocar el JInternalFrame pegado a la parte superior con un pequeño margen
-            int y = 0;
-            
-            // Agregar y mostrar el JInternalFrame
+            CartaVista entradas = new CartaVista(titulo, tipo);
             jDesktopPane_menu.add(entradas);
-            entradas.setLocation(x, y);
+            entradas.setLocation(0,0);
+            entradas.setMaximum(true);
             entradas.setVisible(true);            
         } catch (Exception e) {
             e.printStackTrace();
