@@ -341,7 +341,6 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
         jPanel3.add(labelCarta);
         jPanel3.add(filler9);
 
-        panelCartaCard.setAlignmentX(0.5F);
         panelCartaCard.setMaximumSize(new java.awt.Dimension(2147483647, 2147483647));
         panelCartaCard.setLayout(new javax.swing.OverlayLayout(panelCartaCard));
         jPanel3.add(panelCartaCard);
@@ -357,6 +356,11 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
         jPanel2.setLayout(new java.awt.BorderLayout());
 
         jButton1.setText("Reservar Ahora !!");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         jPanel2.add(jButton1, java.awt.BorderLayout.CENTER);
 
         jPanel3.add(jPanel2);
@@ -371,6 +375,11 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
         jPanel5.setLayout(new java.awt.BorderLayout());
 
         jButton2.setText("Ver mis reservaciones");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         jPanel5.add(jButton2, java.awt.BorderLayout.CENTER);
 
         jPanel3.add(jPanel5);
@@ -379,6 +388,16 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        new Reservar().setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        new ReservasRestaurante().setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
