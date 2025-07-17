@@ -5,6 +5,29 @@
 package vista;
 
 import com.toedter.calendar.JDateChooser;
+import data.DataRepository;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerDateModel;
+import javax.swing.SwingWorker;
+import modelo.Mesa;
+import modelo.Novedad;
+import modelo.Reserva;
+import modelo.Resultado;
+import util.FontLoader;
+import util.UserUtil;
 
 /**
  *
@@ -12,13 +35,31 @@ import com.toedter.calendar.JDateChooser;
  */
 public class Reservar extends javax.swing.JFrame {
 
+    private List<Mesa> mesas;
+    private Mesa mesaSeleccionada;
+    private Date fechaReservacion;
+    private java.sql.Time horaReservacion;
+    private JDateChooser chooser;
+    private JSpinner timeSpinner;
+
     /**
      * Creates new form Reservar
      */
     public Reservar() {
         initComponents();
-        JDateChooser chooser = new JDateChooser();
-        jPanel1.add(chooser);
+        chooser = new JDateChooser();
+        panelFecha.add(chooser, BorderLayout.CENTER);
+
+        chooser.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+        labelWindowTitle.setFont(FontLoader.load("Poppins-Black.ttf", Font.PLAIN, 20));
+        jLabel1.setFont(FontLoader.load("Poppins-Regular.ttf", Font.PLAIN, 20));
+        SpinnerDateModel model = new SpinnerDateModel();
+        timeSpinner = new JSpinner(model);
+        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(timeSpinner, "HH:mm");
+        timeSpinner.setEditor(timeEditor);
+        timeSpinner.setValue(new Date()); // hora actual
+        panelHora.add(timeSpinner);
+        obtenerMesas();
     }
 
     /**
@@ -30,89 +71,207 @@ public class Reservar extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
+        labelWindowTitle = new javax.swing.JLabel();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 8), new java.awt.Dimension(0, 8), new java.awt.Dimension(32767, 8));
+        mesasPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 8), new java.awt.Dimension(0, 8), new java.awt.Dimension(32767, 8));
+        jPanel2 = new javax.swing.JPanel();
+        panelFecha = new javax.swing.JPanel();
+        panelHora = new javax.swing.JPanel();
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 8), new java.awt.Dimension(0, 8), new java.awt.Dimension(32767, 8));
+        jPanel3 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(32, 16, 0, 16));
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(32, 16, 32, 16));
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
 
-        jLabel1.setText("Reservar Mesa");
+        labelWindowTitle.setText("Reservar Mesa");
+        labelWindowTitle.setAlignmentX(0.5F);
+        jPanel1.add(labelWindowTitle);
+        jPanel1.add(filler2);
+
+        javax.swing.GroupLayout mesasPanelLayout = new javax.swing.GroupLayout(mesasPanel);
+        mesasPanel.setLayout(mesasPanelLayout);
+        mesasPanelLayout.setHorizontalGroup(
+            mesasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1184, Short.MAX_VALUE)
+        );
+        mesasPanelLayout.setVerticalGroup(
+            mesasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 494, Short.MAX_VALUE)
+        );
+
+        jPanel1.add(mesasPanel);
+
+        jLabel1.setText("Fecha y Hora");
+        jLabel1.setAlignmentX(0.5F);
         jPanel1.add(jLabel1);
+        jPanel1.add(filler1);
 
-        jLabel2.setText("Fecha");
-        jPanel1.add(jLabel2);
+        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.X_AXIS));
 
-        jButton1.setText("Seleccionar");
+        panelFecha.setMaximumSize(new java.awt.Dimension(2147483647, 50));
+        panelFecha.setLayout(new java.awt.BorderLayout());
+        jPanel2.add(panelFecha);
+
+        panelHora.setMaximumSize(new java.awt.Dimension(32767, 50));
+        panelHora.setLayout(new java.awt.BorderLayout());
+        jPanel2.add(panelHora);
+
+        jPanel1.add(jPanel2);
+        jPanel1.add(filler3);
+
+        jPanel3.setMaximumSize(new java.awt.Dimension(2147483647, 150));
+        jPanel3.setLayout(new java.awt.BorderLayout());
+
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-mesa-de-restaurante-24 (1).png"))); // NOI18N
+        jButton1.setText("RESERVAR");
+        jButton1.setAlignmentX(1.0F);
+        jButton1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButton1.setMaximumSize(new java.awt.Dimension(115, 60));
+        jButton1.setPreferredSize(new java.awt.Dimension(135, 60));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton1);
+        jPanel4.add(jButton1, java.awt.BorderLayout.CENTER);
 
-        jLabel3.setText("Hora");
-        jPanel1.add(jLabel3);
+        jPanel3.add(jPanel4, java.awt.BorderLayout.EAST);
 
-        jScrollPane1.setViewportView(jPanel1);
+        jPanel1.add(jPanel3);
 
-        getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
-        pack();
+        setSize(new java.awt.Dimension(1216, 770));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
         // TODO add your handling code here:
-        
+
+        Date fecha = chooser.getDate();
+        Date hora = (Date) timeSpinner.getValue();
+        if (mesaSeleccionada == null) {
+            JOptionPane.showMessageDialog(null, "Seleccione una mesa");
+        } else if (fecha == null || hora == null) {
+            JOptionPane.showMessageDialog(null, "Seleccione una fechay hora valida");
+        } else {
+            fechaReservacion = fecha;
+            horaReservacion = new java.sql.Time(hora.getTime());
+            publicarReserva();
+        }
+
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
+    private void publicarReserva() {
+        jButton1.setEnabled(false);
+        final Reserva reserva = new Reserva(0, UserUtil.getUsuario(), fechaReservacion, horaReservacion, mesaSeleccionada.getCapacidad(), "Pendiente", mesaSeleccionada);
+        new SwingWorker<Resultado<Boolean>, Void>() {
+            @Override
+            protected Resultado<Boolean> doInBackground() throws Exception {
+                return DataRepository.insertarReserva(reserva);
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Reservar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Reservar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Reservar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Reservar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Reservar().setVisible(true);
+            @Override
+            protected void done() {
+                super.done();
+                Resultado<Boolean> resultado = null;
+                try {
+                    resultado = get();
+                    if (resultado.isOk()) {
+                        JOptionPane.showMessageDialog(null, "Reservado!");
+
+                        dispose();
+                    } else {
+                        jButton1.setEnabled(false);
+                    }
+                } catch (InterruptedException | ExecutionException ex) {
+                    ex.printStackTrace();
+                }
+
             }
-        });
+
+        }.execute();
+
     }
 
+    private void obtenerMesas() {
+        new SwingWorker<Resultado<List<Mesa>>, Void>() {
+            @Override
+            protected Resultado<List<Mesa>> doInBackground() throws Exception {
+                return DataRepository.obtenerMesas();
+            }
+
+            @Override
+            protected void done() {
+                super.done();
+                Resultado<List<Mesa>> resultado = null;
+                try {
+                    resultado = get();
+                    mesas = resultado.getData();
+                    if (mesas.isEmpty()) {
+                    } else {
+                        mostrarMesas();
+                    }
+                } catch (InterruptedException | ExecutionException ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+
+        }.execute();
+
+    }
+
+    private void mostrarMesas() {
+        int columnas = 5;
+        int filas = (int) Math.ceil(mesas.size() / (double) columnas);
+        mesasPanel.setLayout(new GridLayout(filas, columnas, 10, 10));
+        mesasPanel.removeAll();
+        double width = (mesasPanel.getSize().width / columnas) - columnas * 10;
+        double height = (double) 3 / 4 * width;
+
+        for (Mesa mesa : mesas) {
+            MesaVista mesaVista = new MesaVista(mesa, onMesaSelected, mesaSeleccionada == mesa);
+            mesaVista.setPreferredSize(new Dimension((int) width, (int) height));
+            mesasPanel.add(mesaVista);
+        }
+        mesasPanel.revalidate();
+    }
+
+    private MesaVista.OnSelectedListener onMesaSelected = new MesaVista.OnSelectedListener() {
+        @Override
+        public void onSelect(Mesa mesa) {
+            if (mesa.isDisponible()) {
+                mesaSeleccionada = mesa;
+                mostrarMesas();
+            } else {
+                JOptionPane.showMessageDialog(null, "Esta mesa ya ha sido reservada.");
+            }
+        }
+    };
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
+    private javax.swing.Box.Filler filler3;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JLabel labelWindowTitle;
+    private javax.swing.JPanel mesasPanel;
+    private javax.swing.JPanel panelFecha;
+    private javax.swing.JPanel panelHora;
     // End of variables declaration//GEN-END:variables
 }

@@ -6,6 +6,7 @@ package data;
 
 import java.util.List;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +15,7 @@ import modelo.Mesa;
 import modelo.Novedad;
 import modelo.Plato;
 import modelo.Promocion;
+import modelo.Reserva;
 import modelo.Resultado;
 import util.ConexionSQL;
 
@@ -48,7 +50,7 @@ public class DataRepository {
                         rs.getDate("FechaInicio"),
                         rs.getDate("FechaFin"),
                         rs.getDouble("DescuentoPorcentaje"),
-                        rs.getString("Imagen") 
+                        rs.getString("Imagen")
                 );
 
                 promociones.add(promocion);
@@ -69,11 +71,51 @@ public class DataRepository {
         }
     }
 
-        
+    public static Resultado<Boolean> insertarReserva(Reserva reserva) {
+        String sql = "INSERT INTO Reservas (IdCliente, FechaReserva, HoraReserva, CantPersonas, Estado, IdMesa) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
+
+        Connection connection;
+        try {
+            connection = ConexionSQL.obtenerConexion();
+        } catch (SQLException e) {
+            return new Resultado<>(false, false, "Error al conectar a la base de datos.");
+        }
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            // Asignar parámetros a la consulta
+            stmt.setInt(1, reserva.getUsuario().getIdUsuario());  // Asumiendo que Usuario tiene getIdUsuario()
+            stmt.setDate(2, new Date(reserva.getFechaReserva().getTime()));          // java.sql.Date
+            stmt.setTime(3, reserva.getHoraReserva());           // java.sql.Time
+            stmt.setInt(4, reserva.getCantPersonas());
+            stmt.setString(5, reserva.getEstado());
+            stmt.setInt(6, reserva.getMesa().getIdMesa());       // Asumiendo que Mesa tiene getIdMesa()
+
+            int filasAfectadas = stmt.executeUpdate();
+
+            if (filasAfectadas > 0) {
+                return new Resultado<>(true, true, null);
+            } else {
+                return new Resultado<>(false, false, "No se pudo insertar la reserva.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new Resultado<>(false, false, "Error al insertar la reserva: " + e.getMessage());
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
     public static Resultado<List<Novedad>> obtenerNovedades() {
-        String sql = "SELECT Id, Titulo, Descripcion, Imagen, FechaInicio, FechaFin " +
-                     "FROM Novedades " +
-                     "WHERE GETDATE() BETWEEN FechaInicio AND FechaFin";
+        String sql = "SELECT Id, Titulo, Descripcion, Imagen, FechaInicio, FechaFin "
+                + "FROM Novedades "
+                + "WHERE GETDATE() BETWEEN FechaInicio AND FechaFin";
 
         Connection connection;
         try {
@@ -88,13 +130,12 @@ public class DataRepository {
 
             while (rs.next()) {
                 Novedad novedad = new Novedad(
-                    rs.getInt("Id"),                         // ← ID importante
-                    rs.getString("Titulo"),
-                    rs.getString("Descripcion"),
-                    rs.getString("Imagen"),
-                    rs.getDate("FechaInicio"),
-                    rs.getDate("FechaFin")
-                    
+                        rs.getInt("Id"), // ← ID importante
+                        rs.getString("Titulo"),
+                        rs.getString("Descripcion"),
+                        rs.getString("Imagen"),
+                        rs.getDate("FechaInicio"),
+                        rs.getDate("FechaFin")
                 );
                 novedades.add(novedad);
             }
@@ -112,13 +153,10 @@ public class DataRepository {
         }
     }
 
-   
-    
     public static boolean agregarNovedad(Novedad novedad) {
         String sql = "INSERT INTO Novedades (titulo, descripcion, Imagen, fechainicio, fechafin) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection conn = ConexionSQL.obtenerConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, novedad.getTitulo());
             stmt.setString(2, novedad.getDescripcion());
@@ -136,8 +174,7 @@ public class DataRepository {
     public static boolean editarNovedad(int id, Novedad novedad) {
         String sql = "UPDATE Novedades SET titulo = ?, descripcion = ?, Imagen = ?, fechainicio = ?, fechafin = ? WHERE id = ?";
 
-        try (Connection conn = ConexionSQL.obtenerConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, novedad.getTitulo());
             stmt.setString(2, novedad.getDescripcion());
@@ -153,12 +190,10 @@ public class DataRepository {
         }
     }
 
-    
     public static boolean eliminarNovedad(int id) {
         String sql = "DELETE FROM Novedades WHERE id = ?";
 
-        try (Connection conn = ConexionSQL.obtenerConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
@@ -166,15 +201,14 @@ public class DataRepository {
             e.printStackTrace();
             return false;
         }
-    }   
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////
     
     public static boolean agregarPromocion(Promocion promo) {
         String sql = "INSERT INTO Promociones (Titulo, Descripcion, FechaInicio, FechaFin, DescuentoPorcentaje, Imagen) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = ConexionSQL.obtenerConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, promo.getTitulo());
             stmt.setString(2, promo.getDescripcion());
@@ -189,13 +223,11 @@ public class DataRepository {
             return false;
         }
     }
-    
-    
+
     public static boolean editarPromocion(int id, Promocion promo) {
         String sql = "UPDATE Promociones SET Titulo = ?, Descripcion = ?, FechaInicio = ?, FechaFin = ?, DescuentoPorcentaje = ?, Imagen = ? WHERE IdPromocion = ?";
 
-        try (Connection conn = ConexionSQL.obtenerConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, promo.getTitulo());
             stmt.setString(2, promo.getDescripcion());
@@ -212,12 +244,10 @@ public class DataRepository {
         }
     }
 
-
     public static boolean eliminarPromocion(int id) {
         String sql = "DELETE FROM Promociones WHERE IdPromocion = ?";
 
-        try (Connection conn = ConexionSQL.obtenerConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
@@ -226,22 +256,19 @@ public class DataRepository {
             return false;
         }
     }
-    
-    
+
     public static Resultado<List<Mesa>> obtenerMesas() {
         List<Mesa> lista = new ArrayList<>();
         String sql = "SELECT IdMesa, NumeroMesa, Capacidad, Disponible FROM Mesas";
 
-        try (Connection conn = ConexionSQL.obtenerConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Mesa m = new Mesa(
-                    rs.getInt("IdMesa"),
-                    rs.getInt("NumeroMesa"),
-                    rs.getInt("Capacidad"),
-                    rs.getBoolean("Disponible")
+                        rs.getInt("IdMesa"),
+                        rs.getInt("NumeroMesa"),
+                        rs.getInt("Capacidad"),
+                        rs.getBoolean("Disponible")
                 );
                 lista.add(m);
             }
@@ -251,12 +278,10 @@ public class DataRepository {
         }
     }
 
-
     public static boolean agregarMesa(Mesa mesa) {
         String sql = "INSERT INTO Mesas (NumeroMesa, Capacidad, Disponible) VALUES (?, ?, ?)";
 
-        try (Connection conn = ConexionSQL.obtenerConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, mesa.getNumeroMesa());
             stmt.setInt(2, mesa.getCapacidad());
             stmt.setBoolean(3, mesa.isDisponible());
@@ -266,12 +291,10 @@ public class DataRepository {
         }
     }
 
-
     public static boolean editarMesa(int id, Mesa mesa) {
         String sql = "UPDATE Mesas SET NumeroMesa = ?, Capacidad = ?, Disponible = ? WHERE IdMesa = ?";
 
-        try (Connection conn = ConexionSQL.obtenerConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, mesa.getNumeroMesa());
             stmt.setInt(2, mesa.getCapacidad());
             stmt.setBoolean(3, mesa.isDisponible());
@@ -282,21 +305,16 @@ public class DataRepository {
         }
     }
 
-
     public static boolean eliminarMesa(int id) {
         String sql = "DELETE FROM Mesas WHERE IdMesa = ?";
 
-        try (Connection conn = ConexionSQL.obtenerConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             return false;
         }
     }
-
-
-    
 
     public static Resultado<List<Plato>> obtenerPlatosPorTipo(String tipo) {
         String sql
@@ -351,7 +369,7 @@ public class DataRepository {
             }
         }
     }
-    
+
     public static Resultado<List<Plato>> getEntradas() {
         return obtenerPlatosPorTipo("entrada");
     }
@@ -359,11 +377,11 @@ public class DataRepository {
     public static Resultado<List<Plato>> getFondos() {
         return obtenerPlatosPorTipo("fondo");
     }
-    
+
     public static Resultado<List<Plato>> getPostres() {
         return obtenerPlatosPorTipo("postre");
     }
-    
+
     public static Resultado<List<Plato>> getBebidas() {
         return obtenerPlatosPorTipo("bebida");
     }

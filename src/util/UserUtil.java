@@ -30,6 +30,7 @@ public class UserUtil {
         //int id = prefs.getInt("id", -1);
         //if(id == -1) return null;
         int id = prefs.getInt("id", -1);
+        System.out.println("usuario: " + id);
         int idTipo = prefs.getInt("idTipo", -1);
         if (id == -1 || idTipo == -1) return null;
 
