@@ -105,7 +105,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     txtDescNovedad.setWrapStyleWord(true);
     JScrollPane scrollDescNovedad = new JScrollPane(txtDescNovedad);
 
-    JLabel lblImgNovedad = new JLabel("Ruta imagen:");
+    JLabel lblImgNovedad = new JLabel("Imagen:");
     txtImgNovedad = new JTextField(25);
     JButton btnSeleccionarImgNovedad = new JButton("Buscar");
 
@@ -135,18 +135,36 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     JPanel formNovedad = new JPanel();
     formNovedad.setLayout(new BoxLayout(formNovedad, BoxLayout.Y_AXIS));
     formNovedad.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    
+    // Limitar altura 
+    int alturaFija = 30;
+
+    JPanel panelInicioNovedad = new JPanel(new BorderLayout());
+    panelInicioNovedad.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+    panelInicioNovedad.setPreferredSize(new Dimension(0, alturaFija));
+    panelInicioNovedad.add(dateInicioNovedad, BorderLayout.CENTER);
+
+    JPanel panelFinNovedad = new JPanel(new BorderLayout());
+    panelFinNovedad.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+    panelFinNovedad.setPreferredSize(new Dimension(0, alturaFija));
+    panelFinNovedad.add(dateFinNovedad, BorderLayout.CENTER);
+
+    JPanel panelImgNovedad = new JPanel(new BorderLayout());
+    panelImgNovedad.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+    panelImgNovedad.setPreferredSize(new Dimension(0, alturaFija));
+    panelImgNovedad.add(txtImgNovedad, BorderLayout.CENTER);
 
     formNovedad.add(lblTituloNovedad);
     formNovedad.add(txtTituloNovedad);
     formNovedad.add(lblDescNovedad);
     formNovedad.add(scrollDescNovedad);
     formNovedad.add(lblImgNovedad);
-    formNovedad.add(txtImgNovedad);
+    formNovedad.add(panelImgNovedad);
     formNovedad.add(btnSeleccionarImgNovedad); // Buscar imagen
     formNovedad.add(lblInicioNovedad);
-    formNovedad.add(dateInicioNovedad);
+    formNovedad.add(panelInicioNovedad);
     formNovedad.add(lblFinNovedad);
-    formNovedad.add(dateFinNovedad);
+    formNovedad.add(panelFinNovedad);
 
     JPanel botonesNovedad = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
     botonesNovedad.add(btnAgregarNovedad);
@@ -178,7 +196,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     txtDescPromo.setWrapStyleWord(true);
     JScrollPane scrollDescPromo = new JScrollPane(txtDescPromo);
 
-    JLabel lblImgPromo = new JLabel("Ruta imagen:");
+    JLabel lblImgPromo = new JLabel("Imagen:");
     txtImgPromo = new JTextField(25);
     JButton btnSeleccionarImgPromo = new JButton("Buscar");
 
@@ -211,19 +229,42 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     formPromo.setLayout(new BoxLayout(formPromo, BoxLayout.Y_AXIS));
     formPromo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        // Limitar altura 
+    //int alturaFijaProm = 30;
+
+    JPanel panelInicioPromo = new JPanel(new BorderLayout());
+    panelInicioPromo.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+    panelInicioPromo.setPreferredSize(new Dimension(0, alturaFija));
+    panelInicioPromo.add(dateInicioPromo, BorderLayout.CENTER);
+
+    JPanel panelFinPromo = new JPanel(new BorderLayout());
+    panelFinPromo.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+    panelFinPromo.setPreferredSize(new Dimension(0, alturaFija));
+    panelFinPromo.add(dateFinPromo, BorderLayout.CENTER);
+
+    JPanel panelImgPromo = new JPanel(new BorderLayout());
+    panelImgPromo.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+    panelImgPromo.setPreferredSize(new Dimension(0, alturaFija));
+    panelImgPromo.add(txtImgPromo, BorderLayout.CENTER);
+    
+    JPanel panelDescPromo = new JPanel(new BorderLayout());
+    panelDescPromo.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+    panelDescPromo.setPreferredSize(new Dimension(0, alturaFija));
+    panelDescPromo.add(txtDescuento, BorderLayout.CENTER);
+    
     formPromo.add(lblTituloPromo);
     formPromo.add(txtTituloPromo);
     formPromo.add(lblDescPromo);
     formPromo.add(scrollDescPromo);
     formPromo.add(lblImgPromo);
-    formPromo.add(txtImgPromo);
+    formPromo.add(panelImgPromo);
     formPromo.add(btnSeleccionarImgPromo); // Buscar imagen
     formPromo.add(lblInicio);
-    formPromo.add(dateInicioPromo);
+    formPromo.add(panelInicioPromo);
     formPromo.add(lblFin);
-    formPromo.add(dateFinPromo);
+    formPromo.add(panelFinPromo);
     formPromo.add(lblDescuento);
-    formPromo.add(txtDescuento);
+    formPromo.add(panelDescPromo);
 
     JPanel botonesPromo = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
     botonesPromo.add(btnAgregarPromo);
@@ -287,11 +328,25 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     JPanel formMesa = new JPanel();
     formMesa.setLayout(new BoxLayout(formMesa, BoxLayout.Y_AXIS));
     formMesa.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    
+        // Limitar altura 
+    //int alturaFija = 30;
+
+    JPanel panelCapMesa = new JPanel(new BorderLayout());
+    panelCapMesa.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+    panelCapMesa.setPreferredSize(new Dimension(0, alturaFija));
+    panelCapMesa.add(txtCapacidad, BorderLayout.CENTER);
+
+    JPanel panelNroMesa = new JPanel(new BorderLayout());
+    panelNroMesa.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+    panelNroMesa.setPreferredSize(new Dimension(0, alturaFija));
+    panelNroMesa.add(txtNroMesa, BorderLayout.CENTER);
+
 
     formMesa.add(lblCapacidad);
-    formMesa.add(txtCapacidad);
+    formMesa.add(panelCapMesa);
     formMesa.add(lblnroMesa);
-    formMesa.add(txtNroMesa);
+    formMesa.add(panelNroMesa);
     formMesa.add(chkDisponible);
  
     JPanel botonesMesa = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
