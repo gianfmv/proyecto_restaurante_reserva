@@ -17,12 +17,16 @@ import java.io.File;
 import com.toedter.calendar.JDateChooser;
 import data.UserRepository;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Image;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import modelo.Mesa;
+import modelo.Plato;
 import modelo.TipoUsuario;
 import modelo.Usuario;
 
@@ -78,6 +82,15 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     private JComboBox<TipoUsuario> cboTipoUsuario;
 
     
+    // === COMPONENTES PLATOS ===
+    private JTextField txtNombrePlato, txtPrecioPlato, txtImagenPlato;
+    private JTextArea txtDescripcionPlato;
+    private JComboBox<String> cmbTipoPlato;
+    private JLabel lblVistaPreviaImagenPlato;
+    private JTable tablaPlatos;
+    private DefaultTableModel modeloTablaPlatos;
+    private JButton btnAgregarPlato, btnEditarPlato, btnEliminarPlato, btnLimpiarPlato;
+
     
     public InicioAdmin() {
         initComponents();
@@ -469,8 +482,232 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     tablaUsuarios.getSelectionModel().addListSelectionListener(e -> cargarUsuarioSeleccionado());
 
     cargarUsuarios(); // Llenar tabla
+    
+    inicializarPanelPlatos();
+    agregarListenerPlatos();
+    
 
     }
+    
+    private void inicializarPanelPlatos() {
+        jPanel5.setLayout(null); // Posicionamiento absoluto
+
+        JLabel lblNombre = new JLabel("Nombre:");
+        lblNombre.setBounds(20, 20, 100, 25);
+        jPanel5.add(lblNombre);
+
+        txtNombrePlato = new JTextField();
+        txtNombrePlato.setBounds(120, 20, 200, 25);
+        jPanel5.add(txtNombrePlato);
+
+        JLabel lblDescripcion = new JLabel("Descripción:");
+        lblDescripcion.setBounds(20, 60, 100, 25);
+        jPanel5.add(lblDescripcion);
+
+        txtDescripcionPlato = new JTextArea();
+        txtDescripcionPlato.setLineWrap(true);
+        JScrollPane scrollDesc = new JScrollPane(txtDescripcionPlato);
+        scrollDesc.setBounds(120, 60, 200, 60);
+        jPanel5.add(scrollDesc);
+
+        JLabel lblPrecio = new JLabel("Precio:");
+        lblPrecio.setBounds(20, 130, 100, 25);
+        jPanel5.add(lblPrecio);
+
+        txtPrecioPlato = new JTextField();
+        txtPrecioPlato.setBounds(120, 130, 200, 25);
+        jPanel5.add(txtPrecioPlato);
+
+        JLabel lblTipo = new JLabel("Tipo:");
+        lblTipo.setBounds(20, 170, 100, 25);
+        jPanel5.add(lblTipo);
+
+        cmbTipoPlato = new JComboBox<>(new String[]{"Entrada", "Fondo", "Bebida", "Postre"});
+        cmbTipoPlato.setBounds(120, 170, 200, 25);
+        jPanel5.add(cmbTipoPlato);
+
+        JLabel lblImagen = new JLabel("Imagen:");
+        lblImagen.setBounds(20, 210, 100, 25);
+        jPanel5.add(lblImagen);
+
+        txtImagenPlato = new JTextField();
+        txtImagenPlato.setBounds(120, 210, 200, 25);
+        jPanel5.add(txtImagenPlato);
+
+        JButton btnSeleccionarImagen = new JButton("...");
+        btnSeleccionarImagen.setBounds(330, 210, 30, 25);
+        jPanel5.add(btnSeleccionarImagen);
+
+        lblVistaPreviaImagenPlato = new JLabel();
+        lblVistaPreviaImagenPlato.setBounds(370, 60, 180, 180);
+        lblVistaPreviaImagenPlato.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        jPanel5.add(lblVistaPreviaImagenPlato);
+
+        // Tabla
+        tablaPlatos = new JTable();
+        modeloTablaPlatos = new DefaultTableModel(new String[]{"ID", "Nombre", "Descripción", "Precio", "Tipo", "Imagen"}, 0);
+        tablaPlatos.setModel(modeloTablaPlatos);
+        JScrollPane scrollTabla = new JScrollPane(tablaPlatos);
+        scrollTabla.setBounds(20, 260, 600, 200);
+        jPanel5.add(scrollTabla);
+
+        // Botones
+        btnAgregarPlato = new JButton("Agregar");
+        btnAgregarPlato.setBounds(650, 60, 100, 25);
+        jPanel5.add(btnAgregarPlato);
+
+        btnEditarPlato = new JButton("Editar");
+        btnEditarPlato.setBounds(650, 95, 100, 25);
+        jPanel5.add(btnEditarPlato);
+
+        btnEliminarPlato = new JButton("Eliminar");
+        btnEliminarPlato.setBounds(650, 130, 100, 25);
+        jPanel5.add(btnEliminarPlato);
+
+        btnLimpiarPlato = new JButton("Limpiar");
+        btnLimpiarPlato.setBounds(650, 165, 100, 25);
+        jPanel5.add(btnLimpiarPlato);
+
+        // Acción del botón de imagen
+        btnSeleccionarImagen.addActionListener(e -> seleccionarImagen(txtImagenPlato, lblVistaPreviaImagenPlato));
+    }
+    
+    private void limpiarCamposPlato() {
+        txtNombrePlato.setText("");
+        txtDescripcionPlato.setText("");
+        txtPrecioPlato.setText("");
+        cmbTipoPlato.setSelectedIndex(0);
+        txtImagenPlato.setText("");
+        lblVistaPreviaImagenPlato.setIcon(null);
+        tablaPlatos.clearSelection();
+    }
+
+    private void cargarPlatos() {
+        modeloTablaPlatos.setRowCount(0); // Limpiar la tabla
+        List<Plato> lista = DataRepository.obtenerPlatos();
+
+        for (Plato plato : lista) {
+            modeloTablaPlatos.addRow(new Object[]{
+                plato.getIdMenu(),
+                plato.getNombre(),
+                plato.getDescripcion(),
+                plato.getPrecio(),
+                plato.getTipo(),
+                plato.getUrlImagen()
+            });
+        }
+    }
+
+    private void agregarListenerPlatos(){
+        btnAgregarPlato.addActionListener(e -> {
+        String nombre = txtNombrePlato.getText();
+        String descripcion = txtDescripcionPlato.getText();
+        String tipo = (String) cmbTipoPlato.getSelectedItem();
+        String imagen = txtImagenPlato.getText();
+        double precio;
+
+        try {
+            precio = Double.parseDouble(txtPrecioPlato.getText());
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Precio inválido");
+            return;
+        }
+
+        Plato nuevoPlato = new Plato(0, nombre, tipo, descripcion , precio,imagen);
+        DataRepository.agregarPlato(nuevoPlato);
+        cargarPlatos();
+        limpiarCamposPlato();
+    });
+        
+        
+
+    btnEditarPlato.addActionListener(e -> {
+        int fila = tablaPlatos.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un plato para editar");
+            return;
+        }
+
+        int id = (int) modeloTablaPlatos.getValueAt(fila, 0);
+        String nombre = txtNombrePlato.getText();
+        String descripcion = txtDescripcionPlato.getText();
+        String tipo = (String) cmbTipoPlato.getSelectedItem();
+        String imagen = txtImagenPlato.getText();
+        double precio;
+
+        try {
+            precio = Double.parseDouble(txtPrecioPlato.getText());
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Precio inválido");
+            return;
+        }
+
+        Plato editado = new Plato(id, nombre,tipo, descripcion, precio, imagen );
+        DataRepository.editarPlato(id,editado);
+        cargarPlatos();
+        limpiarCamposPlato();
+    });
+
+    btnEliminarPlato.addActionListener(e -> {
+        int fila = tablaPlatos.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un plato para eliminar");
+            return;
+        }
+
+        int id = (int) modeloTablaPlatos.getValueAt(fila, 0);
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Está seguro de eliminar este plato?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            DataRepository.eliminarPlato(id);
+            cargarPlatos();
+            limpiarCamposPlato();
+        }
+    });
+
+    btnLimpiarPlato.addActionListener(e -> limpiarCamposPlato());
+
+    tablaPlatos.getSelectionModel().addListSelectionListener(e -> {
+        int fila = tablaPlatos.getSelectedRow();
+        if (fila != -1) {
+            txtNombrePlato.setText((String) modeloTablaPlatos.getValueAt(fila, 1));
+            txtDescripcionPlato.setText((String) modeloTablaPlatos.getValueAt(fila, 2));
+            txtPrecioPlato.setText(modeloTablaPlatos.getValueAt(fila, 3).toString());
+            cmbTipoPlato.setSelectedItem((String) modeloTablaPlatos.getValueAt(fila, 4));
+            txtImagenPlato.setText((String) modeloTablaPlatos.getValueAt(fila, 5));
+
+            // Vista previa imagen
+            String rutaImagen = txtImagenPlato.getText();
+            if (rutaImagen != null && !rutaImagen.isEmpty()) {
+                ImageIcon icono = new ImageIcon(rutaImagen);
+                Image imagenEscalada = icono.getImage().getScaledInstance(
+                    lblVistaPreviaImagenPlato.getWidth(), lblVistaPreviaImagenPlato.getHeight(), Image.SCALE_SMOOTH);
+                lblVistaPreviaImagenPlato.setIcon(new ImageIcon(imagenEscalada));
+            } else {
+                lblVistaPreviaImagenPlato.setIcon(null);
+            }
+        }
+    });
+
+    }
+    
+    private void seleccionarImagen(JTextField campoRuta, JLabel labelVistaPrevia) {
+    JFileChooser fileChooser = new JFileChooser();
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("Imágenes", "jpg", "jpeg", "png", "gif");
+    fileChooser.setFileFilter(filter);
+
+    int resultado = fileChooser.showOpenDialog(this);
+    if (resultado == JFileChooser.APPROVE_OPTION) {
+        File archivoSeleccionado = fileChooser.getSelectedFile();
+        campoRuta.setText(archivoSeleccionado.getAbsolutePath());
+
+        // Mostrar vista previa escalada
+        ImageIcon icono = new ImageIcon(archivoSeleccionado.getAbsolutePath());
+        Image imagenEscalada = icono.getImage().getScaledInstance(
+                labelVistaPrevia.getWidth(), labelVistaPrevia.getHeight(), Image.SCALE_SMOOTH);
+        labelVistaPrevia.setIcon(new ImageIcon(imagenEscalada));
+    }
+}
+
     
     private void agregarNovedad() {
         String titulo = txtTituloNovedad.getText();
@@ -1007,6 +1244,7 @@ private void agregarMesa() {
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -1064,6 +1302,19 @@ private void agregarMesa() {
 
         jTabbedPane1.addTab("USUARIOS", jPanel4);
 
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1150, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 622, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("PLATO", jPanel5);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1107,6 +1358,7 @@ private void agregarMesa() {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }

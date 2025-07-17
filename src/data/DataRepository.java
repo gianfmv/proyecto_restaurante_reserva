@@ -369,6 +369,93 @@ public class DataRepository {
             }
         }
     }
+    
+        // Obtener lista de platos
+    public static List<Plato> obtenerPlatos() {
+        List<Plato> platos = new ArrayList<>();
+        String sql = "SELECT IdMenu, Nombre, Descripcion, Precio, Imagen, Tipo FROM Menus";
+
+        Connection connection = null;
+
+          try {
+         connection = ConexionSQL.obtenerConexion();
+             PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Plato p = new Plato();
+                p.setIdMenu(rs.getInt("IdMenu"));
+                p.setNombre(rs.getString("Nombre"));
+                p.setDescripcion(rs.getString("Descripcion"));
+                p.setPrecio(rs.getDouble("Precio"));
+                p.setUrlImagen(rs.getString("Imagen"));
+                p.setTipo(rs.getString("Tipo"));
+                platos.add(p);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return platos;
+    }
+
+    // Agregar plato
+    public static void agregarPlato(Plato p) {
+        String sql = "INSERT INTO Menus (Nombre, Descripcion, Precio, Imagen, Tipo) VALUES (?, ?, ?, ?, ?)";
+
+         Connection connection = null;
+       
+    
+        try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+             
+            stmt.setString(1, p.getNombre());
+            stmt.setString(2, p.getDescripcion());
+            stmt.setDouble(3, p.getPrecio());
+            stmt.setString(4, p.getUrlImagen());
+            stmt.setString(5, p.getTipo());
+
+            stmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Editar plato
+    public static void editarPlato(int id, Plato p) {
+        String sql = "UPDATE Menus SET Nombre = ?, Descripcion = ?, Precio = ?, Imagen = ?, Tipo = ? WHERE IdMenu = ?";
+
+        Connection connection = null;
+        
+        try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, p.getNombre());
+            stmt.setString(2, p.getDescripcion());
+            stmt.setDouble(3, p.getPrecio());
+            stmt.setString(4, p.getUrlImagen());
+            stmt.setString(5, p.getTipo());
+            stmt.setInt(6, id);
+
+            stmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Eliminar plato
+    public static void eliminarPlato(int id) {
+        String sql = "DELETE FROM Menus WHERE IdMenu = ?";
+
+        try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public static Resultado<List<Plato>> getEntradas() {
         return obtenerPlatosPorTipo("entrada");
@@ -385,5 +472,8 @@ public class DataRepository {
     public static Resultado<List<Plato>> getBebidas() {
         return obtenerPlatosPorTipo("bebida");
     }
+    
+    
+    
 
 }

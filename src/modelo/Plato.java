@@ -34,6 +34,15 @@ public class Plato {
         this.ingredientes = ingredientes;
         this.alergenos = alergenos;
     }
+    
+       public Plato(int idMenu, String nombre, String tipo, String descripcion, double precio, String urlImagen) {
+        this.idMenu = idMenu;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.urlImagen = urlImagen;
+        this.tipo = tipo;
+    }
 
     // Getters
     public int getIdMenu() { return idMenu; }
@@ -57,6 +66,40 @@ public class Plato {
 
     // Setters
 
+    public void setIdMenu(int idMenu) {
+        this.idMenu = idMenu;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+
+    public void setUrlImagen(String urlImagen) {
+        this.urlImagen = urlImagen;
+    }
+
+    public void setIngredientes(String ingredientes) {
+        this.ingredientes = ingredientes;
+    }
+
+    public void setAlergenos(String alergenos) {
+        this.alergenos = alergenos;
+    }
+
+    
+    
     @Override
     public String toString() {
         return "Menu{" +
