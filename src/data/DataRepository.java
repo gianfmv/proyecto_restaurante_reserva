@@ -4,6 +4,7 @@
  */
 package data;
 
+import java.beans.Statement;
 import java.util.List;
 import java.sql.Connection;
 import java.sql.Date;
@@ -11,13 +12,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import modelo.DetallePedido;
 import modelo.Mesa;
 import modelo.Novedad;
+import modelo.Pedido;
 import modelo.Plato;
 import modelo.Promocion;
 import modelo.Reserva;
 import modelo.Resultado;
+import modelo.Usuario;
 import util.ConexionSQL;
+
+
 
 /**
  *
@@ -225,7 +231,7 @@ public class DataRepository {
     }
 
     public static boolean editarPromocion(int id, Promocion promo) {
-        String sql = "UPDATE Promociones SET Titulo = ?, Descripcion = ?, FechaInicio = ?, FechaFin = ?, DescuentoPorcentaje = ?, Imagen = ? WHERE IdPromocion = ?";
+        String sql = "UPDATE Promociones SET Titulo = ?, Descripcion = ?, FechaInicio = ?, FechaFin = ?, DescuentoPorcentaje = ?, Imagen = ? WHERE Id = ?";
 
         try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -245,7 +251,7 @@ public class DataRepository {
     }
 
     public static boolean eliminarPromocion(int id) {
-        String sql = "DELETE FROM Promociones WHERE IdPromocion = ?";
+        String sql = "DELETE FROM Promociones WHERE Id = ?";
 
         try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -404,7 +410,7 @@ public class DataRepository {
     public static void agregarPlato(Plato p) {
         String sql = "INSERT INTO Menus (Nombre, Descripcion, Precio, Imagen, Tipo) VALUES (?, ?, ?, ?, ?)";
 
-         Connection connection = null;
+         //Connection connection = null;
        
     
         try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -426,7 +432,7 @@ public class DataRepository {
     public static void editarPlato(int id, Plato p) {
         String sql = "UPDATE Menus SET Nombre = ?, Descripcion = ?, Precio = ?, Imagen = ?, Tipo = ? WHERE IdMenu = ?";
 
-        Connection connection = null;
+       // Connection connection = null;
         
         try (Connection conn = ConexionSQL.obtenerConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -475,5 +481,151 @@ public class DataRepository {
     
     
     
+    public static List<Pedido> obtenerPedidos() {
+        List<Pedido> lista = new ArrayList<>();
+        String sql = "SELECT * FROM Pedidos";
+
+        try (Connection con = ConexionSQL.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Pedido p = new Pedido();
+                p.setIdPedido(rs.getInt("IdPedido"));
+                p.setIdReserva(rs.getInt("IdReserva"));
+                p.setFechaPedido(rs.getTimestamp("FechaPedido"));
+                lista.add(p);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return lista;
+    }
+
+    
+    public static List<DetallePedido> obtenerDetallePedido(int idPedido) {
+        List<DetallePedido> lista = new ArrayList<>();
+        String sql = """
+            SELECT pm.IdPedido, pm.IdMenu, pm.Cantidad, m.Nombre, m.Precio
+            FROM Pedido_Menu pm
+            JOIN Menus m ON pm.IdMenu = m.IdMenu
+            WHERE pm.IdPedido = ?
+        """;
+
+        try (Connection con = ConexionSQL.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, idPedido);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    DetallePedido dp = new DetallePedido();
+                    dp.setIdPedido(rs.getInt("IdPedido"));
+                    dp.setIdMenu(rs.getInt("IdMenu"));
+                    dp.setCantidad(rs.getInt("Cantidad"));
+
+                    Plato plato = new Plato();
+                    plato.setIdMenu(rs.getInt("IdMenu"));
+                    plato.setNombre(rs.getString("Nombre"));
+                    plato.setPrecio(rs.getDouble("Precio"));
+
+                    dp.setPlato(plato);
+                    lista.add(dp);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return lista;
+    }
+
+    
+    public static int agregarPedidoConDetalle(Pedido pedido) {
+          String sqlPedido = "INSERT INTO Pedidos (IdReserva) VALUES (?)";
+          String sqlDetalle = "INSERT INTO Pedido_Menu (IdPedido, IdMenu, Cantidad) VALUES (?, ?, ?)";
+
+          int idPedidoGenerado = -1;
+
+          try (Connection con = ConexionSQL.obtenerConexion()) {
+              con.setAutoCommit(false); // Iniciar transacción manual
+
+              // 1. Insertar el pedido y obtener ID generado
+              try (PreparedStatement ps = con.prepareStatement(sqlPedido, 1)) {
+                  ps.setInt(1, pedido.getIdReserva());
+                  ps.executeUpdate();
+
+                  try (ResultSet rs = ps.getGeneratedKeys()) {
+                      if (rs.next()) {
+                          idPedidoGenerado = rs.getInt(1); // Obtener ID generado
+                      }
+                  }
+              }
+
+              // 2. Insertar los detalles del pedido (varios platos)
+              try (PreparedStatement psDetalle = con.prepareStatement(sqlDetalle)) {
+                  for (DetallePedido d : pedido.getDetalles()) {
+                      psDetalle.setInt(1, idPedidoGenerado);
+                      psDetalle.setInt(2, d.getIdMenu());
+                      psDetalle.setInt(3, d.getCantidad());
+                      psDetalle.addBatch();
+                  }
+                  psDetalle.executeBatch(); // Ejecutar todo en lote
+              }
+
+              con.commit(); // Confirmar transacción
+
+          } catch (Exception e) {
+              e.printStackTrace(); // Imprimir error si ocurre
+          }
+
+          return idPedidoGenerado;
+      }
+
+
+    public static List<Reserva> obtenerReservasActivas() {
+        List<Reserva> reservas = new ArrayList<>();
+        String sql = "SELECT R.IdReserva, R.FechaReserva, R.HoraReserva, R.CantPersonas, R.Estado, " +
+                     "R.IdCliente, U.NombreCompleto, R.IdMesa " +
+                     "FROM Reservas R " +
+                     "JOIN Usuario U ON R.IdCliente = U.IdUsuario " +
+                     "WHERE R.Estado = 'Pendiente'";
+
+        try (Connection connection = ConexionSQL.obtenerConexion();
+             PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Reserva r = new Reserva();
+                r.setIdReserva(rs.getInt("IdReserva"));
+                r.setFechaReserva(rs.getDate("FechaReserva"));
+                r.setHoraReserva(rs.getTime("HoraReserva"));
+                r.setCantPersonas(rs.getInt("CantPersonas"));
+                r.setEstado(rs.getString("Estado"));
+
+                // Cargar cliente como Usuario
+                Usuario cliente = new Usuario();
+                cliente.setIdUsuario(rs.getInt("IdCliente"));
+                cliente.setNombreCompleto(rs.getString("NombreCompleto"));
+                r.setUsuario(cliente);
+
+                // Cargar mesa
+                Mesa m = new Mesa();
+                m.setIdMesa(rs.getInt("IdMesa"));
+                r.setMesa(m);
+
+                reservas.add(r);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return reservas;
+    }
+
+
 
 }

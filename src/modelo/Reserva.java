@@ -104,6 +104,10 @@ public class Reserva {
         this.pedidos = pedidos;
     }
     
-    
+    @Override
+    public String toString() {
+        return "Reserva #" + idReserva + " - " + getUsuario();
+    }
+
     
 }

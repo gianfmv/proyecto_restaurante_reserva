@@ -4,7 +4,9 @@
  */
 package modelo;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -22,6 +24,9 @@ public class Pedido {
         this.idReserva = idReserva;
         this.fechaPedido = fechaPedido;
     }
+
+    private List<DetallePedido> detalles = new ArrayList<>();
+
 
     public int getIdPedido() {
         return idPedido;
@@ -47,6 +52,13 @@ public class Pedido {
         this.fechaPedido = fechaPedido;
     }
     
-    
+    public List<DetallePedido> getDetalles() {
+    return detalles;
+    }
+
+    public void setDetalles(List<DetallePedido> detalles) {
+        this.detalles = detalles;
+    }
+
     
 }

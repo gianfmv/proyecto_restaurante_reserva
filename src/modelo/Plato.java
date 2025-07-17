@@ -100,7 +100,7 @@ public class Plato {
 
     
     
-    @Override
+    /*@Override
     public String toString() {
         return "Menu{" +
                "idMenu=" + idMenu +
@@ -109,5 +109,10 @@ public class Plato {
                ", precio=" + precio +
                ", urlImagen='" + urlImagen + '\'' +
                '}';
+    }*/
+    @Override
+    public String toString() {
+        return nombre; // así se mostrará solo el nombre en el combo
     }
+
 }

@@ -21,12 +21,17 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
+import java.awt.Menu;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import modelo.DetallePedido;
 import modelo.Mesa;
+import modelo.Pedido;
 import modelo.Plato;
+import modelo.Reserva;
 import modelo.TipoUsuario;
 import modelo.Usuario;
 
@@ -57,7 +62,8 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     private javax.swing.JTable tablaMesas;
     
     // Campos NOVEDAD
-    private JTextField txtTituloNovedad;
+    //private JTextField txtTituloNovedadX;
+    private JTextField txtTitNov;
     private JTextArea txtDescNovedad;
     private JTextField txtImgNovedad;
 
@@ -92,6 +98,20 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     private JButton btnAgregarPlato, btnEditarPlato, btnEliminarPlato, btnLimpiarPlato;
 
     
+    private JComboBox<Reserva> cboReserva;
+    private JComboBox<Plato> cboPlato;
+    private JTextField txtCantidad;
+    private JTable tablaDetalle;
+    private DefaultTableModel modeloDetalle;
+    private JButton btnAgregarDetalle;
+    private JButton btnRegistrarPedido;
+    private DefaultTableModel modeloPedido;
+    private JTable tablaPedido;
+    private JButton btnEditarPedido, btnEliminarPedido, btnLimpiarPedido;
+    
+    
+    private List<DetallePedido> listaDetalle = new ArrayList<>();
+
     public InicioAdmin() {
         initComponents();
         
@@ -110,7 +130,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
 
     // === NOVEDADES ===
     JLabel lblTituloNovedad = new JLabel("Título:");
-    txtTituloNovedad = new JTextField(25);
+    txtTitNov = new JTextField(25);
 
     JLabel lblDescNovedad = new JLabel("Descripción:");
     txtDescNovedad = new JTextArea(3, 25);
@@ -168,7 +188,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     panelImgNovedad.add(txtImgNovedad, BorderLayout.CENTER);
 
     formNovedad.add(lblTituloNovedad);
-    formNovedad.add(txtTituloNovedad);
+    formNovedad.add(txtTitNov);
     formNovedad.add(lblDescNovedad);
     formNovedad.add(scrollDescNovedad);
     formNovedad.add(lblImgNovedad);
@@ -322,7 +342,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     JLabel lblCapacidad = new JLabel("Capacidad:");
     JLabel lblnroMesa= new JLabel("Nro de Mesa:");
      
-    txtTituloNovedad = new JTextField(25);
+    txtTitNov = new JTextField(25);
     txtCapacidad = new JTextField(10);
     txtNroMesa = new JTextField(10);
     chkDisponible = new JCheckBox("Disponible");
@@ -485,8 +505,12 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     
     inicializarPanelPlatos();
     agregarListenerPlatos();
-    
+    cargarPlatos();
 
+    inicializarPanelPedidos();
+    agregaListenersPedidos();
+    cargarPlatos2();
+    cargarReservas();
     }
     
     private void inicializarPanelPlatos() {
@@ -691,26 +715,179 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     }
     
     private void seleccionarImagen(JTextField campoRuta, JLabel labelVistaPrevia) {
-    JFileChooser fileChooser = new JFileChooser();
-    FileNameExtensionFilter filter = new FileNameExtensionFilter("Imágenes", "jpg", "jpeg", "png", "gif");
-    fileChooser.setFileFilter(filter);
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Imágenes", "jpg", "jpeg", "png", "gif");
+        fileChooser.setFileFilter(filter);
 
-    int resultado = fileChooser.showOpenDialog(this);
-    if (resultado == JFileChooser.APPROVE_OPTION) {
-        File archivoSeleccionado = fileChooser.getSelectedFile();
-        campoRuta.setText(archivoSeleccionado.getAbsolutePath());
+        int resultado = fileChooser.showOpenDialog(this);
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            File archivoSeleccionado = fileChooser.getSelectedFile();
+            campoRuta.setText(archivoSeleccionado.getAbsolutePath());
 
-        // Mostrar vista previa escalada
-        ImageIcon icono = new ImageIcon(archivoSeleccionado.getAbsolutePath());
-        Image imagenEscalada = icono.getImage().getScaledInstance(
-                labelVistaPrevia.getWidth(), labelVistaPrevia.getHeight(), Image.SCALE_SMOOTH);
-        labelVistaPrevia.setIcon(new ImageIcon(imagenEscalada));
+            // Mostrar vista previa escalada
+            ImageIcon icono = new ImageIcon(archivoSeleccionado.getAbsolutePath());
+            Image imagenEscalada = icono.getImage().getScaledInstance(
+                    labelVistaPrevia.getWidth(), labelVistaPrevia.getHeight(), Image.SCALE_SMOOTH);
+            labelVistaPrevia.setIcon(new ImageIcon(imagenEscalada));
+        }
     }
+
+    private void inicializarPanelPedidos() {
+        jPanel6.setLayout(null); // Posicionamiento absoluto
+
+        // ==== Reserva ====
+        JLabel lblReserva = new JLabel("Reserva:");
+        lblReserva.setBounds(20, 20, 100, 25);
+        jPanel6.add(lblReserva);
+
+        cboReserva = new JComboBox<>();
+        cboReserva.setBounds(120, 20, 200, 25);
+        jPanel6.add(cboReserva);
+
+        // ==== Plato ====
+        JLabel lblPlato = new JLabel("Plato:");
+        lblPlato.setBounds(20, 60, 100, 25);
+        jPanel6.add(lblPlato);
+
+        cboPlato = new JComboBox<>();
+        cboPlato.setBounds(120, 60, 200, 25);
+        jPanel6.add(cboPlato);
+
+        // ==== Cantidad ====
+        JLabel lblCantidad = new JLabel("Cantidad:");
+        lblCantidad.setBounds(20, 100, 100, 25);
+        jPanel6.add(lblCantidad);
+
+        txtCantidad = new JTextField();
+        txtCantidad.setBounds(120, 100, 200, 25);
+        jPanel6.add(txtCantidad);
+
+        // ==== Botón agregar detalle ====
+        btnAgregarDetalle = new JButton("Agregar Plato");
+        btnAgregarDetalle.setBounds(120, 140, 200, 30);
+        jPanel6.add(btnAgregarDetalle);
+
+        // ==== Tabla de Detalles ====
+        modeloDetalle = new DefaultTableModel(new String[]{"Plato", "Cantidad", "Precio Unitario", "Subtotal"}, 0);
+        tablaDetalle = new JTable(modeloDetalle);
+        JScrollPane scrollDetalle = new JScrollPane(tablaDetalle);
+        scrollDetalle.setBounds(20, 190, 500, 150);
+        jPanel6.add(scrollDetalle);
+
+        // ==== Botón registrar pedido ====
+        btnRegistrarPedido = new JButton("Registrar Pedido");
+        btnRegistrarPedido.setBounds(180, 360, 180, 30);
+        jPanel6.add(btnRegistrarPedido);
+
+        // ==== Tabla de Pedidos Registrados ====
+        modeloPedido = new DefaultTableModel(new String[]{"ID", "Reserva", "Fecha", "Hora", "Total"}, 0);
+        tablaPedido = new JTable(modeloPedido);
+        JScrollPane scrollPedidos = new JScrollPane(tablaPedido);
+        scrollPedidos.setBounds(550, 20, 500, 250);
+        jPanel6.add(scrollPedidos);
+
+        // ==== Botones de acción ====
+        btnEditarPedido = new JButton("Editar");
+        btnEditarPedido.setBounds(650, 290, 100, 25);
+        jPanel6.add(btnEditarPedido);
+
+        btnEliminarPedido = new JButton("Eliminar");
+        btnEliminarPedido.setBounds(760, 290, 100, 25);
+        jPanel6.add(btnEliminarPedido);
+
+        btnLimpiarPedido = new JButton("Limpiar");
+        btnLimpiarPedido.setBounds(870, 290, 100, 25);
+        jPanel6.add(btnLimpiarPedido);
+    }
+
+
+    
+    private void cargarPlatos2() {
+        List<Plato> platos = DataRepository.obtenerPlatos();
+        cboPlato.removeAllItems();
+        for (Plato plato : platos) {
+            cboPlato.addItem(plato); // Mostrará el nombre gracias al toString()
+        }
+    }
+
+
+    private void agregaListenersPedidos(){
+
+        btnAgregarDetalle.addActionListener(e -> {
+            try {
+                Plato plato = (Plato) cboPlato.getSelectedItem();
+                if (plato == null) {
+                    JOptionPane.showMessageDialog(this, "Seleccione un plato válido.");
+                    return;
+                }
+
+                int cantidad = Integer.parseInt(txtCantidad.getText());
+                if (cantidad <= 0) {
+                    JOptionPane.showMessageDialog(this, "Ingrese una cantidad válida.");
+                    return;
+                }
+
+                double precio = plato.getPrecio();
+                double subtotal = precio *cantidad;
+
+                modeloDetalle.addRow(new Object[]{
+                    plato.getNombre(),
+                    cantidad,
+                    precio,
+                    subtotal
+                });
+
+                DetallePedido detalle = new DetallePedido();
+                detalle.setIdMenu(plato.getIdMenu());
+                detalle.setDescripcionPlato(plato.getNombre());
+                detalle.setCantidad(cantidad);
+                detalle.setPrecio(precio);
+                listaDetalle.add(detalle);
+
+                txtCantidad.setText("");
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Cantidad no válida");
+            }
+        });
+
+        btnRegistrarPedido.addActionListener(e -> {
+            Reserva reserva = (Reserva) cboReserva.getSelectedItem();
+            if (reserva == null || listaDetalle.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar una reserva y agregar al menos un plato.");
+                return;
+            }
+
+            Pedido pedido = new Pedido();
+            pedido.setIdReserva(reserva.getIdReserva());
+            pedido.setDetalles(listaDetalle);
+
+            int idGenerado = DataRepository.agregarPedidoConDetalle(pedido);
+            if (idGenerado > 0) {
+                JOptionPane.showMessageDialog(this, "Pedido registrado con ID: " + idGenerado);
+                modeloDetalle.setRowCount(0);
+                listaDetalle.clear();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al registrar pedido");
+            }
+        });
+    
+    }
+    
+
+    
+    
+    private void cargarReservas() {
+    List<Reserva> reservas = DataRepository.obtenerReservasActivas();
+    for (Reserva r : reservas) cboReserva.addItem(r);
 }
+
+ 
+
 
     
     private void agregarNovedad() {
-        String titulo = txtTituloNovedad.getText();
+        String titulo = txtTitNov.getText();
         String descripcion = txtDescNovedad.getText();
         String imagen = txtImgNovedad.getText();
         Date inicio = dateInicioNovedad.getDate();
@@ -732,7 +909,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     private void editarNovedad() {
         int fila = tablaNovedades.getSelectedRow();
         if (fila != -1) {
-            String titulo = txtTituloNovedad.getText();
+            String titulo = txtTitNov.getText();
             String descripcion = txtDescNovedad.getText();
             String imagen = txtImgNovedad.getText();
             Date inicio = dateInicioNovedad.getDate();
@@ -780,7 +957,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     private void cargarNovedadSeleccionada() {
         int fila = tablaNovedades.getSelectedRow();
         if (fila != -1) {
-            txtTituloNovedad.setText(tablaNovedades.getValueAt(fila, 1).toString()); // Título
+            txtTitNov.setText(tablaNovedades.getValueAt(fila, 1).toString()); // Título
             txtDescNovedad.setText(tablaNovedades.getValueAt(fila, 2).toString());  // Descripción
             txtImgNovedad.setText(tablaNovedades.getValueAt(fila, 3).toString());   // Imagen
 
@@ -802,7 +979,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     }
 
     private void limpiarCamposNovedad() {
-        txtTituloNovedad.setText("");
+        txtTitNov.setText("");
         txtDescNovedad.setText("");
         txtImgNovedad.setText("");
         dateInicioNovedad.setDate(null);
@@ -1245,6 +1422,7 @@ private void agregarMesa() {
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -1315,6 +1493,19 @@ private void agregarMesa() {
 
         jTabbedPane1.addTab("PLATO", jPanel5);
 
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1150, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 622, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("PEDIDOS", jPanel6);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1359,6 +1550,7 @@ private void agregarMesa() {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }
