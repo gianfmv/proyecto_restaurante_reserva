@@ -50,6 +50,10 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
 
         labelCarta.setFont(FontLoader.load("Poppins-Black.ttf", Font.PLAIN, 20));
         textCartaTitle.setFont(FontLoader.load("Poppins-SemiBold.ttf", Font.PLAIN, 18));
+        jButton1.setFont(FontLoader.load("Poppins-SemiBold.ttf", Font.PLAIN, 14));
+
+        jButton2.setFont(FontLoader.load("Poppins-SemiBold.ttf", Font.PLAIN, 14));
+
         obtenerNovedades();
     }
 
@@ -355,7 +359,10 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
         jPanel2.setMaximumSize(new java.awt.Dimension(2147483647, 100));
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        jButton1.setText("Reservar Ahora !!");
+        jButton1.setBackground(new java.awt.Color(255, 204, 102));
+        jButton1.setForeground(new java.awt.Color(51, 51, 51));
+        jButton1.setText("RESERVAR AHORA!");
+        jButton1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEtchedBorder(), javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8)));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -374,7 +381,10 @@ public final class InicioCliente extends javax.swing.JInternalFrame {
         jPanel5.setMaximumSize(new java.awt.Dimension(2147483647, 100));
         jPanel5.setLayout(new java.awt.BorderLayout());
 
-        jButton2.setText("Ver mis reservaciones");
+        jButton2.setBackground(new java.awt.Color(255, 204, 102));
+        jButton2.setForeground(new java.awt.Color(51, 51, 51));
+        jButton2.setText("VER RESERVACIONES");
+        jButton2.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEtchedBorder(), javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8)));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
