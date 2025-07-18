@@ -43,6 +43,9 @@ public class NewUser extends javax.swing.JFrame {
         comboTipo.setFont(FontLoader.load("Poppins-SemiBold.ttf", Font.PLAIN, 14));
         jButton2.setFont(FontLoader.load("Poppins-SemiBold.ttf", Font.PLAIN, 14));
         jButton3.setFont(FontLoader.load("Poppins-SemiBold.ttf", Font.PLAIN, 14));
+        comboTipo.setSelectedIndex(1); 
+        comboTipo.setVisible(false);
+        jLabel4.setVisible(false);
     }
 
     /**

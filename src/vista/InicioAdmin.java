@@ -32,6 +32,8 @@ import modelo.Plato;
 import modelo.Reserva;
 import modelo.TipoUsuario;
 import modelo.Usuario;
+import view.CustomLabel;
+import view.ImagePanel;
 
 
 /**
@@ -85,12 +87,12 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     private JTextField txtNombrePlato, txtPrecioPlato, txtImagenPlato;
     private JTextArea txtDescripcionPlato;
     private JComboBox<String> cmbTipoPlato;
-    private JLabel lblVistaPreviaImagenPlato;
+    //private CustomLabel lblVistaPreviaImagenPlato;
+    private ImagePanel panelVistaPrevia;
     private JTable tablaPlatos;
     private DefaultTableModel modeloTablaPlatos;
     private JButton btnAgregarPlato, btnEditarPlato, btnEliminarPlato, btnLimpiarPlato;
 
-    //NO VA PEDIDO AGREGAR RESERVA EN SU LUGAR
 
 
   
@@ -644,10 +646,13 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
         btnSeleccionarImagen.setBounds(330, 210, 30, 25);
         jPanel5.add(btnSeleccionarImagen);
 
-        lblVistaPreviaImagenPlato = new JLabel();
-        lblVistaPreviaImagenPlato.setBounds(370, 60, 180, 180);
-        lblVistaPreviaImagenPlato.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        jPanel5.add(lblVistaPreviaImagenPlato);
+        panelVistaPrevia = new ImagePanel(""); 
+        panelVistaPrevia.setPreferredSize(new Dimension(300, 200));
+        panelVistaPrevia.setFitMode(ImagePanel.FitMode.CONTAIN);
+
+        //lblVistaPreviaImagenPlato.setBounds(370, 60, 180, 180);
+        //lblVistaPreviaImagenPlato.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        jPanel5.add(panelVistaPrevia);
 
         // Tabla
         tablaPlatos = new JTable();
@@ -675,7 +680,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
         jPanel5.add(btnLimpiarPlato);
 
         // Acción del botón de imagen
-        btnSeleccionarImagen.addActionListener(e -> seleccionarImagenPlato(txtImagenPlato, lblVistaPreviaImagenPlato));
+        btnSeleccionarImagen.addActionListener(e -> seleccionarImagenPlato(txtImagenPlato, panelVistaPrevia));
         
     }  
     private void agregarListenerPlatos(){
@@ -746,46 +751,58 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
 
     btnLimpiarPlato.addActionListener(e -> limpiarCamposPlato());
 
-    tablaPlatos.getSelectionModel().addListSelectionListener(e -> {
-        int fila = tablaPlatos.getSelectedRow();
-        if (fila != -1) {
-            txtNombrePlato.setText((String) modeloTablaPlatos.getValueAt(fila, 1));
-            txtDescripcionPlato.setText((String) modeloTablaPlatos.getValueAt(fila, 2));
-            txtPrecioPlato.setText(modeloTablaPlatos.getValueAt(fila, 3).toString());
-            cmbTipoPlato.setSelectedItem((String) modeloTablaPlatos.getValueAt(fila, 4));
-            txtImagenPlato.setText((String) modeloTablaPlatos.getValueAt(fila, 5));
+tablaPlatos.getSelectionModel().addListSelectionListener(e -> {
+    int fila = tablaPlatos.getSelectedRow();
+    if (fila != -1) {
+        txtNombrePlato.setText((String) modeloTablaPlatos.getValueAt(fila, 1));
+        txtDescripcionPlato.setText((String) modeloTablaPlatos.getValueAt(fila, 2));
+        txtPrecioPlato.setText(modeloTablaPlatos.getValueAt(fila, 3).toString());
+        cmbTipoPlato.setSelectedItem((String) modeloTablaPlatos.getValueAt(fila, 4));
+        txtImagenPlato.setText((String) modeloTablaPlatos.getValueAt(fila, 5));
 
-            // Vista previa imagen
-            String rutaImagen = txtImagenPlato.getText();
-            if (rutaImagen != null && !rutaImagen.isEmpty()) {
-                ImageIcon icono = new ImageIcon(rutaImagen);
-                Image imagenEscalada = icono.getImage().getScaledInstance(
-                    lblVistaPreviaImagenPlato.getWidth(), lblVistaPreviaImagenPlato.getHeight(), Image.SCALE_SMOOTH);
-                lblVistaPreviaImagenPlato.setIcon(new ImageIcon(imagenEscalada));
-            } else {
-                lblVistaPreviaImagenPlato.setIcon(null);
-            }
-        }
-    });
+        cargarImagenPlatoSelecc(txtImagenPlato.getText());
+    }
+});
+
+
 
     }
-    private void seleccionarImagenPlato(JTextField campoRuta, JLabel labelVistaPrevia) {
+    
+   
+    private void seleccionarImagenPlato(JTextField campoRuta, ImagePanel panelVistaPrevia) {
         JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Imágenes", "jpg", "jpeg", "png", "gif");
-        fileChooser.setFileFilter(filter);
+        fileChooser.setDialogTitle("Seleccionar imagen");
+        fileChooser.setCurrentDirectory(new File("src/resources"));
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Imágenes", "jpg", "jpeg", "png", "gif");
+        fileChooser.setFileFilter(filtro);
 
         int resultado = fileChooser.showOpenDialog(this);
         if (resultado == JFileChooser.APPROVE_OPTION) {
             File archivoSeleccionado = fileChooser.getSelectedFile();
-            campoRuta.setText(archivoSeleccionado.getAbsolutePath());
-
-            // Mostrar vista previa escalada
-            ImageIcon icono = new ImageIcon(archivoSeleccionado.getAbsolutePath());
-            Image imagenEscalada = icono.getImage().getScaledInstance(
-                    labelVistaPrevia.getWidth(), labelVistaPrevia.getHeight(), Image.SCALE_SMOOTH);
-            labelVistaPrevia.setIcon(new ImageIcon(imagenEscalada));
+            campoRuta.setText(archivoSeleccionado.getName());            
+             panelVistaPrevia = new ImagePanel(archivoSeleccionado.getName(), ImagePanel.FitMode.CONTAIN);
         }
-    }
+}
+
+
+    private void cargarImagenPlatoSelecc(String ruta) {
+        if (ruta == null || ruta.isEmpty()) {
+            panelVistaPrevia.removeAll();
+            panelVistaPrevia.repaint();
+            return;
+        }
+
+    jPanel5.remove(panelVistaPrevia); // Quita panel anterior si existe
+
+    panelVistaPrevia = new ImagePanel(ruta, ImagePanel.FitMode.CONTAIN);
+    panelVistaPrevia.setBounds(370, 60, 180, 180); // asegúrate de dar tamaño y posición
+    panelVistaPrevia.setBorderColor(Color.GRAY);
+    panelVistaPrevia.setBorderThickness(1);
+
+    jPanel5.add(panelVistaPrevia);
+    jPanel5.revalidate();
+    jPanel5.repaint();
+}
 
    
     private void agregarNovedad() {
@@ -1002,8 +1019,10 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
         txtPrecioPlato.setText("");
         cmbTipoPlato.setSelectedIndex(0);
         txtImagenPlato.setText("");
-        lblVistaPreviaImagenPlato.setIcon(null);
+        //blVistaPreviaImagenPlato.setIcon(null);
         tablaPlatos.clearSelection();
+        panelVistaPrevia.removeAll();
+        panelVistaPrevia.repaint();
     }
     private void limpiarCamposNovedad() {
         txtTitNov.setText("");

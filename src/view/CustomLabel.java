@@ -7,6 +7,7 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.*;
+import java.io.File;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.net.URI;
@@ -22,7 +23,7 @@ public class CustomLabel extends JLabel {
         }
         setPreferredSize(new Dimension(300, 200));
     }
-    
+
     public CustomLabel(String imageUrl, boolean fromUrl) {
         SwingWorker<BufferedImage, Void> worker = new SwingWorker<>() {
                 @Override
@@ -75,4 +76,14 @@ public class CustomLabel extends JLabel {
             g.drawImage(image, x, y, drawWidth, drawHeight, this);
         }
     }
+    
+    public void setImageFromFile(String imagePath) {
+    try {
+        this.image = ImageIO.read(new File(imagePath));
+        repaint();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
 }
