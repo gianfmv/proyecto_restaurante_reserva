@@ -18,9 +18,10 @@ public class Usuario {
     private String telefono;
     private String dni;
     private String direccion;
+    private String contrasena;
     
      private TipoUsuario tipoUsuario;  // Relación de asociación
-     private List<Ingrediente> ingredientesAlergicos; //asociación
+    // private List<Ingrediente> ingredientesAlergicos; //asociación
      
     public Usuario() {}
 
@@ -33,7 +34,20 @@ public class Usuario {
         this.dni = dni;
         this.direccion = direccion;
         this.tipoUsuario=tipoUsuario;
-        this.ingredientesAlergicos= new LinkedList<>();
+    //    this.ingredientesAlergicos= new LinkedList<>();
+    }
+    
+        public Usuario(int idUsuario, String nombreCompleto, String email,
+                   String telefono, String dni, String direccion, TipoUsuario tipoUsuario,String Contrasena) {
+        this.idUsuario = idUsuario;
+        this.nombreCompleto = nombreCompleto;
+        this.email = email;
+        this.telefono = telefono;
+        this.dni = dni;
+        this.direccion = direccion;
+        this.tipoUsuario=tipoUsuario;
+        this.contrasena=Contrasena;
+    //    this.ingredientesAlergicos= new LinkedList<>();
     }
 
     public int getIdUsuario() {
@@ -64,10 +78,19 @@ public class Usuario {
         return tipoUsuario;
     }
 
-    public List<Ingrediente> getIngredientesAlergicos() {
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
+    }
+
+    
+  /*  public List<Ingrediente> getIngredientesAlergicos() {
         return ingredientesAlergicos;
     }
-    
+    */
     
 
     public void setIdUsuario(int idUsuario) {
@@ -97,11 +120,12 @@ public class Usuario {
     public void setTipoUsuario(TipoUsuario tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
     }
-
+    
+/*
     public void setIngredientesAlergicos(List<Ingrediente> ingredientesAlergicos) {
         this.ingredientesAlergicos = ingredientesAlergicos;
     }
-
+*/
  
     
     

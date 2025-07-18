@@ -33,6 +33,9 @@ public class TipoUsuario {
         this.descripcion = descripcion;
     }
     
-    
+     @Override
+    public String toString() {
+        return descripcion;
+    }
     
 }

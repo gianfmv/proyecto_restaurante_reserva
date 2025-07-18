@@ -21,15 +21,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
-import java.awt.Menu;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import modelo.DetallePedido;
 import modelo.Mesa;
-import modelo.Pedido;
 import modelo.Plato;
 import modelo.Reserva;
 import modelo.TipoUsuario;
@@ -42,43 +38,35 @@ import modelo.Usuario;
  */
 public class InicioAdmin extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form InicioAdmin
-     */
-    
-    private JPasswordField txtContrasena;
-
-    // Novedades
+    // === COMPONENTES NOVEDADES ===
     JDateChooser dateInicioNovedad = new JDateChooser();
     JDateChooser dateFinNovedad = new JDateChooser();
-
-    // Promociones
-    JDateChooser dateInicioPromo = new JDateChooser();
-    JDateChooser dateFinPromo = new JDateChooser();
-
-    
     private javax.swing.JTable tablaNovedades;
-    private javax.swing.JTable tablaPromociones;
-    private javax.swing.JTable tablaMesas;
-    
     // Campos NOVEDAD
     //private JTextField txtTituloNovedadX;
     private JTextField txtTitNov;
     private JTextArea txtDescNovedad;
     private JTextField txtImgNovedad;
+    
 
-
-    // Campos PROMOCION
+    // === COMPONENTES PROMOCIONES ===
+    JDateChooser dateInicioPromo = new JDateChooser();
+    JDateChooser dateFinPromo = new JDateChooser();
+    private javax.swing.JTable tablaPromociones;    
     private JTextField txtTituloPromo;
     private JTextArea txtDescPromo;
     private JTextField txtImgPromo;
     private JTextField txtDescuento;
-
+    
+    
+    // === COMPONENTES MESAS ===
+    private javax.swing.JTable tablaMesas;
     private JTextField txtCapacidad;
     private JTextField txtNroMesa;
     private JCheckBox chkDisponible;
     
-    
+
+    // === COMPONENTES USUARIOS ===
     private JTable tablaUsuarios;
     private JTextField txtNombre;
     private JTextField txtEmail;
@@ -86,7 +74,8 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     private JTextField txtDNI;
     private JTextField txtDireccion;
     private JComboBox<TipoUsuario> cboTipoUsuario;
-
+    private JPasswordField txtContrasena;
+      
     
     // === COMPONENTES PLATOS ===
     private JTextField txtNombrePlato, txtPrecioPlato, txtImagenPlato;
@@ -97,38 +86,41 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     private DefaultTableModel modeloTablaPlatos;
     private JButton btnAgregarPlato, btnEditarPlato, btnEliminarPlato, btnLimpiarPlato;
 
-    
-    private JComboBox<Reserva> cboReserva;
-    private JComboBox<Plato> cboPlato;
-    private JTextField txtCantidad;
-    private JTable tablaDetalle;
-    private DefaultTableModel modeloDetalle;
-    private JButton btnAgregarDetalle;
-    private JButton btnRegistrarPedido;
-    private DefaultTableModel modeloPedido;
-    private JTable tablaPedido;
-    private JButton btnEditarPedido, btnEliminarPedido, btnLimpiarPedido;
-    
-    
-    private List<DetallePedido> listaDetalle = new ArrayList<>();
+    //NO VA PEDIDO AGREGAR RESERVA EN SU LUGAR
 
+
+  
     public InicioAdmin() {
         initComponents();
         
+    //Inicializar componentes y eventos
+    inicializarPanelNovedadesEventos();   
+    inicializarPanelPromocionesEventos();
+    inicializarPanelMesasEventos();
+    inicializarPanelUsuariosEventos();
+    inicializarPanelPlatos();
+    agregarListenerPlatos();
     
-    // 1. Inicializar tablas con modelo por defecto
+
+    // Cargar datos
+    cargarNovedades();
+    cargarPromociones();        
+    cargarMesas();
+    cargarUsuarios();   
+    cargarPlatos();
+
+ 
+    }
+    
+    
+    private void inicializarPanelNovedadesEventos() {
+    // === Inicializar tabla de novedades ===
     tablaNovedades = new JTable(new DefaultTableModel(
         new Object[]{"Título", "Descripción", "Imagen", "Inicio", "Fin"}, 0));
-    tablaPromociones = new JTable(new DefaultTableModel(
-        new Object[]{"Título", "Descripción", "Descuento", "Inicio", "Fin", "Imagen"}, 0));
-
     tablaNovedades.setPreferredScrollableViewportSize(new java.awt.Dimension(600, 250));
-    tablaPromociones.setPreferredScrollableViewportSize(new java.awt.Dimension(600, 250));
-
     tablaNovedades.setFillsViewportHeight(true);
-    tablaPromociones.setFillsViewportHeight(true);
 
-    // === NOVEDADES ===
+    // === Crear campos del formulario ===
     JLabel lblTituloNovedad = new JLabel("Título:");
     txtTitNov = new JTextField(25);
 
@@ -140,9 +132,8 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
 
     JLabel lblImgNovedad = new JLabel("Imagen:");
     txtImgNovedad = new JTextField(25);
-    JButton btnSeleccionarImgNovedad = new JButton("Buscar");
-
-    btnSeleccionarImgNovedad.addActionListener(evt -> {
+    JButton btnSeleccionarImgNovedad = new JButton("Buscar"); 
+        btnSeleccionarImgNovedad.addActionListener(evt -> {
         JFileChooser fileChooser = new JFileChooser(new File("src/resources"));
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int result = fileChooser.showOpenDialog(null);
@@ -155,6 +146,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     JLabel lblInicioNovedad = new JLabel("Fecha inicio:");
     JLabel lblFinNovedad = new JLabel("Fecha fin:");
 
+    // === Botones ===
     JButton btnAgregarNovedad = new JButton("Agregar");
     JButton btnEditarNovedad = new JButton("Editar");
     JButton btnEliminarNovedad = new JButton("Eliminar");
@@ -165,12 +157,18 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     btnEliminarNovedad.setPreferredSize(new Dimension(100, 30));
     btnLimpiarNovedad.setPreferredSize(new Dimension(100, 30));
 
+    // === Panel de formulario con diseño vertical ===
     JPanel formNovedad = new JPanel();
     formNovedad.setLayout(new BoxLayout(formNovedad, BoxLayout.Y_AXIS));
     formNovedad.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    
-    // Limitar altura 
+
+    // === Paneles para campos con altura fija ===
     int alturaFija = 30;
+
+    JPanel panelImgNovedad = new JPanel(new BorderLayout());
+    panelImgNovedad.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+    panelImgNovedad.setPreferredSize(new Dimension(0, alturaFija));
+    panelImgNovedad.add(txtImgNovedad, BorderLayout.CENTER);
 
     JPanel panelInicioNovedad = new JPanel(new BorderLayout());
     panelInicioNovedad.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
@@ -182,337 +180,339 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     panelFinNovedad.setPreferredSize(new Dimension(0, alturaFija));
     panelFinNovedad.add(dateFinNovedad, BorderLayout.CENTER);
 
-    JPanel panelImgNovedad = new JPanel(new BorderLayout());
-    panelImgNovedad.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
-    panelImgNovedad.setPreferredSize(new Dimension(0, alturaFija));
-    panelImgNovedad.add(txtImgNovedad, BorderLayout.CENTER);
-
+    // === Añadir campos al panel de formulario ===
     formNovedad.add(lblTituloNovedad);
     formNovedad.add(txtTitNov);
     formNovedad.add(lblDescNovedad);
     formNovedad.add(scrollDescNovedad);
     formNovedad.add(lblImgNovedad);
     formNovedad.add(panelImgNovedad);
-    formNovedad.add(btnSeleccionarImgNovedad); // Buscar imagen
+    formNovedad.add(btnSeleccionarImgNovedad); // botón para buscar imagen
     formNovedad.add(lblInicioNovedad);
     formNovedad.add(panelInicioNovedad);
     formNovedad.add(lblFinNovedad);
     formNovedad.add(panelFinNovedad);
 
+    // === Panel de botones CRUD ===
     JPanel botonesNovedad = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
     botonesNovedad.add(btnAgregarNovedad);
     botonesNovedad.add(btnEditarNovedad);
     botonesNovedad.add(btnEliminarNovedad);
     botonesNovedad.add(btnLimpiarNovedad); 
 
+    // === Panel izquierdo con formulario y botones ===
     JPanel panelIzquierdoNovedad = new JPanel(new BorderLayout());
     panelIzquierdoNovedad.add(formNovedad, BorderLayout.CENTER);
     panelIzquierdoNovedad.add(botonesNovedad, BorderLayout.SOUTH);
 
+    // === Scroll de tabla con borde ===
     JScrollPane scrollTablaNovedad = new JScrollPane(tablaNovedades);
     scrollTablaNovedad.setBorder(BorderFactory.createTitledBorder("Lista de Novedades"));
 
+    // === Dividir en dos columnas: formulario y tabla ===
     JSplitPane splitNovedad = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzquierdoNovedad, scrollTablaNovedad);
-    splitNovedad.setResizeWeight(0.4);
+    splitNovedad.setResizeWeight(0.4); // 40% izquierda
 
+    // === Cargar en el contenedor principal ===
     jPanel1.removeAll();
     jPanel1.setLayout(new BorderLayout());
     jPanel1.add(splitNovedad, BorderLayout.CENTER);
 
-    // === PROMOCIONES ===
-    JLabel lblTituloPromo = new JLabel("Título:");
-    txtTituloPromo = new JTextField(25);
-
-    JLabel lblDescPromo = new JLabel("Descripción:");
-    txtDescPromo = new JTextArea(3, 25);
-    txtDescPromo.setLineWrap(true);
-    txtDescPromo.setWrapStyleWord(true);
-    JScrollPane scrollDescPromo = new JScrollPane(txtDescPromo);
-
-    JLabel lblImgPromo = new JLabel("Imagen:");
-    txtImgPromo = new JTextField(25);
-    JButton btnSeleccionarImgPromo = new JButton("Buscar");
-
-    btnSeleccionarImgPromo.addActionListener(evt -> {
-        JFileChooser fileChooser = new JFileChooser(new File("src/resources"));
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        int result = fileChooser.showOpenDialog(null);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            txtImgPromo.setText(selectedFile.getName());
-        }
-    });
-
-    JLabel lblInicio = new JLabel("Fecha inicio:");
-    JLabel lblFin = new JLabel("Fecha fin:");
-    JLabel lblDescuento = new JLabel("Descuento (%):");
-    txtDescuento = new JTextField(5);
-
-    JButton btnAgregarPromo = new JButton("Agregar");
-    JButton btnEditarPromo = new JButton("Editar");
-    JButton btnEliminarPromo = new JButton("Eliminar");
-    JButton btnLimpiarPromo = new JButton("Limpiar");
-
-    btnAgregarPromo.setPreferredSize(new Dimension(100, 30));
-    btnEditarPromo.setPreferredSize(new Dimension(100, 30));
-    btnEliminarPromo.setPreferredSize(new Dimension(100, 30));
-    btnLimpiarPromo.setPreferredSize(new Dimension(100, 30));
-
-    JPanel formPromo = new JPanel();
-    formPromo.setLayout(new BoxLayout(formPromo, BoxLayout.Y_AXIS));
-    formPromo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        // Limitar altura 
-    //int alturaFijaProm = 30;
-
-    JPanel panelInicioPromo = new JPanel(new BorderLayout());
-    panelInicioPromo.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
-    panelInicioPromo.setPreferredSize(new Dimension(0, alturaFija));
-    panelInicioPromo.add(dateInicioPromo, BorderLayout.CENTER);
-
-    JPanel panelFinPromo = new JPanel(new BorderLayout());
-    panelFinPromo.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
-    panelFinPromo.setPreferredSize(new Dimension(0, alturaFija));
-    panelFinPromo.add(dateFinPromo, BorderLayout.CENTER);
-
-    JPanel panelImgPromo = new JPanel(new BorderLayout());
-    panelImgPromo.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
-    panelImgPromo.setPreferredSize(new Dimension(0, alturaFija));
-    panelImgPromo.add(txtImgPromo, BorderLayout.CENTER);
-    
-    JPanel panelDescPromo = new JPanel(new BorderLayout());
-    panelDescPromo.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
-    panelDescPromo.setPreferredSize(new Dimension(0, alturaFija));
-    panelDescPromo.add(txtDescuento, BorderLayout.CENTER);
-    
-    formPromo.add(lblTituloPromo);
-    formPromo.add(txtTituloPromo);
-    formPromo.add(lblDescPromo);
-    formPromo.add(scrollDescPromo);
-    formPromo.add(lblImgPromo);
-    formPromo.add(panelImgPromo);
-    formPromo.add(btnSeleccionarImgPromo); // Buscar imagen
-    formPromo.add(lblInicio);
-    formPromo.add(panelInicioPromo);
-    formPromo.add(lblFin);
-    formPromo.add(panelFinPromo);
-    formPromo.add(lblDescuento);
-    formPromo.add(panelDescPromo);
-
-    JPanel botonesPromo = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-    botonesPromo.add(btnAgregarPromo);
-    botonesPromo.add(btnEditarPromo);
-    botonesPromo.add(btnEliminarPromo);
-    botonesPromo.add(btnLimpiarPromo); 
-
-    JPanel panelIzquierdoPromo = new JPanel(new BorderLayout());
-    panelIzquierdoPromo.add(formPromo, BorderLayout.CENTER);
-    panelIzquierdoPromo.add(botonesPromo, BorderLayout.SOUTH);
-
-    JScrollPane scrollTablaPromo = new JScrollPane(tablaPromociones);
-    scrollTablaPromo.setBorder(BorderFactory.createTitledBorder("Lista de Promociones"));
-
-    JSplitPane splitPromo = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzquierdoPromo, scrollTablaPromo);
-    splitPromo.setResizeWeight(0.4);
-
-    jPanel2.removeAll();
-    jPanel2.setLayout(new BorderLayout());
-    jPanel2.add(splitPromo, BorderLayout.CENTER);
-
-     // Agrega listeners a las tablas
+    // === Agregar listeners ===
     tablaNovedades.getSelectionModel().addListSelectionListener(e -> cargarNovedadSeleccionada());
-    tablaPromociones.getSelectionModel().addListSelectionListener(e -> cargarPromocionSeleccionada());
-
-     // Agrega los eventos
     btnAgregarNovedad.addActionListener(e -> agregarNovedad());
     btnEditarNovedad.addActionListener(e -> editarNovedad());
     btnEliminarNovedad.addActionListener(e -> eliminarNovedad());
     btnLimpiarNovedad.addActionListener(e -> limpiarCamposNovedad());
+}   
+    private void inicializarPanelPromocionesEventos() {
+        // === PROMOCIONES ===
+        JLabel lblTituloPromo = new JLabel("Título:");
+        txtTituloPromo = new JTextField(25);
 
-    btnAgregarPromo.addActionListener(e -> agregarPromocion());
-    btnEditarPromo.addActionListener(e -> editarPromocion());
-    btnEliminarPromo.addActionListener(e -> eliminarPromocion());
-    btnLimpiarPromo.addActionListener(e -> limpiarCamposPromocion());
+        JLabel lblDescPromo = new JLabel("Descripción:");
+        txtDescPromo = new JTextArea(3, 25);
+        txtDescPromo.setLineWrap(true);
+        txtDescPromo.setWrapStyleWord(true);
+        JScrollPane scrollDescPromo = new JScrollPane(txtDescPromo);
 
-    // Cargar datos
-    cargarNovedades();
-    cargarPromociones();
-    
-        // === FORMULARIO DE MESAS ===
-    JLabel lblCapacidad = new JLabel("Capacidad:");
-    JLabel lblnroMesa= new JLabel("Nro de Mesa:");
-     
-    txtTitNov = new JTextField(25);
-    txtCapacidad = new JTextField(10);
-    txtNroMesa = new JTextField(10);
-    chkDisponible = new JCheckBox("Disponible");
-    //txtCapacidad.setMaximumSize(new Dimension(150, 25)); // ancho y alto máximos
+        JLabel lblImgPromo = new JLabel("Imagen:");
+        txtImgPromo = new JTextField(25);
+        JButton btnSeleccionarImgPromo = new JButton("Buscar");
 
-    JButton btnAgregarMesa = new JButton("Agregar");
-    JButton btnEditarMesa = new JButton("Editar");
-    JButton btnEliminarMesa = new JButton("Eliminar");
-    JButton btnLimpiarMesa = new JButton("Limpiar");
+        btnSeleccionarImgPromo.addActionListener(evt -> {
+            JFileChooser fileChooser = new JFileChooser(new File("src/resources"));
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            int result = fileChooser.showOpenDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                txtImgPromo.setText(selectedFile.getName());
+            }
+        });
 
-    btnAgregarMesa.setPreferredSize(new Dimension(100, 30));
-    btnEditarMesa.setPreferredSize(new Dimension(100, 30));
-    btnEliminarMesa.setPreferredSize(new Dimension(100, 30));
-    btnLimpiarMesa.setPreferredSize(new Dimension(100, 30));
+        JLabel lblInicio = new JLabel("Fecha inicio:");
+        dateInicioPromo = new JDateChooser();
+        JLabel lblFin = new JLabel("Fecha fin:");
+        dateFinPromo = new JDateChooser();
+        JLabel lblDescuento = new JLabel("Descuento (%):");
+        txtDescuento = new JTextField(5);
 
-    JPanel formMesa = new JPanel();
-    formMesa.setLayout(new BoxLayout(formMesa, BoxLayout.Y_AXIS));
-    formMesa.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    
-        // Limitar altura 
-    //int alturaFija = 30;
+        JButton btnAgregarPromo = new JButton("Agregar");
+        JButton btnEditarPromo = new JButton("Editar");
+        JButton btnEliminarPromo = new JButton("Eliminar");
+        JButton btnLimpiarPromo = new JButton("Limpiar");
 
-    JPanel panelCapMesa = new JPanel(new BorderLayout());
-    panelCapMesa.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
-    panelCapMesa.setPreferredSize(new Dimension(0, alturaFija));
-    panelCapMesa.add(txtCapacidad, BorderLayout.CENTER);
+        btnAgregarPromo.setPreferredSize(new Dimension(100, 30));
+        btnEditarPromo.setPreferredSize(new Dimension(100, 30));
+        btnEliminarPromo.setPreferredSize(new Dimension(100, 30));
+        btnLimpiarPromo.setPreferredSize(new Dimension(100, 30));
 
-    JPanel panelNroMesa = new JPanel(new BorderLayout());
-    panelNroMesa.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
-    panelNroMesa.setPreferredSize(new Dimension(0, alturaFija));
-    panelNroMesa.add(txtNroMesa, BorderLayout.CENTER);
+        // === FORMULARIO IZQUIERDA ===
+        JPanel formPromo = new JPanel();
+        formPromo.setLayout(new BoxLayout(formPromo, BoxLayout.Y_AXIS));
+        formPromo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        int alturaFija = 30;
 
+        JPanel panelInicioPromo = new JPanel(new BorderLayout());
+        panelInicioPromo.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+        panelInicioPromo.add(dateInicioPromo, BorderLayout.CENTER);
 
-    formMesa.add(lblCapacidad);
-    formMesa.add(panelCapMesa);
-    formMesa.add(lblnroMesa);
-    formMesa.add(panelNroMesa);
-    formMesa.add(chkDisponible);
- 
-    JPanel botonesMesa = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-    botonesMesa.add(btnAgregarMesa);
-    botonesMesa.add(btnEditarMesa);
-    botonesMesa.add(btnEliminarMesa);
-    botonesMesa.add(btnLimpiarMesa);
+        JPanel panelFinPromo = new JPanel(new BorderLayout());
+        panelFinPromo.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+        panelFinPromo.add(dateFinPromo, BorderLayout.CENTER);
 
-    tablaMesas = new JTable(new DefaultTableModel(new Object[]{"ID", "Capacidad", "Disponible"}, 0));
-    JScrollPane scrollTablaMesas = new JScrollPane(tablaMesas);
-    scrollTablaMesas.setBorder(BorderFactory.createTitledBorder("Lista de Mesas"));
+        JPanel panelImgPromo = new JPanel(new BorderLayout());
+        panelImgPromo.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+        panelImgPromo.add(txtImgPromo, BorderLayout.CENTER);
 
-   // tablaMesas.getColumnModel().getColumn(0).setMinWidth(0); // Ocultar columna ID
-    //tablaMesas.getColumnModel().getColumn(0).setMaxWidth(0);
+        JPanel panelDescPromo = new JPanel(new BorderLayout());
+        panelDescPromo.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+        panelDescPromo.add(txtDescuento, BorderLayout.CENTER);
 
-    JPanel panelIzquierdoMesa = new JPanel(new BorderLayout());
-    panelIzquierdoMesa.add(formMesa, BorderLayout.CENTER);
-    panelIzquierdoMesa.add(botonesMesa, BorderLayout.SOUTH);
+        formPromo.add(lblTituloPromo);
+        formPromo.add(txtTituloPromo);
+        formPromo.add(lblDescPromo);
+        formPromo.add(scrollDescPromo);
+        formPromo.add(lblImgPromo);
+        formPromo.add(panelImgPromo);
+        formPromo.add(btnSeleccionarImgPromo);
+        formPromo.add(lblInicio);
+        formPromo.add(panelInicioPromo);
+        formPromo.add(lblFin);
+        formPromo.add(panelFinPromo);
+        formPromo.add(lblDescuento);
+        formPromo.add(panelDescPromo);
 
-    JSplitPane splitMesa = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzquierdoMesa, scrollTablaMesas);
-    splitMesa.setResizeWeight(0.4);
+        JPanel botonesPromo = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        botonesPromo.add(btnAgregarPromo);
+        botonesPromo.add(btnEditarPromo);
+        botonesPromo.add(btnEliminarPromo);
+        botonesPromo.add(btnLimpiarPromo);
 
-    jPanel3.removeAll();
-    jPanel3.setLayout(new BorderLayout());
-    jPanel3.add(splitMesa, BorderLayout.CENTER);
+        JPanel panelIzquierdoPromo = new JPanel(new BorderLayout());
+        panelIzquierdoPromo.add(formPromo, BorderLayout.CENTER);
+        panelIzquierdoPromo.add(botonesPromo, BorderLayout.SOUTH);
 
-    // Eventos
-    btnAgregarMesa.addActionListener(e -> agregarMesa());
-    btnEditarMesa.addActionListener(e -> editarMesa());
-    btnEliminarMesa.addActionListener(e -> eliminarMesa());
-    btnLimpiarMesa.addActionListener(e -> limpiarCamposMesa());
+        // === TABLA DERECHA ===
+        tablaPromociones = new JTable(new DefaultTableModel(
+            new Object[]{"Título", "Descripción", "Descuento", "Inicio", "Fin", "Imagen"}, 0));
+        tablaPromociones.setPreferredScrollableViewportSize(new Dimension(600, 250));
+        tablaPromociones.setFillsViewportHeight(true);
 
-    tablaMesas.getSelectionModel().addListSelectionListener(e -> cargarMesaSeleccionada());
+        JScrollPane scrollTablaPromo = new JScrollPane(tablaPromociones);
+        scrollTablaPromo.setBorder(BorderFactory.createTitledBorder("Lista de Promociones"));
 
-    cargarMesas();
-    
+        // === SPLIT Y ENSAMBLE ===
+        JSplitPane splitPromo = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzquierdoPromo, scrollTablaPromo);
+        splitPromo.setResizeWeight(0.4);
 
-    // === FORMULARIO DE USUARIOS ===
-    JLabel lblNombre = new JLabel("Nombre completo:");
-    txtNombre = new JTextField(25);
+        jPanel2.removeAll();
+        jPanel2.setLayout(new BorderLayout());
+        jPanel2.add(splitPromo, BorderLayout.CENTER);
 
-    JLabel lblEmail = new JLabel("Email:");
-    txtEmail = new JTextField(25);
+        // === LISTENERS ===
+        tablaPromociones.getSelectionModel().addListSelectionListener(e -> cargarPromocionSeleccionada());
+        btnAgregarPromo.addActionListener(e -> agregarPromocion());
+        btnEditarPromo.addActionListener(e -> editarPromocion());
+        btnEliminarPromo.addActionListener(e -> eliminarPromocion());
+        btnLimpiarPromo.addActionListener(e -> limpiarCamposPromocion());
 
-    JLabel lblTelefono = new JLabel("Teléfono:");
-    txtTelefono = new JTextField(15);
-
-    JLabel lblDNI = new JLabel("DNI:");
-    txtDNI = new JTextField(15);
-
-    JLabel lblDireccion = new JLabel("Dirección:");
-    txtDireccion = new JTextField(25);
-
-    JLabel lblTipoUsuario = new JLabel("Tipo de Usuario:");
-    cboTipoUsuario = new JComboBox<>();
-    // Puedes llenar el combo luego con tipos de usuario desde la BD (no hardcodeado)
-
-    // Botones
-    JButton btnAgregarUsuario = new JButton("Agregar");
-    JButton btnEditarUsuario = new JButton("Editar");
-    JButton btnEliminarUsuario = new JButton("Eliminar");
-    JButton btnLimpiarUsuario = new JButton("Limpiar");
-
-    btnAgregarUsuario.setPreferredSize(new Dimension(100, 30));
-    btnEditarUsuario.setPreferredSize(new Dimension(100, 30));
-    btnEliminarUsuario.setPreferredSize(new Dimension(100, 30));
-    btnLimpiarUsuario.setPreferredSize(new Dimension(100, 30));
-
-    // Paneles
-    JPanel formUsuario = new JPanel();
-    formUsuario.setLayout(new BoxLayout(formUsuario, BoxLayout.Y_AXIS));
-    formUsuario.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-    formUsuario.add(lblNombre);
-    formUsuario.add(txtNombre);
-    formUsuario.add(lblEmail);
-    formUsuario.add(txtEmail);
-    JLabel lblContrasena = new JLabel("Contraseña:");
-    txtContrasena = new JPasswordField(20);
-
-    formUsuario.add(lblTelefono);
-    formUsuario.add(txtTelefono);
-    formUsuario.add(lblDNI);
-    formUsuario.add(txtDNI);
-    formUsuario.add(lblDireccion);
-    formUsuario.add(txtDireccion);
-    formUsuario.add(lblTipoUsuario);
-    formUsuario.add(cboTipoUsuario);
-    formUsuario.add(lblContrasena);
-    formUsuario.add(txtContrasena);
-
-
-    JPanel botonesUsuario = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-    botonesUsuario.add(btnAgregarUsuario);
-    botonesUsuario.add(btnEditarUsuario);
-    botonesUsuario.add(btnEliminarUsuario);
-    botonesUsuario.add(btnLimpiarUsuario);
-
-    tablaUsuarios = new JTable(new DefaultTableModel(new Object[]{"ID", "Nombre", "Email", "Teléfono", "DNI", "Dirección", "Tipo"}, 0));
-    JScrollPane scrollTablaUsuarios = new JScrollPane(tablaUsuarios);
-    scrollTablaUsuarios.setBorder(BorderFactory.createTitledBorder("Lista de Usuarios"));
-
-    JPanel panelIzquierdoUsuario = new JPanel(new BorderLayout());
-    panelIzquierdoUsuario.add(formUsuario, BorderLayout.CENTER);
-    panelIzquierdoUsuario.add(botonesUsuario, BorderLayout.SOUTH);
-
-    JSplitPane splitUsuario = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzquierdoUsuario, scrollTablaUsuarios);
-    splitUsuario.setResizeWeight(0.4);
-
-    jPanel4.removeAll();
-    jPanel4.setLayout(new BorderLayout());
-    jPanel4.add(splitUsuario, BorderLayout.CENTER);
-
-    // Eventos
-    btnAgregarUsuario.addActionListener(e -> agregarUsuario());
-    btnEditarUsuario.addActionListener(e -> editarUsuario());
-    btnEliminarUsuario.addActionListener(e -> eliminarUsuario());
-    btnLimpiarUsuario.addActionListener(e -> limpiarCamposUsuario());
-
-    tablaUsuarios.getSelectionModel().addListSelectionListener(e -> cargarUsuarioSeleccionado());
-
-    cargarUsuarios(); // Llenar tabla
-    
-    inicializarPanelPlatos();
-    agregarListenerPlatos();
-    cargarPlatos();
-
-    inicializarPanelPedidos();
-    agregaListenersPedidos();
-    cargarPlatos2();
-    cargarReservas();
+        // === CARGA DE DATOS INICIAL ===
+        cargarPromociones();
     }
-    
+    private void inicializarPanelMesasEventos() {
+        // === FORMULARIO DE MESAS ===
+        JLabel lblCapacidad = new JLabel("Capacidad:");
+        JLabel lblnroMesa = new JLabel("Nro de Mesa:");
+
+        txtCapacidad = new JTextField(10);
+        txtNroMesa = new JTextField(10);
+        chkDisponible = new JCheckBox("Disponible");
+
+        JButton btnAgregarMesa = new JButton("Agregar");
+        JButton btnEditarMesa = new JButton("Editar");
+        JButton btnEliminarMesa = new JButton("Eliminar");
+        JButton btnLimpiarMesa = new JButton("Limpiar");
+
+        btnAgregarMesa.setPreferredSize(new Dimension(100, 30));
+        btnEditarMesa.setPreferredSize(new Dimension(100, 30));
+        btnEliminarMesa.setPreferredSize(new Dimension(100, 30));
+        btnLimpiarMesa.setPreferredSize(new Dimension(100, 30));
+
+        JPanel formMesa = new JPanel();
+        formMesa.setLayout(new BoxLayout(formMesa, BoxLayout.Y_AXIS));
+        formMesa.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        int alturaFija = 30;
+
+        JPanel panelCapMesa = new JPanel(new BorderLayout());
+        panelCapMesa.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+        panelCapMesa.setPreferredSize(new Dimension(0, alturaFija));
+        panelCapMesa.add(txtCapacidad, BorderLayout.CENTER);
+
+        JPanel panelNroMesa = new JPanel(new BorderLayout());
+        panelNroMesa.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+        panelNroMesa.setPreferredSize(new Dimension(0, alturaFija));
+        panelNroMesa.add(txtNroMesa, BorderLayout.CENTER);
+
+        formMesa.add(lblCapacidad);
+        formMesa.add(panelCapMesa);
+        formMesa.add(lblnroMesa);
+        formMesa.add(panelNroMesa);
+        formMesa.add(chkDisponible);
+
+        JPanel botonesMesa = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        botonesMesa.add(btnAgregarMesa);
+        botonesMesa.add(btnEditarMesa);
+        botonesMesa.add(btnEliminarMesa);
+        botonesMesa.add(btnLimpiarMesa);
+
+        tablaMesas = new JTable(new DefaultTableModel(new Object[]{"ID", "Capacidad", "Disponible"}, 0));
+        JScrollPane scrollTablaMesas = new JScrollPane(tablaMesas);
+        scrollTablaMesas.setBorder(BorderFactory.createTitledBorder("Lista de Mesas"));
+
+        JPanel panelIzquierdoMesa = new JPanel(new BorderLayout());
+        panelIzquierdoMesa.add(formMesa, BorderLayout.CENTER);
+        panelIzquierdoMesa.add(botonesMesa, BorderLayout.SOUTH);
+
+        JSplitPane splitMesa = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzquierdoMesa, scrollTablaMesas);
+        splitMesa.setResizeWeight(0.4);
+
+        jPanel3.removeAll();
+        jPanel3.setLayout(new BorderLayout());
+        jPanel3.add(splitMesa, BorderLayout.CENTER);
+
+        // === EVENTOS ===
+        btnAgregarMesa.addActionListener(e -> agregarMesa());
+        btnEditarMesa.addActionListener(e -> editarMesa());
+        btnEliminarMesa.addActionListener(e -> eliminarMesa());
+        btnLimpiarMesa.addActionListener(e -> limpiarCamposMesa());
+
+        tablaMesas.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                cargarMesaSeleccionada();
+            }
+        });
+    }
+    private void inicializarPanelUsuariosEventos() {
+        // === FORMULARIO DE USUARIOS ===
+        JLabel lblNombre = new JLabel("Nombre completo:");
+        txtNombre = new JTextField(25);
+
+        JLabel lblEmail = new JLabel("Email:");
+        txtEmail = new JTextField(25);
+
+        JLabel lblTelefono = new JLabel("Teléfono:");
+        txtTelefono = new JTextField(15);
+
+        JLabel lblDNI = new JLabel("DNI:");
+        txtDNI = new JTextField(15);
+
+        JLabel lblDireccion = new JLabel("Dirección:");
+        txtDireccion = new JTextField(25);
+
+        JLabel lblTipoUsuario = new JLabel("Tipo de Usuario:");
+        cboTipoUsuario = new JComboBox<>();
+
+        JLabel lblContrasena = new JLabel("Contraseña:");
+        txtContrasena = new JPasswordField(20);
+
+        // Llenar combo de tipo usuario desde BD
+        List<TipoUsuario> tipos = UserRepository.obtenerTiposUsuario();
+        for (TipoUsuario tipo : tipos) {
+            cboTipoUsuario.addItem(tipo);
+        }
+
+        // Botones
+        JButton btnAgregarUsuario = new JButton("Agregar");
+        JButton btnEditarUsuario = new JButton("Editar");
+        JButton btnEliminarUsuario = new JButton("Eliminar");
+        JButton btnLimpiarUsuario = new JButton("Limpiar");
+
+        btnAgregarUsuario.setPreferredSize(new Dimension(100, 30));
+        btnEditarUsuario.setPreferredSize(new Dimension(100, 30));
+        btnEliminarUsuario.setPreferredSize(new Dimension(100, 30));
+        btnLimpiarUsuario.setPreferredSize(new Dimension(100, 30));
+
+        // Panel formulario
+        JPanel formUsuario = new JPanel();
+        formUsuario.setLayout(new BoxLayout(formUsuario, BoxLayout.Y_AXIS));
+        formUsuario.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        formUsuario.add(lblNombre);
+        formUsuario.add(txtNombre);
+        formUsuario.add(lblEmail);
+        formUsuario.add(txtEmail);
+        formUsuario.add(lblTelefono);
+        formUsuario.add(txtTelefono);
+        formUsuario.add(lblDNI);
+        formUsuario.add(txtDNI);
+        formUsuario.add(lblDireccion);
+        formUsuario.add(txtDireccion);
+        formUsuario.add(lblTipoUsuario);
+        formUsuario.add(cboTipoUsuario);
+        formUsuario.add(lblContrasena);
+        formUsuario.add(txtContrasena);
+
+        // Panel botones
+        JPanel botonesUsuario = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        botonesUsuario.add(btnAgregarUsuario);
+        botonesUsuario.add(btnEditarUsuario);
+        botonesUsuario.add(btnEliminarUsuario);
+        botonesUsuario.add(btnLimpiarUsuario);
+
+        // Tabla
+        tablaUsuarios = new JTable(new DefaultTableModel(new Object[]{"ID", "Nombre", "Email", "Teléfono", "DNI", "Dirección", "Tipo","Clave"}, 0));
+        JScrollPane scrollTablaUsuarios = new JScrollPane(tablaUsuarios);
+
+        scrollTablaUsuarios.setBorder(BorderFactory.createTitledBorder("Lista de Usuarios"));
+        
+     
+
+        // Panel dividido
+        JPanel panelIzquierdoUsuario = new JPanel(new BorderLayout());
+        panelIzquierdoUsuario.add(formUsuario, BorderLayout.CENTER);
+        panelIzquierdoUsuario.add(botonesUsuario, BorderLayout.SOUTH);
+
+        JSplitPane splitUsuario = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzquierdoUsuario, scrollTablaUsuarios);
+        splitUsuario.setResizeWeight(0.4);
+
+        jPanel4.removeAll();
+        jPanel4.setLayout(new BorderLayout());
+        jPanel4.add(splitUsuario, BorderLayout.CENTER);
+
+        // === EVENTOS ===
+        btnAgregarUsuario.addActionListener(e -> agregarUsuario());
+        btnEditarUsuario.addActionListener(e -> editarUsuario());
+        btnEliminarUsuario.addActionListener(e -> eliminarUsuario());
+        btnLimpiarUsuario.addActionListener(e -> limpiarCamposUsuario());
+
+        tablaUsuarios.getSelectionModel().addListSelectionListener(e -> cargarUsuarioSeleccionado());
+        
+
+        // Cargar tabla al iniciar
+        cargarUsuarios();
+    }        
     private void inicializarPanelPlatos() {
         jPanel5.setLayout(null); // Posicionamiento absoluto
 
@@ -593,35 +593,9 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
         jPanel5.add(btnLimpiarPlato);
 
         // Acción del botón de imagen
-        btnSeleccionarImagen.addActionListener(e -> seleccionarImagen(txtImagenPlato, lblVistaPreviaImagenPlato));
-    }
-    
-    private void limpiarCamposPlato() {
-        txtNombrePlato.setText("");
-        txtDescripcionPlato.setText("");
-        txtPrecioPlato.setText("");
-        cmbTipoPlato.setSelectedIndex(0);
-        txtImagenPlato.setText("");
-        lblVistaPreviaImagenPlato.setIcon(null);
-        tablaPlatos.clearSelection();
-    }
-
-    private void cargarPlatos() {
-        modeloTablaPlatos.setRowCount(0); // Limpiar la tabla
-        List<Plato> lista = DataRepository.obtenerPlatos();
-
-        for (Plato plato : lista) {
-            modeloTablaPlatos.addRow(new Object[]{
-                plato.getIdMenu(),
-                plato.getNombre(),
-                plato.getDescripcion(),
-                plato.getPrecio(),
-                plato.getTipo(),
-                plato.getUrlImagen()
-            });
-        }
-    }
-
+        btnSeleccionarImagen.addActionListener(e -> seleccionarImagenPlato(txtImagenPlato, lblVistaPreviaImagenPlato));
+        
+    }  
     private void agregarListenerPlatos(){
         btnAgregarPlato.addActionListener(e -> {
         String nombre = txtNombrePlato.getText();
@@ -713,8 +687,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     });
 
     }
-    
-    private void seleccionarImagen(JTextField campoRuta, JLabel labelVistaPrevia) {
+    private void seleccionarImagenPlato(JTextField campoRuta, JLabel labelVistaPrevia) {
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Imágenes", "jpg", "jpeg", "png", "gif");
         fileChooser.setFileFilter(filter);
@@ -732,160 +705,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
         }
     }
 
-    private void inicializarPanelPedidos() {
-        jPanel6.setLayout(null); // Posicionamiento absoluto
-
-        // ==== Reserva ====
-        JLabel lblReserva = new JLabel("Reserva:");
-        lblReserva.setBounds(20, 20, 100, 25);
-        jPanel6.add(lblReserva);
-
-        cboReserva = new JComboBox<>();
-        cboReserva.setBounds(120, 20, 200, 25);
-        jPanel6.add(cboReserva);
-
-        // ==== Plato ====
-        JLabel lblPlato = new JLabel("Plato:");
-        lblPlato.setBounds(20, 60, 100, 25);
-        jPanel6.add(lblPlato);
-
-        cboPlato = new JComboBox<>();
-        cboPlato.setBounds(120, 60, 200, 25);
-        jPanel6.add(cboPlato);
-
-        // ==== Cantidad ====
-        JLabel lblCantidad = new JLabel("Cantidad:");
-        lblCantidad.setBounds(20, 100, 100, 25);
-        jPanel6.add(lblCantidad);
-
-        txtCantidad = new JTextField();
-        txtCantidad.setBounds(120, 100, 200, 25);
-        jPanel6.add(txtCantidad);
-
-        // ==== Botón agregar detalle ====
-        btnAgregarDetalle = new JButton("Agregar Plato");
-        btnAgregarDetalle.setBounds(120, 140, 200, 30);
-        jPanel6.add(btnAgregarDetalle);
-
-        // ==== Tabla de Detalles ====
-        modeloDetalle = new DefaultTableModel(new String[]{"Plato", "Cantidad", "Precio Unitario", "Subtotal"}, 0);
-        tablaDetalle = new JTable(modeloDetalle);
-        JScrollPane scrollDetalle = new JScrollPane(tablaDetalle);
-        scrollDetalle.setBounds(20, 190, 500, 150);
-        jPanel6.add(scrollDetalle);
-
-        // ==== Botón registrar pedido ====
-        btnRegistrarPedido = new JButton("Registrar Pedido");
-        btnRegistrarPedido.setBounds(180, 360, 180, 30);
-        jPanel6.add(btnRegistrarPedido);
-
-        // ==== Tabla de Pedidos Registrados ====
-        modeloPedido = new DefaultTableModel(new String[]{"ID", "Reserva", "Fecha", "Hora", "Total"}, 0);
-        tablaPedido = new JTable(modeloPedido);
-        JScrollPane scrollPedidos = new JScrollPane(tablaPedido);
-        scrollPedidos.setBounds(550, 20, 500, 250);
-        jPanel6.add(scrollPedidos);
-
-        // ==== Botones de acción ====
-        btnEditarPedido = new JButton("Editar");
-        btnEditarPedido.setBounds(650, 290, 100, 25);
-        jPanel6.add(btnEditarPedido);
-
-        btnEliminarPedido = new JButton("Eliminar");
-        btnEliminarPedido.setBounds(760, 290, 100, 25);
-        jPanel6.add(btnEliminarPedido);
-
-        btnLimpiarPedido = new JButton("Limpiar");
-        btnLimpiarPedido.setBounds(870, 290, 100, 25);
-        jPanel6.add(btnLimpiarPedido);
-    }
-
-
-    
-    private void cargarPlatos2() {
-        List<Plato> platos = DataRepository.obtenerPlatos();
-        cboPlato.removeAllItems();
-        for (Plato plato : platos) {
-            cboPlato.addItem(plato); // Mostrará el nombre gracias al toString()
-        }
-    }
-
-
-    private void agregaListenersPedidos(){
-
-        btnAgregarDetalle.addActionListener(e -> {
-            try {
-                Plato plato = (Plato) cboPlato.getSelectedItem();
-                if (plato == null) {
-                    JOptionPane.showMessageDialog(this, "Seleccione un plato válido.");
-                    return;
-                }
-
-                int cantidad = Integer.parseInt(txtCantidad.getText());
-                if (cantidad <= 0) {
-                    JOptionPane.showMessageDialog(this, "Ingrese una cantidad válida.");
-                    return;
-                }
-
-                double precio = plato.getPrecio();
-                double subtotal = precio *cantidad;
-
-                modeloDetalle.addRow(new Object[]{
-                    plato.getNombre(),
-                    cantidad,
-                    precio,
-                    subtotal
-                });
-
-                DetallePedido detalle = new DetallePedido();
-                detalle.setIdMenu(plato.getIdMenu());
-                detalle.setDescripcionPlato(plato.getNombre());
-                detalle.setCantidad(cantidad);
-                detalle.setPrecio(precio);
-                listaDetalle.add(detalle);
-
-                txtCantidad.setText("");
-
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Cantidad no válida");
-            }
-        });
-
-        btnRegistrarPedido.addActionListener(e -> {
-            Reserva reserva = (Reserva) cboReserva.getSelectedItem();
-            if (reserva == null || listaDetalle.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Debe seleccionar una reserva y agregar al menos un plato.");
-                return;
-            }
-
-            Pedido pedido = new Pedido();
-            pedido.setIdReserva(reserva.getIdReserva());
-            pedido.setDetalles(listaDetalle);
-
-            int idGenerado = DataRepository.agregarPedidoConDetalle(pedido);
-            if (idGenerado > 0) {
-                JOptionPane.showMessageDialog(this, "Pedido registrado con ID: " + idGenerado);
-                modeloDetalle.setRowCount(0);
-                listaDetalle.clear();
-            } else {
-                JOptionPane.showMessageDialog(this, "Error al registrar pedido");
-            }
-        });
-    
-    }
-    
-
-    
-    
-    private void cargarReservas() {
-    List<Reserva> reservas = DataRepository.obtenerReservasActivas();
-    for (Reserva r : reservas) cboReserva.addItem(r);
-}
-
- 
-
-
-    
+   
     private void agregarNovedad() {
         String titulo = txtTitNov.getText();
         String descripcion = txtDescNovedad.getText();
@@ -905,7 +725,6 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Error al agregar la novedad.");
         }
     }
-   
     private void editarNovedad() {
         int fila = tablaNovedades.getSelectedRow();
         if (fila != -1) {
@@ -931,12 +750,9 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
             }
         }
     }
-
-
     private int obtenerIdDesdeTablaNovedad(int fila) {
         return Integer.parseInt(tablaNovedades.getValueAt(fila, 0).toString()); // Columna 0 es ID
     }
-
     private void eliminarNovedad() {
         int fila = tablaNovedades.getSelectedRow();
         if (fila != -1) {
@@ -953,7 +769,6 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
             }
         }
     }
- 
     private void cargarNovedadSeleccionada() {
         int fila = tablaNovedades.getSelectedRow();
         if (fila != -1) {
@@ -978,14 +793,6 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
         }
     }
 
-    private void limpiarCamposNovedad() {
-        txtTitNov.setText("");
-        txtDescNovedad.setText("");
-        txtImgNovedad.setText("");
-        dateInicioNovedad.setDate(null);
-        dateFinNovedad.setDate(null);
-    }
-  
     private void agregarPromocion() {
         String titulo = txtTituloPromo.getText();
         String descripcion = txtDescPromo.getText();
@@ -1006,7 +813,6 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(this, "Error al agregar promoción.");
         }
     }
-    
     private void editarPromocion() {
         int fila = tablaPromociones.getSelectedRow();
         if (fila != -1) {
@@ -1032,8 +838,6 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
             }
         }
     }
-
-
     private void eliminarPromocion() {
         int fila = tablaPromociones.getSelectedRow();
         if (fila != -1) {
@@ -1052,9 +856,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
                 }
             }
         }
-    }
-
-    
+    }    
     private void cargarPromocionSeleccionada() {
         int fila = tablaPromociones.getSelectedRow();
         if (fila != -1) {
@@ -1075,8 +877,25 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
             }
         }
     }
-
-
+    
+    
+    
+    private void limpiarCamposPlato() {
+        txtNombrePlato.setText("");
+        txtDescripcionPlato.setText("");
+        txtPrecioPlato.setText("");
+        cmbTipoPlato.setSelectedIndex(0);
+        txtImagenPlato.setText("");
+        lblVistaPreviaImagenPlato.setIcon(null);
+        tablaPlatos.clearSelection();
+    }
+    private void limpiarCamposNovedad() {
+        txtTitNov.setText("");
+        txtDescNovedad.setText("");
+        txtImgNovedad.setText("");
+        dateInicioNovedad.setDate(null);
+        dateFinNovedad.setDate(null);
+    }
     private void limpiarCamposPromocion() {
         txtTituloPromo.setText("");
         txtDescPromo.setText("");
@@ -1084,9 +903,17 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
         txtImgPromo.setText("");
         dateInicioPromo.setDate(null);
         dateFinPromo.setDate(null);
-    }
+    } 
+    private void limpiarCamposUsuario() {
+       txtNombre.setText("");
+       txtEmail.setText("");
+       txtTelefono.setText("");
+       txtDNI.setText("");
+       txtDireccion.setText("");
+       cboTipoUsuario.setSelectedIndex(0);
+       txtContrasena.setText("");
+   }
     
-   
     private void cargarNovedades() {
     Resultado<List<Novedad>> resultado = DataRepository.obtenerNovedades();
 
@@ -1123,9 +950,22 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     tablaNovedades.getColumnModel().getColumn(0).setMaxWidth(0);
 
 }
+    private void cargarPlatos() {
+        modeloTablaPlatos.setRowCount(0); // Limpiar la tabla
+        List<Plato> lista = DataRepository.obtenerPlatos();
 
-    
-   private void cargarPromociones() {
+        for (Plato plato : lista) {
+            modeloTablaPlatos.addRow(new Object[]{
+                plato.getIdMenu(),
+                plato.getNombre(),
+                plato.getDescripcion(),
+                plato.getPrecio(),
+                plato.getTipo(),
+                plato.getUrlImagen()
+            });
+        }
+    }   
+    private void cargarPromociones() {
         String[] columnas = {"ID", "Título", "Descripción", "Descuento", "Inicio", "Fin", "Imagen"};
         DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
 
@@ -1151,9 +991,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
         tablaPromociones.getColumnModel().getColumn(0).setMaxWidth(0);
         tablaPromociones.getColumnModel().getColumn(0).setWidth(0);
     }
-   
-
-   private void cargarMesas() {
+    private void cargarMesas() {
     Resultado<List<Mesa>> resultado = DataRepository.obtenerMesas();
     if (!resultado.isOk()) {
         JOptionPane.showMessageDialog(this, "Error al cargar mesas: " + resultado.getMessage());
@@ -1173,9 +1011,35 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
    // tablaMesas.getColumnModel().getColumn(0).setMinWidth(0); // Ocultar ID
    // tablaMesas.getColumnModel().getColumn(0).setMaxWidth(0);
 }
+    private void cargarUsuarios() {
+       Resultado<List<Usuario>> resultado = UserRepository.obtenerUsuarios();
+       if (!resultado.isOk()) {
+           JOptionPane.showMessageDialog(this, "Error al cargar usuarios: " + resultado.getMessage());
+           return;
+       }
 
+       DefaultTableModel model = new DefaultTableModel(new Object[]{"ID", "Nombre", "Email", "Teléfono", "DNI", "Dirección", "Tipo","Clave"}, 0);
+       for (Usuario u : resultado.getData()) {
+           model.addRow(new Object[]{
+               u.getIdUsuario(),
+               u.getNombreCompleto(),
+               u.getEmail(),
+               u.getTelefono(),
+               u.getDni(),
+               u.getDireccion(),
+               u.getTipoUsuario().getDescripcion(),
+               u.getContrasena()
+           });
+       }
+       tablaUsuarios.setModel(model);
+       tablaUsuarios.getColumnModel().getColumn(0).setMinWidth(0);  // Ocultar ID
+       tablaUsuarios.getColumnModel().getColumn(0).setMaxWidth(0);
+        tablaUsuarios.getColumnModel().getColumn(7).setMinWidth(0);
+        tablaUsuarios.getColumnModel().getColumn(7).setMaxWidth(0);
+        tablaUsuarios.getColumnModel().getColumn(7).setPreferredWidth(0);
+   }
 
-private void agregarMesa() {
+    private void agregarMesa() {
     try {
         int numeroMesa = Integer.parseInt(txtNroMesa.getText());
         int capacidad = Integer.parseInt(txtCapacidad.getText());
@@ -1193,8 +1057,6 @@ private void agregarMesa() {
         JOptionPane.showMessageDialog(this, "Ingrese valores válidos.");
     }
 }
-
-
     private void editarMesa() {
         int fila = tablaMesas.getSelectedRow();
         if (fila != -1) {
@@ -1217,9 +1079,7 @@ private void agregarMesa() {
             }
         }
     }
-
-
-     private void eliminarMesa() {
+    private void eliminarMesa() {
          int fila = tablaMesas.getSelectedRow();
          if (fila != -1) {
              int id = Integer.parseInt(tablaMesas.getValueAt(fila, 0).toString());
@@ -1237,7 +1097,6 @@ private void agregarMesa() {
              }
          }
      }
-
     private void cargarMesaSeleccionada() {
         int fila = tablaMesas.getSelectedRow();
         if (fila != -1) {
@@ -1250,33 +1109,12 @@ private void agregarMesa() {
 
      private void limpiarCamposMesa() {
          txtCapacidad.setText("");
+         txtNroMesa.setText("");
          chkDisponible.setSelected(false);
      }
      
      
-        private void cargarUsuarios() {
-       Resultado<List<Usuario>> resultado = UserRepository.obtenerUsuarios();
-       if (!resultado.isOk()) {
-           JOptionPane.showMessageDialog(this, "Error al cargar usuarios: " + resultado.getMessage());
-           return;
-       }
-
-       DefaultTableModel model = new DefaultTableModel(new Object[]{"ID", "Nombre", "Email", "Teléfono", "DNI", "Dirección", "Tipo"}, 0);
-       for (Usuario u : resultado.getData()) {
-           model.addRow(new Object[]{
-               u.getIdUsuario(),
-               u.getNombreCompleto(),
-               u.getEmail(),
-               u.getTelefono(),
-               u.getDni(),
-               u.getDireccion(),
-               u.getTipoUsuario().getDescripcion()
-           });
-       }
-       tablaUsuarios.setModel(model);
-       tablaUsuarios.getColumnModel().getColumn(0).setMinWidth(0);  // Ocultar ID
-       tablaUsuarios.getColumnModel().getColumn(0).setMaxWidth(0);
-   }
+       
 
     private void agregarUsuario() {
         String contrasena = new String(txtContrasena.getPassword());
@@ -1297,8 +1135,6 @@ private void agregarMesa() {
             JOptionPane.showMessageDialog(this, "Error al agregar usuario.");
         }
     }
-
-
     private void editarUsuario() {
         int fila = tablaUsuarios.getSelectedRow();
         if (fila != -1) {
@@ -1324,9 +1160,7 @@ private void agregarMesa() {
             }
         }
     }
-
-
-   private void eliminarUsuario() {
+    private void eliminarUsuario() {
        int fila = tablaUsuarios.getSelectedRow();
        if (fila != -1) {
            int id = Integer.parseInt(tablaUsuarios.getValueAt(fila, 0).toString());
@@ -1343,8 +1177,7 @@ private void agregarMesa() {
            }
        }
    }
-
-   private void cargarUsuarioSeleccionado() {
+    private void cargarUsuarioSeleccionado() {
        int fila = tablaUsuarios.getSelectedRow();
        if (fila != -1) {
            txtNombre.setText(tablaUsuarios.getValueAt(fila, 1).toString());
@@ -1353,19 +1186,13 @@ private void agregarMesa() {
            txtDNI.setText(tablaUsuarios.getValueAt(fila, 4).toString());
            txtDireccion.setText(tablaUsuarios.getValueAt(fila, 5).toString());
            cboTipoUsuario.setSelectedItem(tablaUsuarios.getValueAt(fila, 6).toString());
+           txtContrasena.setText(tablaUsuarios.getValueAt(fila, 7).toString());
        }
    }
 
-   private void limpiarCamposUsuario() {
-       txtNombre.setText("");
-       txtEmail.setText("");
-       txtTelefono.setText("");
-       txtDNI.setText("");
-       txtDireccion.setText("");
-       cboTipoUsuario.setSelectedIndex(0);
-   }
+ 
 
-   private Usuario obtenerUsuarioDesdeFormulario(int id) {
+  /* private Usuario obtenerUsuarioDesdeFormulario(int id) {
        try {
            String nombre = txtNombre.getText();
            String email = txtEmail.getText();
@@ -1382,7 +1209,7 @@ private void agregarMesa() {
            return null;
        }
    }
-
+*/
    private Usuario obtenerUsuarioDesdeFormulario(int id, String contrasena) {
     try {
         String nombre = txtNombre.getText();

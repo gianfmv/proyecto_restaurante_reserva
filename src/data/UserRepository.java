@@ -114,7 +114,7 @@ public class UserRepository {
     
     public static Resultado<List<Usuario>> obtenerUsuarios() {
         String sql = "SELECT u.IdUsuario, u.NombreCompleto, u.Email, u.Telefono, u.DNI, u.Direccion, " +
-                     "u.IdTipo, t.Descripcion FROM Usuario u " +
+                     "u.IdTipo, t.Descripcion, u.Contraseña FROM Usuario u " +
                      "JOIN TipoUsuario t ON u.IdTipo = t.IdTipo";
 
         List<Usuario> lista = new ArrayList<>();
@@ -136,7 +136,8 @@ public class UserRepository {
                         rs.getString("Telefono"),
                         rs.getString("DNI"),
                         rs.getString("Direccion"),
-                        tipo
+                        tipo,
+                        rs.getString("Contraseña")
                 );
                 lista.add(u);
             }
@@ -235,5 +236,30 @@ public class UserRepository {
         return false;
     }
 }
+    
+    public static List<TipoUsuario> obtenerTiposUsuario() {
+    List<TipoUsuario> tipos = new ArrayList<>();
+    String sql = "SELECT IdTipo, Descripcion FROM TipoUsuario";
+
+    try (Connection conn = ConexionSQL.obtenerConexion();
+         PreparedStatement stmt = conn.prepareStatement(sql);
+         ResultSet rs = stmt.executeQuery()) {
+
+        while (rs.next()) {
+            TipoUsuario tipo = new TipoUsuario(
+                rs.getInt("IdTipo"),
+                rs.getString("Descripcion")
+            );
+            tipos.add(tipo);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.err.println("Error al obtener tipos de usuario: " + e.getMessage());
+    }
+
+    return tipos;
+}
+
 
 }
