@@ -20,10 +20,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.function.Consumer;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import modelo.Mesa;
 import modelo.Plato;
@@ -65,7 +67,9 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     private JTextField txtNroMesa;
     private JCheckBox chkDisponible;
     
-
+    private JPanel mesasPanel;
+    private Mesa mesaSeleccionada;
+    
     // === COMPONENTES USUARIOS ===
     private JTable tablaUsuarios;
     private JTextField txtNombre;
@@ -105,7 +109,8 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     // Cargar datos
     cargarNovedades();
     cargarPromociones();        
-    cargarMesas();
+    //cargarMesas();
+    cargarMesasGraficamente();
     cargarUsuarios();   
     cargarPlatos();
 
@@ -340,7 +345,83 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
         // === CARGA DE DATOS INICIAL ===
         cargarPromociones();
     }
+    
     private void inicializarPanelMesasEventos() {
+        // === FORMULARIO DE MESAS ===
+        JLabel lblCapacidad = new JLabel("Capacidad:");
+        JLabel lblnroMesa = new JLabel("Nro de Mesa:");
+
+        txtCapacidad = new JTextField(10);
+        txtNroMesa = new JTextField(10);
+        chkDisponible = new JCheckBox("Disponible");
+
+        JButton btnAgregarMesa = new JButton("Agregar");
+        JButton btnEditarMesa = new JButton("Editar");
+        JButton btnEliminarMesa = new JButton("Eliminar");
+        JButton btnLimpiarMesa = new JButton("Limpiar");
+
+        btnAgregarMesa.setPreferredSize(new Dimension(100, 30));
+        btnEditarMesa.setPreferredSize(new Dimension(100, 30));
+        btnEliminarMesa.setPreferredSize(new Dimension(100, 30));
+        btnLimpiarMesa.setPreferredSize(new Dimension(100, 30));
+
+        JPanel formMesa = new JPanel();
+        formMesa.setLayout(new BoxLayout(formMesa, BoxLayout.Y_AXIS));
+        formMesa.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        int alturaFija = 30;
+
+        JPanel panelCapMesa = new JPanel(new BorderLayout());
+        panelCapMesa.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+        panelCapMesa.setPreferredSize(new Dimension(0, alturaFija));
+        panelCapMesa.add(txtCapacidad, BorderLayout.CENTER);
+
+        JPanel panelNroMesa = new JPanel(new BorderLayout());
+        panelNroMesa.setMaximumSize(new Dimension(Integer.MAX_VALUE, alturaFija));
+        panelNroMesa.setPreferredSize(new Dimension(0, alturaFija));
+        panelNroMesa.add(txtNroMesa, BorderLayout.CENTER);
+
+        formMesa.add(lblCapacidad);
+        formMesa.add(panelCapMesa);
+        formMesa.add(lblnroMesa);
+        formMesa.add(panelNroMesa);
+        formMesa.add(chkDisponible);
+
+        JPanel botonesMesa = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        botonesMesa.add(btnAgregarMesa);
+        botonesMesa.add(btnEditarMesa);
+        botonesMesa.add(btnEliminarMesa);
+        botonesMesa.add(btnLimpiarMesa);
+
+        // PANEL IZQUIERDO: Formulario + Botones
+        JPanel panelIzquierdoMesa = new JPanel(new BorderLayout());
+        panelIzquierdoMesa.add(formMesa, BorderLayout.CENTER);
+        panelIzquierdoMesa.add(botonesMesa, BorderLayout.SOUTH);
+
+        // === PANEL DERECHO: Vista gráfica de mesas ===
+        mesasPanel = new JPanel(); // definido como atributo
+        mesasPanel.setLayout(new GridLayout(0, 4, 10, 10));
+        JScrollPane scrollMesas = new JScrollPane(mesasPanel);
+        scrollMesas.setBorder(BorderFactory.createTitledBorder("Vista de Mesas"));
+
+        // SPLITPANE
+        JSplitPane splitMesa = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzquierdoMesa, scrollMesas);
+        splitMesa.setResizeWeight(0.3);
+
+        // INSERTAR AL PANEL PRINCIPAL
+        jPanel3.removeAll();
+        jPanel3.setLayout(new BorderLayout());
+        jPanel3.add(splitMesa, BorderLayout.CENTER);
+
+        // === EVENTOS ===
+        btnAgregarMesa.addActionListener(e -> agregarMesa());
+        btnEditarMesa.addActionListener(e -> editarMesa());
+        btnEliminarMesa.addActionListener(e -> eliminarMesa());
+        btnLimpiarMesa.addActionListener(e -> limpiarCamposMesa());
+
+        cargarMesasGraficamente();
+    }
+    /*private void inicializarPanelMesasEventos() {
         // === FORMULARIO DE MESAS ===
         JLabel lblCapacidad = new JLabel("Capacidad:");
         JLabel lblnroMesa = new JLabel("Nro de Mesa:");
@@ -414,6 +495,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
             }
         });
     }
+    */
     private void inicializarPanelUsuariosEventos() {
         // === FORMULARIO DE USUARIOS ===
         JLabel lblNombre = new JLabel("Nombre completo:");
@@ -878,7 +960,41 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
         }
     }
     
-    
+    private void cargarMesasGraficamente() {
+        mesasPanel.removeAll();
+        List<Mesa> mesas = DataRepository.obtenerMesas().getData();
+        if (mesas == null || mesas.isEmpty()) {
+            mesasPanel.add(new JLabel("No hay mesas registradas"));
+            mesasPanel.revalidate();
+            mesasPanel.repaint();
+            return;
+        }
+
+        int columnas = 4;
+        int filas = (int) Math.ceil(mesas.size() / (double) columnas);
+        mesasPanel.setLayout(new GridLayout(filas, columnas, 10, 10));
+
+        for (Mesa mesa : mesas) {
+            boolean esSeleccionada = mesaSeleccionada != null && mesa.getIdMesa() == mesaSeleccionada.getIdMesa();
+
+            MesaVista vista = new MesaVista(mesa, m -> {
+                mesaSeleccionada = m;
+                txtNroMesa.setText(String.valueOf(m.getNumeroMesa()));
+                txtCapacidad.setText(String.valueOf(m.getCapacidad()));
+                chkDisponible.setSelected(m.isDisponible());
+                cargarMesasGraficamente(); // refresca resaltado
+            }, esSeleccionada);
+
+            mesasPanel.add(vista);
+        }
+        System.out.println("Mesas cargadas: " + mesas.size());
+        mesasPanel.setBackground(Color.YELLOW); // para ver si el panel aparece
+
+
+        mesasPanel.revalidate();
+        mesasPanel.repaint();
+    }
+
     
     private void limpiarCamposPlato() {
         txtNombrePlato.setText("");
@@ -950,6 +1066,38 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     tablaNovedades.getColumnModel().getColumn(0).setMaxWidth(0);
 
 }
+    
+
+public class MesaVista extends JPanel {
+    public MesaVista(Mesa mesa, Consumer<Mesa> onSeleccionar, boolean seleccionada) {
+        setLayout(new BorderLayout());
+        setBorder(BorderFactory.createLineBorder(seleccionada ? Color.BLUE : Color.GRAY, 2));
+        setBackground(seleccionada ? new Color(220, 240, 255) : Color.WHITE);
+        setPreferredSize(new Dimension(100, 80));
+
+        JLabel lblId = new JLabel("Mesa " + mesa.getIdMesa(), SwingConstants.CENTER);
+        JLabel lblCapacidad = new JLabel("Cap: " + mesa.getCapacidad(), SwingConstants.CENTER);
+        JLabel lblEstado = new JLabel(mesa.isDisponible() ? "Disponible" : "Ocupada", SwingConstants.CENTER);
+
+        lblEstado.setForeground(mesa.isDisponible() ? Color.GREEN.darker() : Color.RED);
+
+        add(lblId, BorderLayout.NORTH);
+        add(lblCapacidad, BorderLayout.CENTER);
+        add(lblEstado, BorderLayout.SOUTH);
+
+        // Selección al hacer clic
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                onSeleccionar.accept(mesa);
+            }
+        });
+    }
+}
+
+
+
+
     private void cargarPlatos() {
         modeloTablaPlatos.setRowCount(0); // Limpiar la tabla
         List<Plato> lista = DataRepository.obtenerPlatos();
@@ -1038,7 +1186,7 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
         tablaUsuarios.getColumnModel().getColumn(7).setMaxWidth(0);
         tablaUsuarios.getColumnModel().getColumn(7).setPreferredWidth(0);
    }
-
+/*
     private void agregarMesa() {
     try {
         int numeroMesa = Integer.parseInt(txtNroMesa.getText());
@@ -1056,7 +1204,27 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this, "Ingrese valores válidos.");
     }
+}*/
+    
+    private void agregarMesa() {
+    try {
+        int numeroMesa = Integer.parseInt(txtNroMesa.getText());
+        int capacidad = Integer.parseInt(txtCapacidad.getText());
+        boolean disponible = chkDisponible.isSelected();
+
+        Mesa nueva = new Mesa(0, numeroMesa, capacidad, disponible);
+        if (DataRepository.agregarMesa(nueva)) {
+            cargarMesasGraficamente();
+            limpiarCamposMesa();
+            JOptionPane.showMessageDialog(this, "Mesa agregada.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al agregar la mesa.");
+        }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Ingrese valores válidos.");
+    }
 }
+/*
     private void editarMesa() {
         int fila = tablaMesas.getSelectedRow();
         if (fila != -1) {
@@ -1079,6 +1247,31 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
             }
         }
     }
+    */
+    private void editarMesa() {
+    if (mesaSeleccionada != null) {
+        try {
+            int id = mesaSeleccionada.getIdMesa();
+            int numeroMesa = Integer.parseInt(txtNroMesa.getText());
+            int capacidad = Integer.parseInt(txtCapacidad.getText());
+            boolean disponible = chkDisponible.isSelected();
+
+            Mesa editada = new Mesa(id, numeroMesa, capacidad, disponible);
+            if (DataRepository.editarMesa(id, editada)) {
+                cargarMesasGraficamente();
+                limpiarCamposMesa();
+                JOptionPane.showMessageDialog(this, "Mesa actualizada.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al editar.");
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Ingrese valores válidos.");
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Seleccione una mesa para editar.");
+    }
+}
+/*
     private void eliminarMesa() {
          int fila = tablaMesas.getSelectedRow();
          if (fila != -1) {
@@ -1096,7 +1289,26 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
                  }
              }
          }
-     }
+     }*/
+    
+    private void eliminarMesa() {
+    if (mesaSeleccionada != null) {
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar esta mesa?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean ok = DataRepository.eliminarMesa(mesaSeleccionada.getIdMesa());
+            if (ok) {
+                cargarMesasGraficamente();
+                limpiarCamposMesa();
+                JOptionPane.showMessageDialog(this, "Mesa eliminada.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al eliminar mesa.");
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Seleccione una mesa para eliminar.");
+    }
+}
+
     private void cargarMesaSeleccionada() {
         int fila = tablaMesas.getSelectedRow();
         if (fila != -1) {
@@ -1108,11 +1320,13 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
 
 
      private void limpiarCamposMesa() {
-         txtCapacidad.setText("");
-         txtNroMesa.setText("");
-         chkDisponible.setSelected(false);
-     }
-     
+    txtCapacidad.setText("");
+    txtNroMesa.setText("");
+    chkDisponible.setSelected(false);
+    mesaSeleccionada = null;
+    cargarMesasGraficamente(); // para deseleccionar visualmente
+}
+
      
        
 
@@ -1249,7 +1463,6 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
-        jPanel6 = new javax.swing.JPanel();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -1320,19 +1533,6 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
 
         jTabbedPane1.addTab("PLATO", jPanel5);
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1150, Short.MAX_VALUE)
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 622, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("PEDIDOS", jPanel6);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1377,7 +1577,6 @@ public class InicioAdmin extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }
