@@ -26,7 +26,7 @@ public class Principal extends javax.swing.JFrame {
     public Principal(Usuario usuario) {
         this.usuario = usuario;
         initComponents();
-        Color colorMenu = new Color(89, 63, 40);
+        Color colorMenu = new Color(0, 0, 0);
         Font botones = FontLoader.load("Poppins-SemiBold.ttf", 16);
         jMenuInicio.setFont(botones);
         jMenuDia.setFont(botones);
@@ -39,18 +39,17 @@ public class Principal extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.setTitle("Restaurante La Buena Sartén");
         //establecer el color de fondo
-        Color colorFondo = new java.awt.Color(210, 210, 0);
+        Color colorFondo = new java.awt.Color(0, 0, 0);
         this.getContentPane().setBackground(colorFondo);
         //this.jPanel1.setBackground(new Color(241,233,233));
         //jPanel1.setVisible(false);
         // Colores personalizados para el JMenuBar y los JMenu
-        Color colorMenu2 = new Color(240, 240, 240); // color naranja claro
-        jMenuBar3.setOpaque(true);
+        Color colorMenu2 = new Color(220,220,220); // color naranja claro
+        jMenuBar3.setOpaque(false);
         jMenuBar3.setBackground(colorMenu2);
-
-        jMenuInicio.setBackground(colorMenu2);
+        //jMenuInicio.setBackground(colorMenu2);
         jMenuInicio.setOpaque(true);
-        jMenuDia.setBackground(colorMenu2);
+        //jMenuDia.setBackground(colorMenu2);
         jMenuDia.setOpaque(true);
         //para inabilitar algunos jMenu
 
@@ -159,7 +158,6 @@ public class Principal extends javax.swing.JFrame {
 
         jMenuBar3.add(jMenu);
 
-        jMenuInicio.setBackground(new java.awt.Color(239, 171, 106));
         jMenuInicio.setBorder(null);
         jMenuInicio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-cucharaInicio-25.png"))); // NOI18N
         jMenuInicio.setText("Inicio");
@@ -193,7 +191,6 @@ public class Principal extends javax.swing.JFrame {
 
         jMenuBar3.add(jMenuInicio);
 
-        jMenuDia.setBackground(new java.awt.Color(239, 171, 106));
         jMenuDia.setBorder(null);
         jMenuDia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-libro-de-cocina-24.png"))); // NOI18N
         jMenuDia.setText("Menú del día");

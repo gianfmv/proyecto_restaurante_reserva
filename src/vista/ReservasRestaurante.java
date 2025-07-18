@@ -4,8 +4,21 @@
  */
 package vista;
 
+import data.DataRepository;
+import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.SwingWorker;
+import modelo.Promocion;
+import modelo.Reserva;
+import modelo.Resultado;
+import modelo.Usuario;
+import util.FontLoader;
+import util.UserUtil;
 
 /**
  *
@@ -13,48 +26,17 @@ import javax.swing.JButton;
  */
 public class ReservasRestaurante extends javax.swing.JFrame {
 
+    private List<Reserva> reservas;
+
     /**
      * Creates new form ReservasRestaurante
      */
     public ReservasRestaurante() {
         initComponents();
-        
-        panelMesas.setLayout(new GridLayout(filas, columnas));
 
-        mesas = new JButton[filas][columnas];
+        obtenerReservas();
+        labelTitle.setFont(FontLoader.load("Poppins-Black.ttf", Font.PLAIN, 20));
 
-        for (int i = 0; i < filas; i++) {
-            for (int j = 0; j < columnas; j++) {
-                int fila = i;
-                int col = j;
-
-                JButton boton = new JButton("Mesa " +contadorMesa++);//(i + 1) + "-" + (j + 1));
-                boton.addActionListener(e -> abrirDialogoReserva(fila, col, boton));
-                mesas[i][j] = boton;
-                panelMesas.add(boton);
-            }
-        }
-        
-        
-        
-    }
-
-    private JButton[][] mesas;
-    private int filas = 5;
-    private int columnas = 5;
-    private int contadorMesa = 1;
-    
-    private void abrirDialogoReserva(int fila, int columna, JButton boton) {
-        DialogoReserva dialogo = new DialogoReserva(this, true);
-        dialogo.setVisible(true);
-
-        String cliente = dialogo.getCliente();
-        int personas = dialogo.getCantidad();
-
-        if (cliente != null && !cliente.isEmpty()) {
-            boton.setText("Reservado a " + cliente + " " + personas + " personas");
-            boton.setEnabled(false); // Desactiva mesa después de reservar
-        }
     }
 
     /**
@@ -66,79 +48,93 @@ public class ReservasRestaurante extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        labelTitle = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
         panelMesas = new javax.swing.JPanel();
+        panelEmpty = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Elija la mesa a reservar");
+        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
-        javax.swing.GroupLayout panelMesasLayout = new javax.swing.GroupLayout(panelMesas);
-        panelMesas.setLayout(panelMesasLayout);
-        panelMesasLayout.setHorizontalGroup(
-            panelMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 624, Short.MAX_VALUE)
-        );
-        panelMesasLayout.setVerticalGroup(
-            panelMesasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 385, Short.MAX_VALUE)
-        );
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(16, 32, 16, 32));
+        jPanel1.setAlignmentX(0.0F);
+        jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addComponent(panelMesas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(panelMesas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(91, Short.MAX_VALUE))
-        );
+        labelTitle.setText("Mis Reservaciones");
+        jPanel1.add(labelTitle);
 
-        pack();
+        getContentPane().add(jPanel1);
+
+        jScrollPane1.setAlignmentX(0.0F);
+
+        panelMesas.setBorder(javax.swing.BorderFactory.createEmptyBorder(16, 36, 0, 36));
+        panelMesas.setLayout(new javax.swing.BoxLayout(panelMesas, javax.swing.BoxLayout.Y_AXIS));
+        jScrollPane1.setViewportView(panelMesas);
+
+        getContentPane().add(jScrollPane1);
+
+        panelEmpty.setBorder(javax.swing.BorderFactory.createEmptyBorder(32, 32, 32, 32));
+        panelEmpty.setAlignmentX(0.0F);
+        panelEmpty.setMaximumSize(null);
+        panelEmpty.setPreferredSize(new java.awt.Dimension(9999, 120));
+        panelEmpty.setLayout(new javax.swing.BoxLayout(panelEmpty, javax.swing.BoxLayout.Y_AXIS));
+
+        jLabel2.setText("Actualmente no tienens ninguna reservacion.");
+        panelEmpty.add(jLabel2);
+
+        getContentPane().add(panelEmpty);
+
+        setSize(new java.awt.Dimension(689, 541));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-   
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
+    private void obtenerReservas() {
+        new SwingWorker<Resultado<List<Reserva>>, Void>() {
+            @Override
+            protected Resultado<List<Reserva>> doInBackground() throws Exception {
+                Usuario usuario = UserUtil.getUsuario();
+                return DataRepository.obtenerReservasDeUsuario(usuario.getIdUsuario());
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ReservasRestaurante.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ReservasRestaurante.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ReservasRestaurante.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ReservasRestaurante.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ReservasRestaurante().setVisible(true);
+            @Override
+            protected void done() {
+                super.done();
+                Resultado<List<Reserva>> resultado = null;
+                try {
+                    resultado = get();
+                    reservas = resultado.getData();
+                    if (reservas.isEmpty()) {
+                        panelEmpty.setVisible(true);
+                    } else {
+                        panelEmpty.setVisible(false);
+                        mostrarReservas();
+                    }
+                } catch (InterruptedException | ExecutionException ex) {
+                    Logger.getLogger(InicioCliente.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             }
-        });
+
+        }.execute();
+    }
+
+    public void mostrarReservas() {
+        panelMesas.setLayout(new GridLayout(reservas.size(), 1));
+        for(Reserva reserva : reservas) {
+            ReservaVista vistaReserva = new ReservaVista(reserva);
+            panelMesas.add(vistaReserva);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel labelTitle;
+    private javax.swing.JPanel panelEmpty;
     private javax.swing.JPanel panelMesas;
     // End of variables declaration//GEN-END:variables
 }
