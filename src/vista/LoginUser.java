@@ -44,7 +44,7 @@ public class LoginUser extends javax.swing.JFrame {
     
     final void iniciar() {
         initComponents();
-        CustomLabel coverLabel = new CustomLabel("/resources/bg.png");
+        CustomLabel coverLabel = new CustomLabel("/resources/promo1.jpg");
         jPanel1.setLayout(new BorderLayout());
         jPanel1.add(coverLabel, BorderLayout.CENTER);
         jProgressBar1.setVisible(false);

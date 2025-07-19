@@ -37,7 +37,7 @@ public class Principal extends javax.swing.JFrame {
         jMenuDia.setForeground(colorMenu);
         this.setSize(new Dimension(1200, 700));
         this.setLocationRelativeTo(null);
-        this.setTitle("Restaurante La Buena Sartén");
+        this.setTitle("Restaurante El Buen Sabor");
         //establecer el color de fondo
         Color colorFondo = new java.awt.Color(0, 0, 0);
         this.getContentPane().setBackground(colorFondo);

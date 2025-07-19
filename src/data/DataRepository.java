@@ -77,7 +77,10 @@ public class DataRepository {
 
     public static Resultado<Boolean> insertarReserva(Reserva reserva) {
         String sql = "INSERT INTO Reservas (IdCliente, FechaReserva, HoraReserva, CantPersonas, Estado, IdMesa) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?, ?, ?);" +
+"UPDATE Mesas " +
+"     SET [Disponible] = 0" +
+" WHERE IdMesa = ?;";
 
         Connection connection;
         try {
@@ -92,10 +95,10 @@ public class DataRepository {
             stmt.setInt(1, reserva.getUsuario().getIdUsuario());  // Asumiendo que Usuario tiene getIdUsuario()
             stmt.setDate(2, new Date(reserva.getFechaReserva().getTime()));          // java.sql.Date
             stmt.setTime(3, reserva.getHoraReserva());           // java.sql.Time
-            stmt.setInt(4, reserva.getCantPersonas());
+            stmt.setInt(4, (int)reserva.getCantPersonas());
             stmt.setString(5, reserva.getEstado());
             stmt.setInt(6, reserva.getMesa().getIdMesa());       // Asumiendo que Mesa tiene getIdMesa()
-
+            stmt.setInt(7, reserva.getMesa().getIdMesa());
             int filasAfectadas = stmt.executeUpdate();
 
             if (filasAfectadas > 0) {
